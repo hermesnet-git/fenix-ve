@@ -1,0 +1,29 @@
+{
+  "formatVersion": 1,
+  "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+  "journeyName": "Fenix - Abertura de BD",
+  "versionId": "7d782878-8bcc-5d9a-a787-8a7f599caae5",
+  "versionNumber": 1,
+  "versionTag": "v1",
+  "processDefinitionKey": "fenix-ve-abertura-bd",
+  "createdBy": "00000000-0000-0000-0000-000000000001",
+  "publishedAt": "2026-11-09T12:00:00Z",
+  "bpmnFile": "fenix-ve-abertura-bd.bpmn",
+  "files": [
+    {
+      "name": "fenix-ve-abertura-bd.bpmn",
+      "sha256": "1c620691c763ccb86fa2fad8bd84cb1c9b8be69d9aa0967d2fd19e787b3fbbd6",
+      "bytes": 133475
+    },
+    {
+      "name": "screens.json",
+      "sha256": "b0b4415ef20050831c575ebaba9328d28c4179e9d073321370d8f796c46eb2be",
+      "bytes": 85417
+    },
+    {
+      "name": "snapshot.json",
+      "sha256": "e3d135d9299a46d37bc932c1caf1a8905f9cd85adf282bf014f5706a6551612d",
+      "bytes": 115512
+    }
+  ]
+}

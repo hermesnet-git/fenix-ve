@@ -1,0 +1,58 @@
+{
+  "integracao": "INT11",
+  "estado": "Operacional",
+  "motivo": null,
+  "verificacoes": [
+    {
+      "ok": true,
+      "texto": "HTTP esperado (200/204) recebido 200"
+    },
+    {
+      "ok": true,
+      "texto": "Corpo com \"availableTimeSlot\" 60 horário(s)"
+    }
+  ],
+  "requisicao": {
+    "linha_e_headers": "POST http://preprod.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1/searchTimeSlot",
+    "corpo": "Accept: application/json\nContent-Type: application/json\nX-Vivo-Transaction-Id: TID_ELJY_FTAT933INT005_2026-11-19T23:18:34.733Z\nflow: B2B_MASSIVO\nrequestSystem: MVE\nX-Vivo-Correlation-Id: CID_VE_FTAT933_QA_1794958245367\nAuthorization: Bearer [REMOVIDO]\n\n{\n  \"relatedEntity\": [],\n  \"relatedParty\": {\n    \"name\": \"TT_B\",\n    \"role\": \"acronym\"\n  },\n  \"relatedPlace\": {\n    \"geographicAddress\": {\n      \"country\": \"BR\",\n      \"postcode\": \"04582030\",\n      \"cnl\": \"11000\",\n      \"networkOwner\": \"VIVO1\",\n      \"telephonicArea\": \"CB\",\n      \"centralOffice\": \"VM\",\n      \"microArea\": \"SP\",\n      \"placePhysicalResourceAssoc\": {\n        \"resourceSpecificationCharacteristic\": [\n          {\n            \"name\": \"mediaType\",\n            \"value\": \"GPON\"\n          }\n        ]\n      },\n      \"geographicSite\": {\n        \"@type\": \"Cabinet\",\n        \"id\": \"\"\n      }\n    }\n  },\n  \"requestedTimeSlot\": [\n    {\n      \"validFor\": {\n        \"startDateTime\": \"2026-11-18T00:00:00.000-03:00\",\n        \"endDateTime\": \"2026-11-25T00:00:00.000-03:00\"\n      }\n    }\n  ]\n}"
+  },
+  "resposta": {
+    "status": "HTTP 200 · 1496 ms",
+    "headers": "content-type: application/json\ndate: Thu, 19 Nov 2026 23:18:36 GMT\nserver: istio-envoy\nx-envoy-upstream-service-time: 1339\nx-qa-transport: local\nx-vivo-correlation-id: CID_VE_FTAT933_QA_1794958245367\nx-vivo-transaction-id: TID_ELJY_FTAT933INT005_2026-11-19T23:18:34.733Z",
+    "corpo": {
+      "availableTimeSlot_total": 60,
+      "exemplos": [
+        {
+          "id": "16:00-17:00",
+          "resourceId": "BKT_CURITIBA_RS_FB",
+          "resourceName": "[DADO SUPRIMIDO]",
+          "validFor": {
+            "timeslot": "16:00-17:00",
+            "startDateTime": "2026-11-20T16:00:00.000-03:00",
+            "endDateTime": "2026-11-20T17:00:00.000-03:00"
+          }
+        },
+        {
+          "id": "10:00-11:00",
+          "resourceId": "BKT_CURITIBA_RS_FB",
+          "resourceName": "[DADO SUPRIMIDO]",
+          "validFor": {
+            "timeslot": "10:00-11:00",
+            "startDateTime": "2026-11-20T10:00:00.000-03:00",
+            "endDateTime": "2026-11-20T11:00:00.000-03:00"
+          }
+        },
+        {
+          "id": "16:00-16:30",
+          "resourceId": "BKT_CURITIBA_RS_FB",
+          "resourceName": "[DADO SUPRIMIDO]",
+          "validFor": {
+            "timeslot": "16:00-16:30",
+            "startDateTime": "2026-11-20T16:00:00.000-03:00",
+            "endDateTime": "2026-11-20T16:30:00.000-03:00"
+          }
+        }
+      ]
+    }
+  }
+}

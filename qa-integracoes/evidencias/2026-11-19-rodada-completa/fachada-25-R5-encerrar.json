@@ -1,0 +1,23 @@
+{
+  "run": "R5",
+  "etapa": "encerrar",
+  "quando": "2026-11-19T23:24:20.111Z",
+  "http": 200,
+  "observacoes": {},
+  "resposta": {
+    "processInstanceId": "56e4c852-e470-11f1-8248-06dfec022e82",
+    "previousActivityId": "Node_StatusVisita",
+    "activityId": null,
+    "activityType": null,
+    "executionId": null,
+    "taskId": null,
+    "status": "COMPLETED",
+    "activeProcessInstanceId": null,
+    "variables": {},
+    "matchedTransition": {
+      "kind": "guarded",
+      "label": null,
+      "eventName": null
+    }
+  }
+}

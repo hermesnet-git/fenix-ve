@@ -1,0 +1,23 @@
+{
+  "cenario": "B-06",
+  "etapa": "encerrar_visita",
+  "quando": "2026-11-19T22:50:05.382Z",
+  "http": 200,
+  "observacoes": {},
+  "resposta": {
+    "processInstanceId": "7974fe2a-e46b-11f1-8248-06dfec022e82",
+    "previousActivityId": "Node_StatusVisita",
+    "activityId": null,
+    "activityType": null,
+    "executionId": null,
+    "taskId": null,
+    "status": "COMPLETED",
+    "activeProcessInstanceId": null,
+    "variables": {},
+    "matchedTransition": {
+      "kind": "guarded",
+      "label": null,
+      "eventName": null
+    }
+  }
+}

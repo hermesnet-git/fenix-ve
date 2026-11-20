@@ -1,0 +1,53 @@
+{
+  "integracao": "INT06",
+  "estado": "Indisponível",
+  "motivo": "HTTP 500 fora do contrato",
+  "verificacoes": [
+    {
+      "ok": false,
+      "texto": "HTTP esperado (200/201/202) recebido 500"
+    }
+  ],
+  "requisicao": {
+    "linha_e_headers": "POST https://api-hml.telefonica.com.br/gtw-redes/serviceTestManagement/v1/serviceTest",
+    "corpo": "Accept: application/json\nContent-Type: application/json\nX-Vivo-Transaction-Id: ce8dca23-2302-4156-adf1-23224dd56920\nX-Vivo-Correlation-Id: acaf92e3-da24-4099-a2f1-c744e777dbe5\nAuthorization: Bearer [REMOVIDO]\n\n{\n  \"name\": \"Diagnostic-FTTH-Automatic\",\n  \"mode\": \"ONDEMAND\",\n  \"relatedParty\": [\n    {\n      \"role\": \"AccessDesignator\",\n      \"id\": \"[DESIGNADOR SUPRIMIDO]\"\n    },\n    {\n      \"role\": \"SistemaOrigem\",\n      \"id\": \"ServiceNow\",\n      \"@referredType\": \"Organization\"\n    },\n    {\n      \"role\": \"ExternalId\",\n      \"id\": \"qa-[DOC SUPRIMIDO]\"\n    }\n  ],\n  \"relatedService\": {\n    \"id\": \"[DESIGNADOR SUPRIMIDO]\",\n    \"name\": \"Internet\",\n    \"@referredType\": \"Service\"\n  },\n  \"testSpecification\": {\n    \"id\": \"spec-ftth-gpon-basico\",\n    \"@referredType\": \"ServiceTestSpecification\"\n  },\n  \"characteristic\": [\n    {\n      \"name\": \"executionMode\",\n      \"value\": \"AUTOMATIC\"\n    }\n  ]\n}"
+  },
+  "resposta": {
+    "status": "HTTP 500 · 49 ms",
+    "headers": "content-type: application/json\ndate: Thu, 19 Nov 2026 23:18:34 GMT\nx-client-ip: 10.240.200.125\nx-correlationid: Id-ca83ff6a72c0c8d54ad7dabb 0\nx-forwarded-for: 10.240.200.125\nx-forwarded-port: 443\nx-forwarded-proto: https\nx-forwarded-scheme: https\nx-original-forwarded-for: 10.240.200.125\nx-qa-transport: local\nx-real-ip: 20.244.120.192\nx-request-id: ae14776fe6d628528a9e21c58bb090ba\nx-scheme: https\nx-vivo-correlation-id: acaf92e3-da24-4099-a2f1-c744e777dbe5\nx-vivo-transaction-id: ce8dca23-2302-4156-adf1-23224dd56920",
+    "corpo": {
+      "name": "[DADO SUPRIMIDO]",
+      "mode": "ONDEMAND",
+      "relatedParty": [
+        {
+          "role": "AccessDesignator",
+          "id": "[DESIGNADOR SUPRIMIDO]"
+        },
+        {
+          "role": "SistemaOrigem",
+          "id": "ServiceNow",
+          "@referredType": "Organization"
+        },
+        {
+          "role": "ExternalId",
+          "id": "qa-[DOC SUPRIMIDO]"
+        }
+      ],
+      "relatedService": {
+        "id": "[DESIGNADOR SUPRIMIDO]",
+        "name": "[DADO SUPRIMIDO]",
+        "@referredType": "Service"
+      },
+      "testSpecification": {
+        "id": "spec-ftth-gpon-basico",
+        "@referredType": "ServiceTestSpecification"
+      },
+      "characteristic": [
+        {
+          "name": "[DADO SUPRIMIDO]",
+          "value": "AUTOMATIC"
+        }
+      ]
+    }
+  }
+}

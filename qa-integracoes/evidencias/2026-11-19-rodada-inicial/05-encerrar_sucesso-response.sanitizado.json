@@ -1,0 +1,21 @@
+{
+  "etapa": "encerrar_sucesso",
+  "quando": "2026-11-19T22:20:38.179Z",
+  "http": 200,
+  "resposta": {
+    "processInstanceId": "7a75ede6-e463-11f1-8248-06dfec022e82",
+    "previousActivityId": "Node_InternetVoltou",
+    "activityId": null,
+    "activityType": null,
+    "executionId": null,
+    "taskId": null,
+    "status": "COMPLETED",
+    "activeProcessInstanceId": null,
+    "variables": {},
+    "matchedTransition": {
+      "kind": "guarded",
+      "label": null,
+      "eventName": null
+    }
+  }
+}

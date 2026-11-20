@@ -1,0 +1,247 @@
+{
+  "cenario": "B-06/B-07",
+  "etapa": "verifica_combd",
+  "quando": "2026-11-19T22:49:40.190Z",
+  "http": 200,
+  "observacoes": {},
+  "resposta": {
+    "processInstanceId": "7974fe2a-e46b-11f1-8248-06dfec022e82",
+    "previousActivityId": "Node_Inicio",
+    "activityId": "Node_StatusVisita",
+    "activityType": "userTask",
+    "executionId": "7974fe2a-e46b-11f1-8248-06dfec022e82",
+    "taskId": "Node_StatusVisita",
+    "status": "ACTIVE",
+    "activeProcessInstanceId": "7974fe2a-e46b-11f1-8248-06dfec022e82",
+    "variables": {
+      "data_requestTimestamp": "2026-11-19T22:49:27.219Z",
+      "data_wo_customerCategory": "[DADO SUPRIMIDO]",
+      "channel": "MOBILE",
+      "data_wo_streetName": "[DADO SUPRIMIDO]",
+      "data_bloqueioFinanceiro": false,
+      "data_wo_workNumber": "[DADO SUPRIMIDO]",
+      "data_wo_orderDetail": "[DADO SUPRIMIDO]",
+      "data_temBD": true,
+      "data_temMassiva": false,
+      "data_wfmCentralOffice": "[DADO SUPRIMIDO]",
+      "data_wo_phoneNumber": "[DADO SUPRIMIDO]",
+      "data_wo_longitude": "[DADO SUPRIMIDO]",
+      "data_bdPrevisaoConclusao": "[DADO SUPRIMIDO]",
+      "data_correlationId": "CID_VE_FTAT933_QA_1795128567219",
+      "data_wo_acessoId": "[DADO SUPRIMIDO]",
+      "Node_ConsultaBD-response": "[DADO SUPRIMIDO]",
+      "data_wo_streetCode": "[DADO SUPRIMIDO]",
+      "data_designador": "[DADO SUPRIMIDO]",
+      "_lastAnswerKeys": "[DADO SUPRIMIDO]",
+      "data_wo_documentNumber": "[DADO SUPRIMIDO]",
+      "data_massivaPrevisaoConclusao": "[DADO SUPRIMIDO]",
+      "data_wo_customerName": "[DADO SUPRIMIDO]",
+      "data_wo_latitude": "[DADO SUPRIMIDO]",
+      "data_wo_productId": "[DADO SUPRIMIDO]",
+      "data_wo_orderProtocol": "[DADO SUPRIMIDO]",
+      "assignee": "ve-app",
+      "data_wo_addressReference": "[DADO SUPRIMIDO]",
+      "data_wo_detail": "[DADO SUPRIMIDO]",
+      "Node_ConsultaMassiva-status": 200,
+      "data_wo_dateOfSale": "[DADO SUPRIMIDO]",
+      "data_wo_mobileNumber": "[DADO SUPRIMIDO]",
+      "data_wo_cnlAcronym": "[DADO SUPRIMIDO]",
+      "data_wfmTelephonicArea": "[DADO SUPRIMIDO]",
+      "data_bd_relatedServiceId": "[DADO SUPRIMIDO]",
+      "data_impedimento": "VISITA",
+      "data_wo_acessoDesignador": "[DADO SUPRIMIDO]",
+      "data_bdNumero": "[DADO SUPRIMIDO]",
+      "Node_ConsultaBD-status": 200,
+      "Node_ConsultaMassiva-response": "[DADO SUPRIMIDO]",
+      "data_wo_contactName": "[DADO SUPRIMIDO]",
+      "data_bd_relatedServiceSpecificationId": "[DADO SUPRIMIDO]",
+      "data_issServiceNow": "[DADO SUPRIMIDO]",
+      "data_wo_neighborhood": "[DADO SUPRIMIDO]",
+      "data_wfmMediaType": "[DADO SUPRIMIDO]",
+      "data_wfmAttendantId": "[DADO SUPRIMIDO]",
+      "data_wo_stateOrProvince": "[DADO SUPRIMIDO]",
+      "data_wfmGeographicSiteId": "[DADO SUPRIMIDO]",
+      "data_wo_streetNr": "[DADO SUPRIMIDO]",
+      "data_wfmNetworkOwner": "[DADO SUPRIMIDO]",
+      "data_productStatus": "Ativo",
+      "data_bdProtocoloAtendimento": "[DADO SUPRIMIDO]",
+      "trigger": "[DADO SUPRIMIDO]",
+      "data_massivaProtocolo": "[DADO SUPRIMIDO]",
+      "data_bd_productInventoryId": "[DADO SUPRIMIDO]",
+      "data_wo_orderId": "[DADO SUPRIMIDO]",
+      "data_wfmPostcode": "[DADO SUPRIMIDO]",
+      "data_wo_complement": "[DADO SUPRIMIDO]",
+      "data_wfmCnl": "[DADO SUPRIMIDO]",
+      "data_wo_city": "[DADO SUPRIMIDO]",
+      "data_wo_emailAddress": "[DADO SUPRIMIDO]",
+      "data_consultaMassivaOk": true,
+      "data_consultaBDOk": true,
+      "data_wo_customerId": "[DADO SUPRIMIDO]"
+    },
+    "matchedTransition": {
+      "kind": "linear",
+      "label": null,
+      "eventName": null
+    },
+    "form": {
+      "id": null,
+      "name": "Visita técnica agendada",
+      "description": null,
+      "sdui": {
+        "schemaVersion": "1.0.0",
+        "catalogVersion": "1.0.0",
+        "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+        "journeyVersion": 1,
+        "uiStepId": "Node_StatusVisita",
+        "status": "published",
+        "publishedAt": "2026-11-09T12:00:00Z",
+        "supportedTargets": [
+          "react.mobile",
+          "flutter.mobile"
+        ],
+        "minRendererVersion": {
+          "react.mobile": "[DADO SUPRIMIDO]",
+          "flutter.mobile": "[DADO SUPRIMIDO]"
+        },
+        "dataSources": {},
+        "data": [
+          "ui.screen",
+          {
+            "id": "screen_statusvisita",
+            "title": "Identificamos o que pode estar afetando seu serviço",
+            "version": "1.0.0",
+            "scrollable": true,
+            "paddingToken": "[DADO SUPRIMIDO]",
+            "backgroundToken": "[DADO SUPRIMIDO]"
+          },
+          [
+            [
+              "ui.stack",
+              {
+                "id": "stack_statusvisita",
+                "version": "1.0.0",
+                "alignment": "stretch",
+                "direction": "vertical",
+                "spacingToken": "[DADO SUPRIMIDO]"
+              },
+              [
+                [
+                  "ui.text",
+                  {
+                    "id": "Node_StatusVisita_titulo",
+                    "text": "Identificamos o que pode estar afetando seu serviço",
+                    "align": "start",
+                    "variant": "title",
+                    "version": "1.0.0",
+                    "maxLines": 2,
+                    "colorToken": "[DADO SUPRIMIDO]"
+                  }
+                ],
+                [
+                  "ui.card",
+                  {
+                    "id": "card_sv_visita",
+                    "variant": "default",
+                    "version": "1.0.0",
+                    "paddingToken": "[DADO SUPRIMIDO]",
+                    "elevationToken": "[DADO SUPRIMIDO]"
+                  },
+                  [
+                    [
+                      "ui.stack",
+                      {
+                        "id": "stack_sv_visita",
+                        "version": "1.0.0",
+                        "alignment": "stretch",
+                        "direction": "vertical",
+                        "spacingToken": "[DADO SUPRIMIDO]"
+                      },
+                      [
+                        [
+                          "ui.text",
+                          {
+                            "id": "sv_vis_titulo",
+                            "text": "Visita técnica agendada",
+                            "align": "start",
+                            "variant": "heading",
+                            "version": "1.0.0",
+                            "maxLines": 2,
+                            "colorToken": "[DADO SUPRIMIDO]"
+                          }
+                        ],
+                        [
+                          "ui.text",
+                          {
+                            "id": "sv_vis_sub",
+                            "text": "Abaixo mais informações sobre a visita técnica agendada",
+                            "align": "start",
+                            "variant": "caption",
+                            "version": "1.0.0",
+                            "maxLines": 2,
+                            "colorToken": "[DADO SUPRIMIDO]"
+                          }
+                        ],
+                        [
+                          "ui.text",
+                          {
+                            "id": "sv_vis_data",
+                            "text": "Agendada para 20/11/2026 11:30-12:00",
+                            "align": "start",
+                            "variant": "body",
+                            "version": "1.0.0",
+                            "maxLines": 2,
+                            "colorToken": "[DADO SUPRIMIDO]"
+                          }
+                        ],
+                        [
+                          "ui.text",
+                          {
+                            "id": "sv_vis_prot",
+                            "text": "Protocolo SPC0001491",
+                            "align": "start",
+                            "variant": "caption",
+                            "version": "1.0.0",
+                            "maxLines": 2,
+                            "colorToken": "[DADO SUPRIMIDO]"
+                          }
+                        ]
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  "ui.button",
+                  {
+                    "id": "Node_StatusVisita_btn",
+                    "size": "medium",
+                    "label": "Ir pra Central de visitas",
+                    "$events": {
+                      "onPress": {
+                        "action": "action.navigate",
+                        "params": {
+                          "target": "TECH_VISIT"
+                        }
+                      }
+                    },
+                    "loading": false,
+                    "variant": "primary",
+                    "version": "1.0.0",
+                    "disabled": false,
+                    "fullWidth": true
+                  }
+                ]
+              ]
+            ]
+          ]
+        ]
+      },
+      "context": {
+        "form": {
+          "data_bdPrevisaoConclusao": "20/11/2026 11:30-12:00",
+          "data_bdProtocoloAtendimento": "SPC0001491"
+        },
+        "data": "[DADOS SUPRIMIDOS]"
+      }
+    }
+  }
+}

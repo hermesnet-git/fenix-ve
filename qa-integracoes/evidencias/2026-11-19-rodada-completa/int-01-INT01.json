@@ -1,0 +1,27 @@
+{
+  "integracao": "INT01",
+  "estado": "Operacional",
+  "motivo": null,
+  "verificacoes": [
+    {
+      "ok": true,
+      "texto": "HTTP esperado (200) recebido 200"
+    },
+    {
+      "ok": true,
+      "texto": "Corpo com lista \"incidents\" 0 incidente(s)"
+    }
+  ],
+  "requisicao": {
+    "linha_e_headers": "GET https://cssp-preprod.redecorp.br/customer-problem-management/v1/incidents?serviceDesignator=[DESIGNADOR SUPRIMIDO]",
+    "corpo": "Accept: application/json\nX-Vivo-Correlation-Id: CID_VE_FTAT933_QA_1794958245367\nAuthorization: Bearer [REMOVIDO]"
+  },
+  "resposta": {
+    "status": "HTTP 200 · 741 ms",
+    "headers": "content-type: application/json\ndate: Thu, 19 Nov 2026 23:18:34 GMT\nserver: istio-envoy\nx-envoy-upstream-service-time: 619\nx-qa-transport: local",
+    "corpo": {
+      "totalResults": "0",
+      "incidents": []
+    }
+  }
+}

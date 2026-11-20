@@ -1,0 +1,26 @@
+{
+  "integracao": "INT18",
+  "estado": "Indisponível",
+  "motivo": "HTTP 500 fora do contrato",
+  "verificacoes": [
+    {
+      "ok": false,
+      "texto": "HTTP esperado (200/201) recebido 500"
+    }
+  ],
+  "requisicao": {
+    "linha_e_headers": "POST https://api-hml.telefonica.com.br/serviceNowTroubleTicket/v1/troubleTicket",
+    "corpo": "Accept: application/json\nContent-Type: application/json\nX-Vivo-Transaction-Id: TID_ELJY_FTAT933INT009_2026-11-19T23:18:38.108Z\nX-Vivo-Correlation-Id: CID_VE_FTAT933_QA_1794958245367\nAuthorization: Bearer [REMOVIDO]\n\n{\n  \"@type\": \"TroubleTicket\",\n  \"ticketType\": \"Case\",\n  \"description\": \"Abertura de BD pelo VE (FTAT-933): diagnóstico automático não resolveu o problema\",\n  \"severity\": \"3\",\n  \"name\": \"Queda de Conexão\",\n  \"requestedResolutionDate\": \"2026-11-20T09:30:00.000-03:00\",\n  \"expectedResolutionDate\": \"2026-11-20T10:00:00.000-03:00\",\n  \"channel\": {\n    \"@type\": \"ServiceProblemCase\",\n    \"name\": \"Alert\"\n  },\n  \"relatedEntity\": [\n    {\n      \"@type\": \"Service\",\n      \"entity\": {\n        \"@type\": \"ServiceTest\",\n        \"name\": \"testSpecification\",\n        \"id\": \"spec-ftth-gpon-basico\"\n      }\n    },\n    {\n      \"@type\": \"Service\",\n      \"entity\": {\n        \"@type\": \"Service\",\n        \"name\": \"mode\",\n        \"id\": \"Proactive\"\n      }\n    }\n  ],\n  \"relatedParty\": [\n    {\n      \"@type\": \"Customer\",\n      \"role\": \"Digital\",\n      \"partyOrPartyRole\": {\n        \"@type\": \"Customer\",\n        \"id\": \"001W40000177WzdIAE\",\n        \"@referredType\": \"CustomerContact\",\n        \"name\": \"FTTH_0611_id01\",\n        \"characteristic\": []\n      }\n    }\n  ],\n  \"troubleTicketCharacteristic\": [\n    {\n      \"name\": \"estadoDescricao\",\n      \"value\": \"São Paulo\"\n    },\n    {\n      \"name\": \"city\",\n      \"value\": \"São Paulo\"\n    },\n    {\n      \"name\": \"endBairro\",\n      \"value\": \"Vila Cordeiro\"\n    },\n    {\n      \"name\": \"postcode\",\n      \"value\": \"04582030\"\n    },\n    {\n      \"name\": \"telephonicArea\",\n      \"value\": \"CB\"\n    },\n    {\n      \"name\": \"streetName\",\n      \"value\": \"Rua Godói Colaço\"\n    },\n    {\n      \"name\": \"streetNr\",\n      \"value\": \"586\"\n    },\n    {\n      \"name\": \"complement\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"reclamanteNome\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"documentNumber\",\n      \"value\": \"[DOC SUPRIMIDO]\"\n    },\n    {\n      \"name\": \"clienteClassificacao\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"contatoLocal\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"telefoneContatoLocal1\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"telefoneContatoLocal2\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"motivo\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"submotivo\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"SLA\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"tipoDescricao\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"tipoOferta\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"designadorAcesso\",\n      \"value\": \"[DESIGNADOR SUPRIMIDO]\"\n    },\n    {\n      \"name\": \"velocidade\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"servicoCpccNome\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"WorkOrder\",\n      \"value\": \"VE226f3fc6-a02f-4323-82ca-99188fc51698\"\n    },\n    {\n      \"name\": \"WorkOrderItem\",\n      \"value\": \"VE226f3fc6-a02f-4323-82ca-99188fc51698:1\"\n    },\n    {\n      \"name\": \"etapa\",\n      \"value\": \"TRIAGEM\"\n    },\n    {\n      \"name\": \"telefoneTitular1\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"telefoneTitular2\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"telefoneReclamante1\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"telefoneReclamante2\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"horarioFuncionamento\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"preferenciaContato\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"palitagemFinal\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"previsaoAtendimento\",\n      \"value\": \"20/11/2026 09:30-10:00\"\n    },\n    {\n      \"name\": \"caseOrigin\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"payloadDiagnostico\",\n      \"value\": \"\"\n    },\n    {\n      \"name\": \"idAppointment\",\n      \"value\": \"\"\n    }\n  ]\n}"
+  },
+  "resposta": {
+    "status": "HTTP 500 · 106 ms",
+    "headers": "content-type: application/json\ndate: Thu, 19 Nov 2026 23:18:38 GMT\nmax-forwards: 20\nx-content-type-options: nosniff\nx-correlationid: Id-ce83ff6a87c0d3182abf8419 0\nx-qa-transport: local\nx-xss-protection: 1; mode=block",
+    "corpo": {
+      "timestamp": "2026-11-19T23:18:38.363+00:00",
+      "status": 500,
+      "error": "Internal Server Error",
+      "message": "No message available",
+      "path": "/customtokensfa/servicenow/token"
+    }
+  }
+}

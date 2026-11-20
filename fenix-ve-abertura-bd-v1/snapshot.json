@@ -1,0 +1,3829 @@
+{
+  "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+  "journeyName": "Fenix - Abertura de BD",
+  "journeyDescription": "FTAT-933 Abertura de BD pelo VE (APP) — BPMN fenix-ve-abertura-bd.bpmn",
+  "productId": "66896bd3-f42d-4549-af38-df2c1c0e34df",
+  "productName": "Vivo empresas - VE",
+  "channelTypes": [
+    "MOBILE"
+  ],
+  "versionNumber": 1,
+  "flowNodes": [
+    {
+      "id": "Node_Start",
+      "type": "START",
+      "name": "Início",
+      "description": "Entradas obrigatórias (START, via ms-journey-v1; data_* no motor; chave ausente = 400 na fachada; enviar como string, vazia quando não se aplicar, ex.: wfmTelephonicArea/wfmCentralOffice em VIVO2): designador, productStatus, correlationId, requestTimestamp, issServiceNow, wfmNetworkOwner, wfmMediaType, wfmCnl, wfmTelephonicArea, wfmCentralOffice, wfmGeographicSiteId, wfmAttendantId, wfmPostcode, wo_customerId, wo_customerName, wo_documentNumber, wo_customerCategory, wo_contactName, wo_emailAddress, wo_mobileNumber, wo_phoneNumber, wo_workNumber, wo_orderId, wo_orderProtocol, wo_dateOfSale, wo_orderDetail, wo_cnlAcronym, wo_city, wo_neighborhood, wo_stateOrProvince, wo_streetCode, wo_streetName, wo_streetNr, wo_complement, wo_latitude, wo_longitude, wo_addressReference, wo_productId, wo_acessoId, wo_acessoDesignador, wo_detail, bd_productInventoryId, bd_relatedServiceSpecificationId, bd_relatedServiceId. Opcionais: hpsdRelatedServiceId, wfmMicroArea, wo_relatedEntity, bd_<campo> (valores das características e contato do BD).",
+      "connectorConfig": null,
+      "startVariables": [
+        {
+          "name": "designador",
+          "type": "string"
+        },
+        {
+          "name": "productStatus",
+          "type": "string"
+        },
+        {
+          "name": "correlationId",
+          "type": "string"
+        },
+        {
+          "name": "requestTimestamp",
+          "type": "string"
+        },
+        {
+          "name": "issServiceNow",
+          "type": "string"
+        },
+        {
+          "name": "wfmNetworkOwner",
+          "type": "string"
+        },
+        {
+          "name": "wfmMediaType",
+          "type": "string"
+        },
+        {
+          "name": "wfmCnl",
+          "type": "string"
+        },
+        {
+          "name": "wfmTelephonicArea",
+          "type": "string"
+        },
+        {
+          "name": "wfmCentralOffice",
+          "type": "string"
+        },
+        {
+          "name": "wfmGeographicSiteId",
+          "type": "string"
+        },
+        {
+          "name": "wfmAttendantId",
+          "type": "string"
+        },
+        {
+          "name": "wfmPostcode",
+          "type": "string"
+        },
+        {
+          "name": "wo_customerId",
+          "type": "string"
+        },
+        {
+          "name": "wo_customerName",
+          "type": "string"
+        },
+        {
+          "name": "wo_documentNumber",
+          "type": "string"
+        },
+        {
+          "name": "wo_customerCategory",
+          "type": "string"
+        },
+        {
+          "name": "wo_contactName",
+          "type": "string"
+        },
+        {
+          "name": "wo_emailAddress",
+          "type": "string"
+        },
+        {
+          "name": "wo_mobileNumber",
+          "type": "string"
+        },
+        {
+          "name": "wo_phoneNumber",
+          "type": "string"
+        },
+        {
+          "name": "wo_workNumber",
+          "type": "string"
+        },
+        {
+          "name": "wo_orderId",
+          "type": "string"
+        },
+        {
+          "name": "wo_orderProtocol",
+          "type": "string"
+        },
+        {
+          "name": "wo_dateOfSale",
+          "type": "string"
+        },
+        {
+          "name": "wo_orderDetail",
+          "type": "string"
+        },
+        {
+          "name": "wo_cnlAcronym",
+          "type": "string"
+        },
+        {
+          "name": "wo_city",
+          "type": "string"
+        },
+        {
+          "name": "wo_neighborhood",
+          "type": "string"
+        },
+        {
+          "name": "wo_stateOrProvince",
+          "type": "string"
+        },
+        {
+          "name": "wo_streetCode",
+          "type": "string"
+        },
+        {
+          "name": "wo_streetName",
+          "type": "string"
+        },
+        {
+          "name": "wo_streetNr",
+          "type": "string"
+        },
+        {
+          "name": "wo_complement",
+          "type": "string"
+        },
+        {
+          "name": "wo_latitude",
+          "type": "string"
+        },
+        {
+          "name": "wo_longitude",
+          "type": "string"
+        },
+        {
+          "name": "wo_addressReference",
+          "type": "string"
+        },
+        {
+          "name": "wo_productId",
+          "type": "string"
+        },
+        {
+          "name": "wo_acessoId",
+          "type": "string"
+        },
+        {
+          "name": "wo_acessoDesignador",
+          "type": "string"
+        },
+        {
+          "name": "wo_detail",
+          "type": "string"
+        },
+        {
+          "name": "bd_productInventoryId",
+          "type": "string"
+        },
+        {
+          "name": "bd_relatedServiceSpecificationId",
+          "type": "string"
+        },
+        {
+          "name": "bd_relatedServiceId",
+          "type": "string"
+        }
+      ],
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_Inicio",
+      "type": "USER_TASK",
+      "name": "Vamos verificar seu serviço",
+      "description": "Figma \"Validação de status\". Também garante o Bearer do usuário (/advance) antes das consultas.",
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_inicio",
+          "title": "Suporte técnico",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_inicio",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "in_titulo",
+                  "text": "Agora, vamos verificar o que pode estar acontecendo com sua internet",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "in_sub",
+                  "text": "Antes dos testes, vamos conferir o seu serviço para identificar possíveis problemas",
+                  "align": "start",
+                  "variant": "body",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "in_continuar",
+                  "size": "medium",
+                  "label": "Continuar",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {}
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_ConsultaMassiva",
+      "type": "SERVICE_TASK",
+      "name": "Consulta Massiva/Manutenção (INT01)",
+      "description": "INT01 Customer Problem Management v1: GET /incidents?serviceDesignator. Incidente com status != CLOSED = massiva aberta; demais status (inclusive 404) = falha. Pendente: campo oficial de protocolo (usado incidentId).",
+      "connectorConfig": {
+        "connectorType": "REST",
+        "config": {
+          "background": false
+        }
+      },
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_TrataMassiva",
+      "type": "SCRIPT_TASK",
+      "name": "Interpreta Massiva",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_DecMassivaOk",
+      "type": "GATEWAY",
+      "name": "Consulta de Massiva respondeu?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_ConsultaBD",
+      "type": "SERVICE_TASK",
+      "name": "Consulta BD aberto (INT03)",
+      "description": "INT03 ServiceNow Trouble Ticket v1: GET /troubleTicket?designatorId=..&status=Active&ticketType=Case&offset=0&limit=5&sys_class_name=sn_sprb_mgmt_case. 200/206 (parcial/paginada) = lista de tickets; lista sem ticket aberto = nenhum BD aberto; demais status (inclusive 404) = falha.",
+      "connectorConfig": {
+        "connectorType": "REST",
+        "config": {
+          "background": false
+        }
+      },
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_TrataBD",
+      "type": "SCRIPT_TASK",
+      "name": "Interpreta BD",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_DecBDOk",
+      "type": "GATEWAY",
+      "name": "Consulta de BD respondeu?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_AvaliaImpedimentos",
+      "type": "SCRIPT_TASK",
+      "name": "Avalia impedimentos",
+      "description": "US-03: Massiva+fatura, Massiva+BD, Massiva, fatura, BD. Combinações não especificadas (BD+fatura sem Massiva; as três) seguem a precedência fatura > BD.",
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_DecImpedimento",
+      "type": "GATEWAY",
+      "name": "Cliente tem impedimento?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_StatusMassivaAtraso",
+      "type": "USER_TASK",
+      "name": "Massiva + atraso em pagamentos",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_statusmassivaatraso",
+          "title": "Identificamos o que pode estar afetando seu serviço",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_statusmassivaatraso",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "Node_StatusMassivaAtraso_titulo",
+                  "text": "Identificamos o que pode estar afetando seu serviço",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.card",
+                {
+                  "id": "card_sma_massiva",
+                  "variant": "default",
+                  "version": "1.0.0",
+                  "paddingToken": "spacing.md",
+                  "elevationToken": "elevation.low"
+                },
+                [
+                  [
+                    "ui.stack",
+                    {
+                      "id": "stack_sma_massiva",
+                      "version": "1.0.0",
+                      "alignment": "stretch",
+                      "direction": "vertical",
+                      "spacingToken": "spacing.sm"
+                    },
+                    [
+                      [
+                        "ui.text",
+                        {
+                          "id": "sma_massiva_titulo",
+                          "text": "Instabilidade na região",
+                          "align": "start",
+                          "variant": "heading",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ],
+                      [
+                        "ui.text",
+                        {
+                          "id": "sma_massiva_prev",
+                          "text": "Os serviços devem voltar a funcionar em {{data.massivaPrevisaoConclusao}}",
+                          "align": "start",
+                          "variant": "body",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ],
+                      [
+                        "ui.text",
+                        {
+                          "id": "sma_massiva_prot",
+                          "text": "Protocolo {{data.massivaProtocolo}}",
+                          "align": "start",
+                          "variant": "caption",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "ui.card",
+                {
+                  "id": "card_sma_faturas",
+                  "variant": "default",
+                  "version": "1.0.0",
+                  "paddingToken": "spacing.md",
+                  "elevationToken": "elevation.low"
+                },
+                [
+                  [
+                    "ui.stack",
+                    {
+                      "id": "stack_sma_faturas",
+                      "version": "1.0.0",
+                      "alignment": "stretch",
+                      "direction": "vertical",
+                      "spacingToken": "spacing.sm"
+                    },
+                    [
+                      [
+                        "ui.text",
+                        {
+                          "id": "sma_fat_titulo",
+                          "text": "Faturas em atraso",
+                          "align": "start",
+                          "variant": "heading",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ],
+                      [
+                        "ui.text",
+                        {
+                          "id": "sma_fat_sub",
+                          "text": "Identificamos um bloqueio financeiro. Consulte as faturas na Central de faturas.",
+                          "align": "start",
+                          "variant": "caption",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "Node_StatusMassivaAtraso_btn",
+                  "size": "medium",
+                  "label": "Ir pra Central de faturas",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {}
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_StatusMassivaVisita",
+      "type": "USER_TASK",
+      "name": "Massiva + visita técnica",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_statusmassivavisita",
+          "title": "Identificamos o que pode estar afetando seu serviço",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_statusmassivavisita",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "Node_StatusMassivaVisita_titulo",
+                  "text": "Identificamos o que pode estar afetando seu serviço",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.card",
+                {
+                  "id": "card_smv_massiva",
+                  "variant": "default",
+                  "version": "1.0.0",
+                  "paddingToken": "spacing.md",
+                  "elevationToken": "elevation.low"
+                },
+                [
+                  [
+                    "ui.stack",
+                    {
+                      "id": "stack_smv_massiva",
+                      "version": "1.0.0",
+                      "alignment": "stretch",
+                      "direction": "vertical",
+                      "spacingToken": "spacing.sm"
+                    },
+                    [
+                      [
+                        "ui.text",
+                        {
+                          "id": "smv_massiva_titulo",
+                          "text": "Instabilidade na região",
+                          "align": "start",
+                          "variant": "heading",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ],
+                      [
+                        "ui.text",
+                        {
+                          "id": "smv_massiva_prev",
+                          "text": "Os serviços devem voltar a funcionar em {{data.massivaPrevisaoConclusao}}",
+                          "align": "start",
+                          "variant": "body",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ],
+                      [
+                        "ui.text",
+                        {
+                          "id": "smv_massiva_prot",
+                          "text": "Protocolo {{data.massivaProtocolo}}",
+                          "align": "start",
+                          "variant": "caption",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "ui.card",
+                {
+                  "id": "card_smv_visita",
+                  "variant": "default",
+                  "version": "1.0.0",
+                  "paddingToken": "spacing.md",
+                  "elevationToken": "elevation.low"
+                },
+                [
+                  [
+                    "ui.stack",
+                    {
+                      "id": "stack_smv_visita",
+                      "version": "1.0.0",
+                      "alignment": "stretch",
+                      "direction": "vertical",
+                      "spacingToken": "spacing.sm"
+                    },
+                    [
+                      [
+                        "ui.text",
+                        {
+                          "id": "smv_vis_titulo",
+                          "text": "Visita técnica agendada",
+                          "align": "start",
+                          "variant": "heading",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ],
+                      [
+                        "ui.text",
+                        {
+                          "id": "smv_vis_sub",
+                          "text": "Abaixo mais informações sobre a visita técnica agendada",
+                          "align": "start",
+                          "variant": "caption",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ],
+                      [
+                        "ui.text",
+                        {
+                          "id": "smv_vis_data",
+                          "text": "Agendada para {{data.bdPrevisaoConclusao}}",
+                          "align": "start",
+                          "variant": "body",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ],
+                      [
+                        "ui.text",
+                        {
+                          "id": "smv_vis_prot",
+                          "text": "Protocolo {{data.bdProtocoloAtendimento}}",
+                          "align": "start",
+                          "variant": "caption",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "Node_StatusMassivaVisita_btn",
+                  "size": "medium",
+                  "label": "Ir pra Central de visitas",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {}
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_StatusMassiva",
+      "type": "USER_TASK",
+      "name": "Massiva",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_statusmassiva",
+          "title": "Instabilidade na região",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_statusmassiva",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "sm_titulo",
+                  "text": "Identificamos uma instabilidade na sua região",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "sm_prev",
+                  "text": "Os serviços devem voltar a funcionar em {{data.massivaPrevisaoConclusao}}",
+                  "align": "start",
+                  "variant": "body",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "sm_prot",
+                  "text": "Protocolo {{data.massivaProtocolo}}",
+                  "align": "start",
+                  "variant": "caption",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "sm_btn",
+                  "size": "medium",
+                  "label": "Ir para o início",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {}
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_StatusAtraso",
+      "type": "USER_TASK",
+      "name": "Atraso em pagamentos",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_statusatraso",
+          "title": "Identificamos o que pode estar afetando seu serviço",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_statusatraso",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "Node_StatusAtraso_titulo",
+                  "text": "Identificamos o que pode estar afetando seu serviço",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.card",
+                {
+                  "id": "card_sa_faturas",
+                  "variant": "default",
+                  "version": "1.0.0",
+                  "paddingToken": "spacing.md",
+                  "elevationToken": "elevation.low"
+                },
+                [
+                  [
+                    "ui.stack",
+                    {
+                      "id": "stack_sa_faturas",
+                      "version": "1.0.0",
+                      "alignment": "stretch",
+                      "direction": "vertical",
+                      "spacingToken": "spacing.sm"
+                    },
+                    [
+                      [
+                        "ui.text",
+                        {
+                          "id": "sa_fat_titulo",
+                          "text": "Faturas em atraso",
+                          "align": "start",
+                          "variant": "heading",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ],
+                      [
+                        "ui.text",
+                        {
+                          "id": "sa_fat_sub",
+                          "text": "Identificamos um bloqueio financeiro. Consulte as faturas na Central de faturas.",
+                          "align": "start",
+                          "variant": "caption",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "Node_StatusAtraso_btn",
+                  "size": "medium",
+                  "label": "Ir pra Central de faturas",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {}
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_StatusVisita",
+      "type": "USER_TASK",
+      "name": "Visita técnica agendada",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_statusvisita",
+          "title": "Identificamos o que pode estar afetando seu serviço",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_statusvisita",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "Node_StatusVisita_titulo",
+                  "text": "Identificamos o que pode estar afetando seu serviço",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.card",
+                {
+                  "id": "card_sv_visita",
+                  "variant": "default",
+                  "version": "1.0.0",
+                  "paddingToken": "spacing.md",
+                  "elevationToken": "elevation.low"
+                },
+                [
+                  [
+                    "ui.stack",
+                    {
+                      "id": "stack_sv_visita",
+                      "version": "1.0.0",
+                      "alignment": "stretch",
+                      "direction": "vertical",
+                      "spacingToken": "spacing.sm"
+                    },
+                    [
+                      [
+                        "ui.text",
+                        {
+                          "id": "sv_vis_titulo",
+                          "text": "Visita técnica agendada",
+                          "align": "start",
+                          "variant": "heading",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ],
+                      [
+                        "ui.text",
+                        {
+                          "id": "sv_vis_sub",
+                          "text": "Abaixo mais informações sobre a visita técnica agendada",
+                          "align": "start",
+                          "variant": "caption",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ],
+                      [
+                        "ui.text",
+                        {
+                          "id": "sv_vis_data",
+                          "text": "Agendada para {{data.bdPrevisaoConclusao}}",
+                          "align": "start",
+                          "variant": "body",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ],
+                      [
+                        "ui.text",
+                        {
+                          "id": "sv_vis_prot",
+                          "text": "Protocolo {{data.bdProtocoloAtendimento}}",
+                          "align": "start",
+                          "variant": "caption",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "Node_StatusVisita_btn",
+                  "size": "medium",
+                  "label": "Ir pra Central de visitas",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {}
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_End_Impedimento",
+      "type": "END",
+      "name": "Fim — impedimento",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_Reinicie",
+      "type": "USER_TASK",
+      "name": "Reinicie o modem",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_reinicie",
+          "title": "Suporte técnico",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_reinicie",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "re_titulo",
+                  "text": "Até aqui, não identificamos o que está afetando sua internet",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "re_sub",
+                  "text": "Agora, vamos reiniciar o modem para tentar resolver o problema. Siga as etapas:",
+                  "align": "start",
+                  "variant": "body",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "re_passo_1",
+                  "text": "1. Retire o modem da tomada",
+                  "align": "start",
+                  "variant": "body",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "re_passo_2",
+                  "text": "2. Aguarde 30 segundos",
+                  "align": "start",
+                  "variant": "body",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "re_passo_3",
+                  "text": "3. Ligue o modem de novo",
+                  "align": "start",
+                  "variant": "body",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "re_ok",
+                  "size": "medium",
+                  "label": "Já reiniciei",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.acaoReinicio",
+                        "value": "reiniciei"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "re_nao",
+                  "size": "medium",
+                  "label": "Não consigo reiniciar",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.acaoReinicio",
+                        "value": "nao_consigo"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "secondary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_DecReinicio",
+      "type": "GATEWAY",
+      "name": "Conseguiu reiniciar?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_VoltouReinicio",
+      "type": "USER_TASK",
+      "name": "A internet voltou?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_voltoureinicio",
+          "title": "Suporte técnico",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_voltoureinicio",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "Node_VoltouReinicio_titulo",
+                  "text": "Depois de reiniciar o modem, a internet voltou a funcionar?",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "Node_VoltouReinicio_dica",
+                  "text": "Aguarde as luzes pararem de piscar antes de testar",
+                  "align": "start",
+                  "variant": "caption",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "Node_VoltouReinicio_sim",
+                  "size": "medium",
+                  "label": "Sim",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.voltouReinicio",
+                        "value": "sim"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "secondary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "Node_VoltouReinicio_nao",
+                  "size": "medium",
+                  "label": "Não",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.voltouReinicio",
+                        "value": "nao"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "secondary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_DecVoltouReinicio",
+      "type": "GATEWAY",
+      "name": "Voltou após reiniciar?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_InternetVoltou",
+      "type": "USER_TASK",
+      "name": "Sua internet voltou",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_internetvoltou",
+          "title": "Suporte técnico",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_internetvoltou",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "iv_titulo",
+                  "text": "Sua internet voltou a funcionar",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "iv_sub",
+                  "text": "A gente está por aqui se você precisar de ajuda",
+                  "align": "start",
+                  "variant": "body",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "iv_btn",
+                  "size": "medium",
+                  "label": "Ir para o início",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {}
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_End_Resolvido",
+      "type": "END",
+      "name": "Fim — problema resolvido",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_TesteConexao",
+      "type": "USER_TASK",
+      "name": "Vamos testar a sua conexão",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_testeconexao",
+          "title": "Suporte técnico",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_testeconexao",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "tc_titulo",
+                  "text": "Agora, vamos testar a sua conexão",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "tc_sub",
+                  "text": "Como o problema continua, a gente vai tentar identificar o que está acontecendo",
+                  "align": "start",
+                  "variant": "body",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "tc_1t",
+                  "text": "Isso pode levar alguns minutos",
+                  "align": "start",
+                  "variant": "heading",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "tc_1d",
+                  "text": "Aguarde enquanto verificamos sua conexão",
+                  "align": "start",
+                  "variant": "caption",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "tc_2t",
+                  "text": "Você pode ficar sem internet",
+                  "align": "start",
+                  "variant": "heading",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "tc_2d",
+                  "text": "Isso pode acontecer durante os testes",
+                  "align": "start",
+                  "variant": "caption",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "tc_3t",
+                  "text": "Use outra conexão",
+                  "align": "start",
+                  "variant": "heading",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "tc_3d",
+                  "text": "Se possível, use os dados móveis do seu celular",
+                  "align": "start",
+                  "variant": "caption",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "tc_ok",
+                  "size": "medium",
+                  "label": "Continuar",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.acaoTeste",
+                        "value": "continuar"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "tc_inicio",
+                  "size": "medium",
+                  "label": "Ir para o início",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.acaoTeste",
+                        "value": "inicio"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "secondary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_DecTeste",
+      "type": "GATEWAY",
+      "name": "Cliente quer testar?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_End_Desistiu",
+      "type": "END",
+      "name": "Fim — cliente voltou ao início",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_SolicitaDiagnostico",
+      "type": "SERVICE_TASK",
+      "name": "Solicita diagnóstico HPSD (INT06)",
+      "description": "INT06 TMF653 POST /serviceTest (PreDataMapping Diagnóstico Automático v2.0). testSpecification fixo spec-ftth-gpon-basico; relatedParty ExternalId = processInstanceId (correlação do retorno Kafka).",
+      "connectorConfig": {
+        "connectorType": "REST",
+        "config": {
+          "background": false
+        }
+      },
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_TrataSolicitacaoDiagnostico",
+      "type": "SCRIPT_TASK",
+      "name": "Interpreta aceite do diagnóstico",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_DecDiagnosticoAceito",
+      "type": "GATEWAY",
+      "name": "Diagnóstico aceito?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_AguardaDiagnostico",
+      "type": "EVENT_GATEWAY",
+      "name": "Aguarda resultado do diagnóstico",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_RetornoDiagnostico",
+      "type": "RECEIVE_TASK",
+      "name": "Retorno do diagnóstico (INT10)",
+      "description": "INT10 Kafka. O ms-journey-event-consumer-v1 entrega o evento ao motor, que localiza a instância pelo JSONPath de inbound_correlation_config e dispara esta espera pelo correlationTopic. O payload não vira variável.",
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_TimeoutDiagnostico",
+      "type": "TIMER_EVENT",
+      "name": "Sem resposta do diagnóstico",
+      "description": "Figma: \"ID 01, 02, 08 ou sem resposta\" segue para a abertura de BD.",
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_ConsultaResultadoDiagnostico",
+      "type": "SERVICE_TASK",
+      "name": "Consulta resultado do diagnóstico (TMF653)",
+      "description": "GET /serviceTest/{id}: o evento Kafka só retoma a instância; o resultado (RESULTADO_DIAGNOSTICO) é lido aqui. Executa em segundo plano (asyncBefore): não há Bearer do usuário nesta transação.",
+      "connectorConfig": {
+        "connectorType": "REST",
+        "config": {
+          "background": true
+        }
+      },
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_TrataResultadoDiagnostico",
+      "type": "SCRIPT_TASK",
+      "name": "Interpreta resultado do diagnóstico",
+      "description": "ID06/07/10 = resolvido; ID09 = sem energia; outros ou sem resultado = problema persiste.",
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_DecResultadoDiagnostico",
+      "type": "GATEWAY",
+      "name": "Resultado do diagnóstico",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_ReinicieNovamente",
+      "type": "USER_TASK",
+      "name": "Reinicie de novo",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_reinicienovamente",
+          "title": "Suporte técnico",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_reinicienovamente",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "rn_titulo",
+                  "text": "Vamos reiniciar o modem de novo",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "rn_sub",
+                  "text": "Algumas mudanças precisam que você desligue e ligue o modem. Siga as etapas:",
+                  "align": "start",
+                  "variant": "body",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "rn_passo_1",
+                  "text": "1. Retire o modem da tomada",
+                  "align": "start",
+                  "variant": "body",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "rn_passo_2",
+                  "text": "2. Aguarde 30 segundos",
+                  "align": "start",
+                  "variant": "body",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "rn_passo_3",
+                  "text": "3. Ligue o modem de novo",
+                  "align": "start",
+                  "variant": "body",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "rn_ok",
+                  "size": "medium",
+                  "label": "Já reiniciei",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {}
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_VoltouNovamente",
+      "type": "USER_TASK",
+      "name": "A internet voltou?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_voltounovamente",
+          "title": "Suporte técnico",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_voltounovamente",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "Node_VoltouNovamente_titulo",
+                  "text": "Depois de reiniciar o modem, a internet voltou a funcionar?",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "Node_VoltouNovamente_dica",
+                  "text": "Aguarde as luzes pararem de piscar antes de testar",
+                  "align": "start",
+                  "variant": "caption",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "Node_VoltouNovamente_sim",
+                  "size": "medium",
+                  "label": "Sim",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.voltouNovamente",
+                        "value": "sim"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "secondary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "Node_VoltouNovamente_nao",
+                  "size": "medium",
+                  "label": "Não",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.voltouNovamente",
+                        "value": "nao"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "secondary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_DecVoltouNovamente",
+      "type": "GATEWAY",
+      "name": "Voltou após o ajuste?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_SemEnergia",
+      "type": "USER_TASK",
+      "name": "Modem sem energia",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_semenergia",
+          "title": "Suporte técnico",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_semenergia",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "se_titulo",
+                  "text": "O modem não está recebendo energia",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "se_sub",
+                  "text": "Vamos verificar o que pode estar acontecendo",
+                  "align": "start",
+                  "variant": "body",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "se_1t",
+                  "text": "A tomada está funcionando?",
+                  "align": "start",
+                  "variant": "heading",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "se_1d",
+                  "text": "Você pode testar o modem em outro ponto de energia que esteja funcionando",
+                  "align": "start",
+                  "variant": "caption",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "se_2t",
+                  "text": "O cabo de energia está conectado?",
+                  "align": "start",
+                  "variant": "heading",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "se_2d",
+                  "text": "Verifique se o modem está bem encaixado",
+                  "align": "start",
+                  "variant": "caption",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "se_ok",
+                  "size": "medium",
+                  "label": "Já verifiquei",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.acaoEnergia",
+                        "value": "verifiquei"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "se_nao",
+                  "size": "medium",
+                  "label": "Não consigo verificar",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.acaoEnergia",
+                        "value": "nao_consigo"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "secondary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_DecEnergia",
+      "type": "GATEWAY",
+      "name": "Conseguiu verificar?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_VoltouEnergia",
+      "type": "USER_TASK",
+      "name": "A internet voltou?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_voltouenergia",
+          "title": "Suporte técnico",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_voltouenergia",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "Node_VoltouEnergia_titulo",
+                  "text": "Depois de testar a tomada e o cabo, sua internet voltou a funcionar?",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "Node_VoltouEnergia_dica",
+                  "text": "Aguarde as luzes do modem pararem de piscar antes de testar a conexão",
+                  "align": "start",
+                  "variant": "caption",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "Node_VoltouEnergia_sim",
+                  "size": "medium",
+                  "label": "Sim",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.voltouEnergia",
+                        "value": "sim"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "secondary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "Node_VoltouEnergia_nao",
+                  "size": "medium",
+                  "label": "Não",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.voltouEnergia",
+                        "value": "nao"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "secondary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_DecVoltouEnergia",
+      "type": "GATEWAY",
+      "name": "Voltou após verificar?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_TemEnergia",
+      "type": "USER_TASK",
+      "name": "Tem energia no endereço?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_temenergia",
+          "title": "Suporte técnico",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_temenergia",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "te_titulo",
+                  "text": "Tem energia elétrica no seu endereço?",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "te_sub",
+                  "text": "Pode ser que o problema esteja na rede elétrica. As luzes e outros aparelhos estão funcionando normalmente?",
+                  "align": "start",
+                  "variant": "body",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "te_sim",
+                  "size": "medium",
+                  "label": "Sim",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.temEnergia",
+                        "value": "sim"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "secondary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "te_nao",
+                  "size": "medium",
+                  "label": "Não",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.temEnergia",
+                        "value": "nao"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "secondary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_DecTemEnergia",
+      "type": "GATEWAY",
+      "name": "Há energia no endereço?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_RedeEletrica",
+      "type": "USER_TASK",
+      "name": "Problema na rede elétrica",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_redeeletrica",
+          "title": "Suporte técnico",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_redeeletrica",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "rl_titulo",
+                  "text": "O problema pode estar na rede elétrica",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "rl_sub",
+                  "text": "Pode ser que algo não esteja funcionando bem na rede elétrica. Assim que tudo estiver normalizado, você pode fazer um novo teste",
+                  "align": "start",
+                  "variant": "body",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "rl_btn",
+                  "size": "medium",
+                  "label": "Ir para o início",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {}
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_End_RedeEletrica",
+      "type": "END",
+      "name": "Fim — rede elétrica",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_AgendarVisita",
+      "type": "USER_TASK",
+      "name": "Vamos agendar uma visita técnica",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_agendarvisita",
+          "title": "Suporte técnico",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_agendarvisita",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "av_titulo",
+                  "text": "Vamos agendar uma visita técnica",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "av_sub",
+                  "text": "Os testes não resolveram o problema com a sua internet. A nossa equipe técnica vai até o endereço para avaliar o que está acontecendo",
+                  "align": "start",
+                  "variant": "body",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "av_ok",
+                  "size": "medium",
+                  "label": "Agendar visita",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.acaoAgendar",
+                        "value": "agendar"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "av_inicio",
+                  "size": "medium",
+                  "label": "Ir para o início",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.acaoAgendar",
+                        "value": "inicio"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "secondary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_DecAgendar",
+      "type": "GATEWAY",
+      "name": "Cliente quer agendar?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_End_SemAgendar",
+      "type": "END",
+      "name": "Fim — sem agendamento",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_ConsultaSlots",
+      "type": "SERVICE_TASK",
+      "name": "Consulta horários WFM (INT11)",
+      "description": "INT11 WFM Journey POST /searchTimeSlot (exemplo do WFM de 12/11/2026; PreDataMapping v2.2, VIVO1/VIVO2). 200 com slots; 204 = sem slot. Endereço e dados de rede vêm da consulta de asset do VE (wfm*). Pendente: swagger (P09).",
+      "connectorConfig": {
+        "connectorType": "REST",
+        "config": {
+          "background": false
+        }
+      },
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_TrataSlots",
+      "type": "SCRIPT_TASK",
+      "name": "Interpreta horários",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_DecSlots",
+      "type": "GATEWAY",
+      "name": "Há horários disponíveis?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_SemHorarios",
+      "type": "USER_TASK",
+      "name": "Sem horários disponíveis",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_semhorarios",
+          "title": "Agendar visita técnica",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_semhorarios",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.alert",
+                {
+                  "id": "sh_alerta",
+                  "title": "Sem horários disponíveis",
+                  "message": "No momento não há horários para a visita técnica no seu endereço. Tente de novo mais tarde ou fale com o atendimento Vivo.",
+                  "version": "1.0.0",
+                  "severity": "warning",
+                  "dismissible": false
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "sh_btn",
+                  "size": "medium",
+                  "label": "Ir para o início",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {}
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_End_SemHorarios",
+      "type": "END",
+      "name": "Fim — sem horários",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_EscolheHorario",
+      "type": "USER_TASK",
+      "name": "Escolha do horário",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_escolhehorario",
+          "title": "Agendar visita técnica",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_escolhehorario",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "eh_titulo",
+                  "text": "Selecione a melhor data para agendar sua visita técnica",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.datePicker",
+                {
+                  "id": "eh_data",
+                  "mode": "date",
+                  "label": "Data da visita técnica",
+                  "format": "locale",
+                  "maxDate": null,
+                  "minDate": null,
+                  "version": "1.0.0",
+                  "required": true,
+                  "$bindings": {
+                    "value": {
+                      "mode": "twoWay",
+                      "path": "form.dataVisita"
+                    }
+                  },
+                  "validation": null
+                }
+              ],
+              [
+                "ui.selectList",
+                {
+                  "id": "eh_horarios",
+                  "label": "Horários",
+                  "$events": {
+                    "onAction": {
+                      "action": "action.submit",
+                      "params": {}
+                    }
+                  },
+                  "actions": [],
+                  "version": "1.0.0",
+                  "itemHint": null,
+                  "maxItems": 50,
+                  "required": true,
+                  "$bindings": {
+                    "items": {
+                      "mode": "oneWay",
+                      "path": "data.horariosVisita"
+                    },
+                    "value": {
+                      "mode": "twoWay",
+                      "path": "form.horarioVisita"
+                    }
+                  },
+                  "itemTitle": "{{item.label}}",
+                  "itemValue": "value",
+                  "emptyMessage": "Não há horários disponíveis.",
+                  "itemDescription": null
+                }
+              ],
+              [
+                "ui.checkbox",
+                {
+                  "id": "eh_aviso",
+                  "label": "Aceito que a Vivo me avise se surgir um horário mais cedo",
+                  "version": "1.0.0",
+                  "required": false,
+                  "$bindings": {
+                    "value": {
+                      "mode": "twoWay",
+                      "path": "form.avisarHorarioMaisCedo"
+                    }
+                  },
+                  "indeterminate": false
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "eh_ok",
+                  "size": "medium",
+                  "label": "Confirmar agendamento",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {}
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_RegistraHorario",
+      "type": "SCRIPT_TASK",
+      "name": "Registra horário escolhido",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_DecHorarioValido",
+      "type": "GATEWAY",
+      "name": "Horário válido?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_CriaWO",
+      "type": "SERVICE_TASK",
+      "name": "Cria WO e agendamento (INT14)",
+      "description": "INT14 WFM Journey POST /workOrder/appointment (PreDataMapping Abertura de WO e agendamento v2.2): WorkOrder_Create + Appointment_Create; sucesso = HTTP 200 com idWorkOrder (= WorkOrder_Create.id enviado) e idWorkOrderItem, além de idWork. Appointment_Create vem da tela Escolha do horário (form_horarioVisita = slot do WFM, form_avisarHorarioMaisCedo = canBeAntecipated) e dos fixos da aba VE x Camunda. Cliente, endereço e produtos vêm da consulta de asset do VE. Pendente: contato do cliente, pedido (CustomerOrderValue), categoria, coordenadas, DETALHE e referência do endereço (entradas opcionais wo_<campo>).",
+      "connectorConfig": {
+        "connectorType": "REST",
+        "config": {
+          "background": false
+        }
+      },
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_TrataWO",
+      "type": "SCRIPT_TASK",
+      "name": "Interpreta criação da WO",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_DecWOCriada",
+      "type": "GATEWAY",
+      "name": "WO criada?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_DecWOIdentificadaFalha",
+      "type": "GATEWAY",
+      "name": "Há WO para cancelar?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_CancelaWOAgendamento",
+      "type": "SERVICE_TASK",
+      "name": "Cancela WO (INT16)",
+      "description": "US-09: falha no agendamento (WO não confirmada pela INT14) cancela a WO pelo ID enviado. INT16 DELETE /workOrder/{idWorkOrder}?reason=PROBLEMAS SISTEMICOS&context=SISTEMICO (PreDataMapping Cancelamento de WO v1.1; valores fixos, sem body). Sucesso = 200 com body vazio; erro 400-599 = {origin, code, reason, message}. O resultado fica nas variáveis -status/-response desta tarefa.",
+      "connectorConfig": {
+        "connectorType": "REST",
+        "config": {
+          "background": false
+        }
+      },
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_AgendamentoNaoRealizado",
+      "type": "USER_TASK",
+      "name": "Agendamento não realizado",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_agendamentonaorealizado",
+          "title": "Agendar visita técnica",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_agendamentonaorealizado",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.alert",
+                {
+                  "id": "an_alerta",
+                  "title": "Não foi possível agendar",
+                  "message": "Não conseguimos agendar a visita técnica no horário escolhido. Tente de novo mais tarde ou fale com o atendimento Vivo.",
+                  "version": "1.0.0",
+                  "severity": "warning",
+                  "dismissible": false
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "an_btn",
+                  "size": "medium",
+                  "label": "Ir para o início",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {}
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_End_AgendamentoNaoRealizado",
+      "type": "END",
+      "name": "Fim — visita não agendada",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_CriaBD",
+      "type": "SERVICE_TASK",
+      "name": "Abre BD (INT18)",
+      "description": "INT18 Trouble Ticket Management v1 POST /troubleTicket (PreDataMapping Abertura BD v2.1); o MS orquestra TMF629/TMF621. Número do BD = externalIdentifier.id.",
+      "connectorConfig": {
+        "connectorType": "REST",
+        "config": {
+          "background": false
+        }
+      },
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_TrataBDCriado",
+      "type": "SCRIPT_TASK",
+      "name": "Interpreta abertura do BD",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_DecBDCriado",
+      "type": "GATEWAY",
+      "name": "BD criado?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_RetentarBD",
+      "type": "USER_TASK",
+      "name": "Tentar abrir o BD de novo?",
+      "description": "US-10: até 3 tentativas no total, com decisão do cliente.",
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_retentarbd",
+          "title": "Agendar visita técnica",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_retentarbd",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.alert",
+                {
+                  "id": "rb_alerta",
+                  "title": "Não conseguimos registrar a sua solicitação",
+                  "message": "Tivemos uma falha ao registrar o atendimento da visita técnica. Você quer tentar de novo?",
+                  "version": "1.0.0",
+                  "severity": "warning",
+                  "dismissible": false
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "rb_sim",
+                  "size": "medium",
+                  "label": "Tentar de novo",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.retentarBD",
+                        "value": "sim"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "rb_nao",
+                  "size": "medium",
+                  "label": "Não, encerrar",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.retentarBD",
+                        "value": "nao"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "secondary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_DecRetentarBD",
+      "type": "GATEWAY",
+      "name": "Cliente quer tentar de novo?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_DecWOIdentificadaBD",
+      "type": "GATEWAY",
+      "name": "Há WO para cancelar?",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_CancelaWO",
+      "type": "SERVICE_TASK",
+      "name": "Cancela WO (INT16)",
+      "description": "US-10: BD não criado (recusa ou 3ª falha) cancela a WO. INT16 DELETE /workOrder/{idWorkOrder}?reason=PROBLEMAS SISTEMICOS&context=SISTEMICO (PreDataMapping Cancelamento de WO v1.1; valores fixos, sem body). Sucesso = 200 com body vazio; erro 400-599 = {origin, code, reason, message}. O resultado fica nas variáveis -status/-response desta tarefa.",
+      "connectorConfig": {
+        "connectorType": "REST",
+        "config": {
+          "background": false
+        }
+      },
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_BDNaoCriado",
+      "type": "USER_TASK",
+      "name": "BD não criado",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_bdnaocriado",
+          "title": "Suporte técnico",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_bdnaocriado",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.alert",
+                {
+                  "id": "bn_alerta",
+                  "title": "Não foi possível concluir",
+                  "message": "Não conseguimos registrar a sua solicitação e a visita foi cancelada. Tente de novo mais tarde ou fale com o atendimento Vivo.",
+                  "version": "1.0.0",
+                  "severity": "warning",
+                  "dismissible": false
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "bn_btn",
+                  "size": "medium",
+                  "label": "Ir para o início",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {}
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_End_BDNaoCriado",
+      "type": "END",
+      "name": "Fim — BD não criado",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_VisitaAgendada",
+      "type": "USER_TASK",
+      "name": "Você agendou a visita técnica",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_visitaagendada",
+          "title": "Visita agendada",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_visitaagendada",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.text",
+                {
+                  "id": "va_titulo",
+                  "text": "Você agendou a visita técnica",
+                  "align": "start",
+                  "variant": "title",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.card",
+                {
+                  "id": "va_card",
+                  "variant": "default",
+                  "version": "1.0.0",
+                  "paddingToken": "spacing.md",
+                  "elevationToken": "elevation.low"
+                },
+                [
+                  [
+                    "ui.stack",
+                    {
+                      "id": "va_stack",
+                      "version": "1.0.0",
+                      "alignment": "stretch",
+                      "direction": "vertical",
+                      "spacingToken": "spacing.sm"
+                    },
+                    [
+                      [
+                        "ui.text",
+                        {
+                          "id": "va_data_l",
+                          "text": "Data da visita",
+                          "align": "start",
+                          "variant": "caption",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ],
+                      [
+                        "ui.text",
+                        {
+                          "id": "va_data",
+                          "text": "{{form.dataVisita}}",
+                          "align": "start",
+                          "variant": "body",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ],
+                      [
+                        "ui.text",
+                        {
+                          "id": "va_per_l",
+                          "text": "Período",
+                          "align": "start",
+                          "variant": "caption",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ],
+                      [
+                        "ui.text",
+                        {
+                          "id": "va_per",
+                          "text": "{{data.woHorario}}",
+                          "align": "start",
+                          "variant": "body",
+                          "version": "1.0.0",
+                          "maxLines": 2,
+                          "colorToken": "color.text.primary"
+                        }
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "ui.text",
+                {
+                  "id": "va_aviso",
+                  "text": "É preciso ter uma pessoa maior de 18 anos presente no dia da visita",
+                  "align": "start",
+                  "variant": "caption",
+                  "version": "1.0.0",
+                  "maxLines": 2,
+                  "colorToken": "color.text.primary"
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "va_agenda",
+                  "size": "medium",
+                  "label": "Salvar na agenda",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.acaoFinal",
+                        "value": "salvar_agenda"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "va_inicio",
+                  "size": "medium",
+                  "label": "Ir para o início",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {
+                        "path": "form.acaoFinal",
+                        "value": "inicio"
+                      }
+                    }
+                  },
+                  "loading": false,
+                  "variant": "secondary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_End_Agendado",
+      "type": "END",
+      "name": "Fim — visita agendada e BD criado",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    },
+    {
+      "id": "Node_FalhaConsulta",
+      "type": "USER_TASK",
+      "name": "Não conseguimos verificar",
+      "description": "US-01/02 Obs. 2: falha de integração orienta outro atendimento ou nova tentativa mais tarde.",
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": [
+        "ui.screen",
+        {
+          "id": "screen_falhaconsulta",
+          "title": "Suporte técnico",
+          "version": "1.0.0",
+          "scrollable": true,
+          "paddingToken": "spacing.md",
+          "backgroundToken": "color.background.primary"
+        },
+        [
+          [
+            "ui.stack",
+            {
+              "id": "stack_falhaconsulta",
+              "version": "1.0.0",
+              "alignment": "stretch",
+              "direction": "vertical",
+              "spacingToken": "spacing.md"
+            },
+            [
+              [
+                "ui.alert",
+                {
+                  "id": "fc_alerta",
+                  "title": "Não conseguimos verificar agora",
+                  "message": "Tivemos um problema para consultar as informações do seu serviço. Fale com o atendimento Vivo.",
+                  "version": "1.0.0",
+                  "severity": "warning",
+                  "dismissible": false
+                }
+              ],
+              [
+                "ui.button",
+                {
+                  "id": "fc_btn",
+                  "size": "medium",
+                  "label": "Ir para o início",
+                  "$events": {
+                    "onPress": {
+                      "action": "action.submit",
+                      "params": {}
+                    }
+                  },
+                  "loading": false,
+                  "variant": "primary",
+                  "version": "1.0.0",
+                  "disabled": false,
+                  "fullWidth": true
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "Node_End_Falha",
+      "type": "END",
+      "name": "Fim — falha de integração",
+      "description": null,
+      "connectorConfig": null,
+      "startVariables": null,
+      "embeddedScreenRoot": null
+    }
+  ],
+  "flowConnections": [
+    {
+      "id": "Flow_Start_Inicio",
+      "sourceNodeId": "Node_Start",
+      "targetNodeId": "Node_Inicio"
+    },
+    {
+      "id": "Flow_Inicio_ConsultaMassiva",
+      "sourceNodeId": "Node_Inicio",
+      "targetNodeId": "Node_ConsultaMassiva"
+    },
+    {
+      "id": "Flow_ConsultaMassiva_TrataMassiva",
+      "sourceNodeId": "Node_ConsultaMassiva",
+      "targetNodeId": "Node_TrataMassiva"
+    },
+    {
+      "id": "Flow_TrataMassiva_DecMassivaOk",
+      "sourceNodeId": "Node_TrataMassiva",
+      "targetNodeId": "Node_DecMassivaOk"
+    },
+    {
+      "id": "Flow_DecMassivaOk_ConsultaBD",
+      "sourceNodeId": "Node_DecMassivaOk",
+      "targetNodeId": "Node_ConsultaBD"
+    },
+    {
+      "id": "Flow_DecMassivaOk_FalhaConsulta",
+      "sourceNodeId": "Node_DecMassivaOk",
+      "targetNodeId": "Node_FalhaConsulta"
+    },
+    {
+      "id": "Flow_ConsultaBD_TrataBD",
+      "sourceNodeId": "Node_ConsultaBD",
+      "targetNodeId": "Node_TrataBD"
+    },
+    {
+      "id": "Flow_TrataBD_DecBDOk",
+      "sourceNodeId": "Node_TrataBD",
+      "targetNodeId": "Node_DecBDOk"
+    },
+    {
+      "id": "Flow_DecBDOk_AvaliaImpedimentos",
+      "sourceNodeId": "Node_DecBDOk",
+      "targetNodeId": "Node_AvaliaImpedimentos"
+    },
+    {
+      "id": "Flow_DecBDOk_FalhaConsulta",
+      "sourceNodeId": "Node_DecBDOk",
+      "targetNodeId": "Node_FalhaConsulta"
+    },
+    {
+      "id": "Flow_AvaliaImpedimentos_DecImpedimento",
+      "sourceNodeId": "Node_AvaliaImpedimentos",
+      "targetNodeId": "Node_DecImpedimento"
+    },
+    {
+      "id": "Flow_DecImpedimento_StatusMassivaAtraso",
+      "sourceNodeId": "Node_DecImpedimento",
+      "targetNodeId": "Node_StatusMassivaAtraso"
+    },
+    {
+      "id": "Flow_StatusMassivaAtraso_End_Impedimento",
+      "sourceNodeId": "Node_StatusMassivaAtraso",
+      "targetNodeId": "Node_End_Impedimento"
+    },
+    {
+      "id": "Flow_DecImpedimento_StatusMassivaVisita",
+      "sourceNodeId": "Node_DecImpedimento",
+      "targetNodeId": "Node_StatusMassivaVisita"
+    },
+    {
+      "id": "Flow_StatusMassivaVisita_End_Impedimento",
+      "sourceNodeId": "Node_StatusMassivaVisita",
+      "targetNodeId": "Node_End_Impedimento"
+    },
+    {
+      "id": "Flow_DecImpedimento_StatusMassiva",
+      "sourceNodeId": "Node_DecImpedimento",
+      "targetNodeId": "Node_StatusMassiva"
+    },
+    {
+      "id": "Flow_StatusMassiva_End_Impedimento",
+      "sourceNodeId": "Node_StatusMassiva",
+      "targetNodeId": "Node_End_Impedimento"
+    },
+    {
+      "id": "Flow_DecImpedimento_StatusAtraso",
+      "sourceNodeId": "Node_DecImpedimento",
+      "targetNodeId": "Node_StatusAtraso"
+    },
+    {
+      "id": "Flow_StatusAtraso_End_Impedimento",
+      "sourceNodeId": "Node_StatusAtraso",
+      "targetNodeId": "Node_End_Impedimento"
+    },
+    {
+      "id": "Flow_DecImpedimento_StatusVisita",
+      "sourceNodeId": "Node_DecImpedimento",
+      "targetNodeId": "Node_StatusVisita"
+    },
+    {
+      "id": "Flow_StatusVisita_End_Impedimento",
+      "sourceNodeId": "Node_StatusVisita",
+      "targetNodeId": "Node_End_Impedimento"
+    },
+    {
+      "id": "Flow_DecImpedimento_Reinicie",
+      "sourceNodeId": "Node_DecImpedimento",
+      "targetNodeId": "Node_Reinicie"
+    },
+    {
+      "id": "Flow_Reinicie_DecReinicio",
+      "sourceNodeId": "Node_Reinicie",
+      "targetNodeId": "Node_DecReinicio"
+    },
+    {
+      "id": "Flow_DecReinicio_TesteConexao",
+      "sourceNodeId": "Node_DecReinicio",
+      "targetNodeId": "Node_TesteConexao"
+    },
+    {
+      "id": "Flow_DecReinicio_VoltouReinicio",
+      "sourceNodeId": "Node_DecReinicio",
+      "targetNodeId": "Node_VoltouReinicio"
+    },
+    {
+      "id": "Flow_VoltouReinicio_DecVoltouReinicio",
+      "sourceNodeId": "Node_VoltouReinicio",
+      "targetNodeId": "Node_DecVoltouReinicio"
+    },
+    {
+      "id": "Flow_DecVoltouReinicio_InternetVoltou",
+      "sourceNodeId": "Node_DecVoltouReinicio",
+      "targetNodeId": "Node_InternetVoltou"
+    },
+    {
+      "id": "Flow_DecVoltouReinicio_TesteConexao",
+      "sourceNodeId": "Node_DecVoltouReinicio",
+      "targetNodeId": "Node_TesteConexao"
+    },
+    {
+      "id": "Flow_InternetVoltou_End_Resolvido",
+      "sourceNodeId": "Node_InternetVoltou",
+      "targetNodeId": "Node_End_Resolvido"
+    },
+    {
+      "id": "Flow_TesteConexao_DecTeste",
+      "sourceNodeId": "Node_TesteConexao",
+      "targetNodeId": "Node_DecTeste"
+    },
+    {
+      "id": "Flow_DecTeste_End_Desistiu",
+      "sourceNodeId": "Node_DecTeste",
+      "targetNodeId": "Node_End_Desistiu"
+    },
+    {
+      "id": "Flow_DecTeste_SolicitaDiagnostico",
+      "sourceNodeId": "Node_DecTeste",
+      "targetNodeId": "Node_SolicitaDiagnostico"
+    },
+    {
+      "id": "Flow_SolicitaDiagnostico_TrataSolicitacaoDiagnostico",
+      "sourceNodeId": "Node_SolicitaDiagnostico",
+      "targetNodeId": "Node_TrataSolicitacaoDiagnostico"
+    },
+    {
+      "id": "Flow_TrataSolicitacaoDiagnostico_DecDiagnosticoAceito",
+      "sourceNodeId": "Node_TrataSolicitacaoDiagnostico",
+      "targetNodeId": "Node_DecDiagnosticoAceito"
+    },
+    {
+      "id": "Flow_DecDiagnosticoAceito_AguardaDiagnostico",
+      "sourceNodeId": "Node_DecDiagnosticoAceito",
+      "targetNodeId": "Node_AguardaDiagnostico"
+    },
+    {
+      "id": "Flow_DecDiagnosticoAceito_FalhaConsulta",
+      "sourceNodeId": "Node_DecDiagnosticoAceito",
+      "targetNodeId": "Node_FalhaConsulta"
+    },
+    {
+      "id": "Flow_AguardaDiagnostico_RetornoDiagnostico",
+      "sourceNodeId": "Node_AguardaDiagnostico",
+      "targetNodeId": "Node_RetornoDiagnostico"
+    },
+    {
+      "id": "Flow_AguardaDiagnostico_TimeoutDiagnostico",
+      "sourceNodeId": "Node_AguardaDiagnostico",
+      "targetNodeId": "Node_TimeoutDiagnostico"
+    },
+    {
+      "id": "Flow_RetornoDiagnostico_ConsultaResultadoDiagnostico",
+      "sourceNodeId": "Node_RetornoDiagnostico",
+      "targetNodeId": "Node_ConsultaResultadoDiagnostico"
+    },
+    {
+      "id": "Flow_TimeoutDiagnostico_AgendarVisita",
+      "sourceNodeId": "Node_TimeoutDiagnostico",
+      "targetNodeId": "Node_AgendarVisita"
+    },
+    {
+      "id": "Flow_ConsultaResultadoDiagnostico_TrataResultadoDiagnostico",
+      "sourceNodeId": "Node_ConsultaResultadoDiagnostico",
+      "targetNodeId": "Node_TrataResultadoDiagnostico"
+    },
+    {
+      "id": "Flow_TrataResultadoDiagnostico_DecResultadoDiagnostico",
+      "sourceNodeId": "Node_TrataResultadoDiagnostico",
+      "targetNodeId": "Node_DecResultadoDiagnostico"
+    },
+    {
+      "id": "Flow_DecResultadoDiagnostico_ReinicieNovamente",
+      "sourceNodeId": "Node_DecResultadoDiagnostico",
+      "targetNodeId": "Node_ReinicieNovamente"
+    },
+    {
+      "id": "Flow_DecResultadoDiagnostico_SemEnergia",
+      "sourceNodeId": "Node_DecResultadoDiagnostico",
+      "targetNodeId": "Node_SemEnergia"
+    },
+    {
+      "id": "Flow_DecResultadoDiagnostico_AgendarVisita",
+      "sourceNodeId": "Node_DecResultadoDiagnostico",
+      "targetNodeId": "Node_AgendarVisita"
+    },
+    {
+      "id": "Flow_ReinicieNovamente_VoltouNovamente",
+      "sourceNodeId": "Node_ReinicieNovamente",
+      "targetNodeId": "Node_VoltouNovamente"
+    },
+    {
+      "id": "Flow_VoltouNovamente_DecVoltouNovamente",
+      "sourceNodeId": "Node_VoltouNovamente",
+      "targetNodeId": "Node_DecVoltouNovamente"
+    },
+    {
+      "id": "Flow_DecVoltouNovamente_InternetVoltou",
+      "sourceNodeId": "Node_DecVoltouNovamente",
+      "targetNodeId": "Node_InternetVoltou"
+    },
+    {
+      "id": "Flow_DecVoltouNovamente_AgendarVisita",
+      "sourceNodeId": "Node_DecVoltouNovamente",
+      "targetNodeId": "Node_AgendarVisita"
+    },
+    {
+      "id": "Flow_SemEnergia_DecEnergia",
+      "sourceNodeId": "Node_SemEnergia",
+      "targetNodeId": "Node_DecEnergia"
+    },
+    {
+      "id": "Flow_DecEnergia_AgendarVisita",
+      "sourceNodeId": "Node_DecEnergia",
+      "targetNodeId": "Node_AgendarVisita"
+    },
+    {
+      "id": "Flow_DecEnergia_VoltouEnergia",
+      "sourceNodeId": "Node_DecEnergia",
+      "targetNodeId": "Node_VoltouEnergia"
+    },
+    {
+      "id": "Flow_VoltouEnergia_DecVoltouEnergia",
+      "sourceNodeId": "Node_VoltouEnergia",
+      "targetNodeId": "Node_DecVoltouEnergia"
+    },
+    {
+      "id": "Flow_DecVoltouEnergia_InternetVoltou",
+      "sourceNodeId": "Node_DecVoltouEnergia",
+      "targetNodeId": "Node_InternetVoltou"
+    },
+    {
+      "id": "Flow_DecVoltouEnergia_TemEnergia",
+      "sourceNodeId": "Node_DecVoltouEnergia",
+      "targetNodeId": "Node_TemEnergia"
+    },
+    {
+      "id": "Flow_TemEnergia_DecTemEnergia",
+      "sourceNodeId": "Node_TemEnergia",
+      "targetNodeId": "Node_DecTemEnergia"
+    },
+    {
+      "id": "Flow_DecTemEnergia_AgendarVisita",
+      "sourceNodeId": "Node_DecTemEnergia",
+      "targetNodeId": "Node_AgendarVisita"
+    },
+    {
+      "id": "Flow_DecTemEnergia_RedeEletrica",
+      "sourceNodeId": "Node_DecTemEnergia",
+      "targetNodeId": "Node_RedeEletrica"
+    },
+    {
+      "id": "Flow_RedeEletrica_End_RedeEletrica",
+      "sourceNodeId": "Node_RedeEletrica",
+      "targetNodeId": "Node_End_RedeEletrica"
+    },
+    {
+      "id": "Flow_AgendarVisita_DecAgendar",
+      "sourceNodeId": "Node_AgendarVisita",
+      "targetNodeId": "Node_DecAgendar"
+    },
+    {
+      "id": "Flow_DecAgendar_End_SemAgendar",
+      "sourceNodeId": "Node_DecAgendar",
+      "targetNodeId": "Node_End_SemAgendar"
+    },
+    {
+      "id": "Flow_DecAgendar_ConsultaSlots",
+      "sourceNodeId": "Node_DecAgendar",
+      "targetNodeId": "Node_ConsultaSlots"
+    },
+    {
+      "id": "Flow_ConsultaSlots_TrataSlots",
+      "sourceNodeId": "Node_ConsultaSlots",
+      "targetNodeId": "Node_TrataSlots"
+    },
+    {
+      "id": "Flow_TrataSlots_DecSlots",
+      "sourceNodeId": "Node_TrataSlots",
+      "targetNodeId": "Node_DecSlots"
+    },
+    {
+      "id": "Flow_DecSlots_EscolheHorario",
+      "sourceNodeId": "Node_DecSlots",
+      "targetNodeId": "Node_EscolheHorario"
+    },
+    {
+      "id": "Flow_DecSlots_SemHorarios",
+      "sourceNodeId": "Node_DecSlots",
+      "targetNodeId": "Node_SemHorarios"
+    },
+    {
+      "id": "Flow_DecSlots_FalhaConsulta",
+      "sourceNodeId": "Node_DecSlots",
+      "targetNodeId": "Node_FalhaConsulta"
+    },
+    {
+      "id": "Flow_SemHorarios_End_SemHorarios",
+      "sourceNodeId": "Node_SemHorarios",
+      "targetNodeId": "Node_End_SemHorarios"
+    },
+    {
+      "id": "Flow_EscolheHorario_RegistraHorario",
+      "sourceNodeId": "Node_EscolheHorario",
+      "targetNodeId": "Node_RegistraHorario"
+    },
+    {
+      "id": "Flow_RegistraHorario_DecHorarioValido",
+      "sourceNodeId": "Node_RegistraHorario",
+      "targetNodeId": "Node_DecHorarioValido"
+    },
+    {
+      "id": "Flow_DecHorarioValido_CriaWO",
+      "sourceNodeId": "Node_DecHorarioValido",
+      "targetNodeId": "Node_CriaWO"
+    },
+    {
+      "id": "Flow_DecHorarioValido_EscolheHorario",
+      "sourceNodeId": "Node_DecHorarioValido",
+      "targetNodeId": "Node_EscolheHorario"
+    },
+    {
+      "id": "Flow_CriaWO_TrataWO",
+      "sourceNodeId": "Node_CriaWO",
+      "targetNodeId": "Node_TrataWO"
+    },
+    {
+      "id": "Flow_TrataWO_DecWOCriada",
+      "sourceNodeId": "Node_TrataWO",
+      "targetNodeId": "Node_DecWOCriada"
+    },
+    {
+      "id": "Flow_DecWOCriada_CriaBD",
+      "sourceNodeId": "Node_DecWOCriada",
+      "targetNodeId": "Node_CriaBD"
+    },
+    {
+      "id": "Flow_DecWOCriada_DecWOIdentificadaFalha",
+      "sourceNodeId": "Node_DecWOCriada",
+      "targetNodeId": "Node_DecWOIdentificadaFalha"
+    },
+    {
+      "id": "Flow_DecWOIdentificadaFalha_CancelaWOAgendamento",
+      "sourceNodeId": "Node_DecWOIdentificadaFalha",
+      "targetNodeId": "Node_CancelaWOAgendamento"
+    },
+    {
+      "id": "Flow_DecWOIdentificadaFalha_AgendamentoNaoRealizado",
+      "sourceNodeId": "Node_DecWOIdentificadaFalha",
+      "targetNodeId": "Node_AgendamentoNaoRealizado"
+    },
+    {
+      "id": "Flow_CancelaWOAgendamento_AgendamentoNaoRealizado",
+      "sourceNodeId": "Node_CancelaWOAgendamento",
+      "targetNodeId": "Node_AgendamentoNaoRealizado"
+    },
+    {
+      "id": "Flow_AgendamentoNaoRealizado_End_AgendamentoNaoRealizado",
+      "sourceNodeId": "Node_AgendamentoNaoRealizado",
+      "targetNodeId": "Node_End_AgendamentoNaoRealizado"
+    },
+    {
+      "id": "Flow_CriaBD_TrataBDCriado",
+      "sourceNodeId": "Node_CriaBD",
+      "targetNodeId": "Node_TrataBDCriado"
+    },
+    {
+      "id": "Flow_TrataBDCriado_DecBDCriado",
+      "sourceNodeId": "Node_TrataBDCriado",
+      "targetNodeId": "Node_DecBDCriado"
+    },
+    {
+      "id": "Flow_DecBDCriado_VisitaAgendada",
+      "sourceNodeId": "Node_DecBDCriado",
+      "targetNodeId": "Node_VisitaAgendada"
+    },
+    {
+      "id": "Flow_DecBDCriado_RetentarBD",
+      "sourceNodeId": "Node_DecBDCriado",
+      "targetNodeId": "Node_RetentarBD"
+    },
+    {
+      "id": "Flow_DecBDCriado_DecWOIdentificadaBD",
+      "sourceNodeId": "Node_DecBDCriado",
+      "targetNodeId": "Node_DecWOIdentificadaBD"
+    },
+    {
+      "id": "Flow_RetentarBD_DecRetentarBD",
+      "sourceNodeId": "Node_RetentarBD",
+      "targetNodeId": "Node_DecRetentarBD"
+    },
+    {
+      "id": "Flow_DecRetentarBD_CriaBD",
+      "sourceNodeId": "Node_DecRetentarBD",
+      "targetNodeId": "Node_CriaBD"
+    },
+    {
+      "id": "Flow_DecRetentarBD_DecWOIdentificadaBD",
+      "sourceNodeId": "Node_DecRetentarBD",
+      "targetNodeId": "Node_DecWOIdentificadaBD"
+    },
+    {
+      "id": "Flow_DecWOIdentificadaBD_CancelaWO",
+      "sourceNodeId": "Node_DecWOIdentificadaBD",
+      "targetNodeId": "Node_CancelaWO"
+    },
+    {
+      "id": "Flow_DecWOIdentificadaBD_BDNaoCriado",
+      "sourceNodeId": "Node_DecWOIdentificadaBD",
+      "targetNodeId": "Node_BDNaoCriado"
+    },
+    {
+      "id": "Flow_CancelaWO_BDNaoCriado",
+      "sourceNodeId": "Node_CancelaWO",
+      "targetNodeId": "Node_BDNaoCriado"
+    },
+    {
+      "id": "Flow_BDNaoCriado_End_BDNaoCriado",
+      "sourceNodeId": "Node_BDNaoCriado",
+      "targetNodeId": "Node_End_BDNaoCriado"
+    },
+    {
+      "id": "Flow_VisitaAgendada_End_Agendado",
+      "sourceNodeId": "Node_VisitaAgendada",
+      "targetNodeId": "Node_End_Agendado"
+    },
+    {
+      "id": "Flow_FalhaConsulta_End_Falha",
+      "sourceNodeId": "Node_FalhaConsulta",
+      "targetNodeId": "Node_End_Falha"
+    }
+  ],
+  "sections": []
+}

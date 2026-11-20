@@ -1,0 +1,15 @@
+{
+  "cenario": "E-02",
+  "etapa": "start_sem_designador",
+  "quando": "2026-11-19T22:47:11.262Z",
+  "http": 400,
+  "observacoes": {},
+  "resposta": {
+    "_errorCode": 400,
+    "_message": "Unable to process request",
+    "_details": "Variáveis de entrada obrigatórias não informadas: [designador]",
+    "_timestamp": "2026-11-19T22:47:11.340487407Z",
+    "_traceId": null,
+    "_errors": []
+  }
+}

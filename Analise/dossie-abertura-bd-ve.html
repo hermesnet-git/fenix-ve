@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Análise funcional e técnica das histórias FTAT-933, telas do Figma, arquitetura e contratos para construir a jornada Abertura de BD pelo VE.">
+  <title>Dossiê FTAT-933 | Abertura de BD pelo VE</title>
+  <script>
+    (() => {
+      let theme;
+      try { theme = localStorage.getItem('fenix-dossie-theme'); } catch {}
+      if (theme !== 'light' && theme !== 'dark') {
+        theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f6f1f8;
+      --surface: #ffffff;
+      --surface-soft: #f3edf6;
+      --ink: #25172c;
+      --muted: #61536a;
+      --line: #ddd2e3;
+      --brand: #660099;
+      --brand-strong: #4e0076;
+      --brand-bright: #e6007e;
+      --brand-soft: #efe2f5;
+      --brand-line: #c9a6d9;
+      --green: #176b52;
+      --green-soft: #e4f1eb;
+      --green-ink: #14523e;
+      --amber: #99600a;
+      --amber-soft: #fff1d2;
+      --amber-ink: #603b06;
+      --red: #a34032;
+      --red-soft: #f8e7e3;
+      --red-ink: #7d3026;
+      --blue: #345b70;
+      --blue-soft: #e6eff3;
+      --blue-ink: #23485b;
+      --shadow: 0 16px 42px rgba(58, 24, 70, .09);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: var(--sans);
+      color: var(--ink);
+      background: var(--paper);
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --paper: #17121b;
+      --surface: #211a26;
+      --surface-soft: #2a2130;
+      --ink: #f3edf5;
+      --muted: #c2b5c8;
+      --line: #493b50;
+      --brand: #d89af2;
+      --brand-strong: #efc9ff;
+      --brand-bright: #ff6db8;
+      --brand-soft: #392344;
+      --brand-line: #76508a;
+      --green: #83d6af;
+      --green-soft: #20372d;
+      --green-ink: #b7efd1;
+      --amber: #f0c46d;
+      --amber-soft: #392f1c;
+      --amber-ink: #ffe2a2;
+      --red: #ff9a91;
+      --red-soft: #3a252a;
+      --red-ink: #ffc2bb;
+      --blue: #91c9e8;
+      --blue-soft: #202f3b;
+      --blue-ink: #c6e8fa;
+      --shadow: 0 16px 42px rgba(0, 0, 0, .28);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--paper); color: var(--ink); line-height: 1.58; transition: background-color 180ms ease, color 180ms ease; }
+    a { color: var(--brand); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    a:hover { color: var(--brand-strong); }
+    code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .92em; }
+    code { padding: .12em .35em; border: 1px solid var(--line); border-radius: 4px; background: var(--surface-soft); overflow-wrap: anywhere; }
+    pre { max-width: 100%; overflow-x: auto; }
+    .masthead { color: #fff; background: #4b006e; border-bottom: 5px solid var(--brand-bright); }
+    .masthead-inner { width: min(1440px, 100%); margin: auto; padding: 34px 32px 38px; }
+    .masthead-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+    .eyebrow { margin: 0 0 14px; color: #f2cfff; font-size: .76rem; font-weight: 750; text-transform: uppercase; }
+    h1 { max-width: 930px; margin: 0; font: 500 clamp(2.2rem, 4vw, 4rem)/1.02 var(--serif); }
+    .dek { max-width: 820px; margin: 18px 0 0; color: #f0e2f5; font-size: 1.08rem; }
+    .meta-row { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 24px; color: #ead9f0; font-size: .9rem; }
+    .meta-row span::before { content: ""; display: inline-block; width: 7px; height: 7px; margin: 0 8px 1px 0; border-radius: 50%; background: #ff78be; }
+    .theme-switch { display: inline-flex; flex: 0 0 auto; gap: 3px; padding: 3px; border: 1px solid rgba(255,255,255,.55); border-radius: 6px; background: rgba(32,0,47,.34); }
+    .theme-switch button { min-height: 34px; padding: 5px 10px; border: 0; border-radius: 4px; background: transparent; color: #f7eafa; font: 650 .82rem var(--sans); cursor: pointer; }
+    .theme-switch button[aria-pressed="true"] { background: #fff; color: #4b006e; }
+    .theme-switch button:focus-visible { outline: 3px solid #ff9ccc; outline-offset: 2px; }
+    .layout { display: grid; grid-template-columns: 248px minmax(0, 1fr); gap: 36px; width: min(1440px, 100%); margin: auto; padding: 30px 32px 70px; }
+    nav { position: sticky; top: 20px; align-self: start; max-height: calc(100vh - 40px); overflow: auto; padding: 17px 15px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+    nav h2 { margin: 0 0 10px; font-size: .76rem; text-transform: uppercase; color: var(--muted); }
+    nav a { display: block; padding: 6px 3px; color: var(--ink); font-size: .86rem; text-decoration: none; }
+    nav a:hover { color: var(--brand); text-decoration: underline; }
+    main { min-width: 0; }
+    section { scroll-margin-top: 20px; margin: 0 0 26px; padding: 30px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); box-shadow: var(--shadow); transition: background-color 180ms ease, border-color 180ms ease; }
+    section h2 { margin: 0 0 18px; font: 500 1.85rem/1.12 var(--serif); }
+    section h3 { margin: 25px 0 10px; font-size: 1.05rem; }
+    section h4 { margin: 20px 0 8px; font-size: .94rem; }
+    p { margin: 10px 0; }
+    .lead { max-width: 900px; font-size: 1.08rem; }
+    .lede-label { color: var(--muted); font-size: .78rem; font-weight: 750; text-transform: uppercase; }
+    .callout { margin: 18px 0; padding: 15px 17px; border: 1px solid var(--line); border-left-color: var(--amber); border-radius: 0 6px 6px 0; background: var(--amber-soft); }
+    .callout strong { color: var(--amber-ink); }
+    .callout.red { border-color: var(--line); border-left-color: var(--red); background: var(--red-soft); }
+    .callout.green { border-color: var(--line); border-left-color: var(--green); background: var(--green-soft); }
+    .callout.blue { border-color: var(--line); border-left-color: var(--blue); background: var(--blue-soft); }
+    .metrics { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin: 22px 0; }
+    .metric { padding: 14px; border-top: 3px solid var(--brand-bright); background: var(--surface-soft); }
+    .metric b { display: block; font: 500 1.65rem var(--serif); }
+    .metric span { color: var(--muted); font-size: .81rem; }
+    .table-wrap { width: 100%; min-width: 0; overflow-x: auto; margin: 16px 0 20px; }
+    table { width: 100%; min-width: 100%; border-collapse: collapse; table-layout: auto; font-size: .9rem; }
+    th, td { padding: 10px 11px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th, td { overflow-wrap: anywhere; }
+    table th:first-child, table td:first-child { width: clamp(9rem, 16vw, 15rem); min-width: 9rem; overflow-wrap: normal; word-break: normal; }
+    th { background: var(--surface-soft); color: var(--ink); font-size: .8rem; }
+    td p:first-child { margin-top: 0; }
+    td p:last-child { margin-bottom: 0; }
+    .tag { display: inline-block; margin: 2px 3px 2px 0; padding: 2px 7px; border-radius: 3px; background: var(--blue-soft); color: var(--blue-ink); font-size: .72rem; font-weight: 750; white-space: nowrap; }
+    .tag.red { background: var(--red-soft); color: var(--red-ink); }
+    .tag.amber { background: var(--amber-soft); color: var(--amber-ink); }
+    .tag.green { background: var(--green-soft); color: var(--green-ink); }
+    .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .plain-list { padding-left: 20px; }
+    .plain-list li { margin: 7px 0; }
+    .flow { counter-reset: step; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 22px; padding: 0; list-style: none; }
+    .flow li { position: relative; min-height: 96px; padding: 4px 0 16px 48px; border-left: 1px solid var(--line); }
+    .flow li::before { counter-increment: step; content: counter(step, decimal-leading-zero); position: absolute; left: -1px; top: 0; width: 34px; padding: 5px 0; transform: translateX(-50%); border: 1px solid var(--brand-line); border-radius: 50%; background: var(--surface); color: var(--brand); font-size: .72rem; font-weight: 800; text-align: center; }
+    .flow li strong { display: block; margin-bottom: 4px; }
+    .flowchart-viewport { margin: 20px 0 0; overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-soft); scrollbar-color: var(--brand-line) var(--surface-soft); }
+    .flowchart { display: block; width: 100%; min-width: 820px; height: auto; }
+    .flowchart-hint { display: none; margin: 10px 0 0; color: var(--muted); font-size: .82rem; }
+    .flowchart .connector { fill: none; stroke: var(--brand); stroke-width: 3; marker-end: url(#arrow); }
+    .flowchart .connector.soft { stroke: var(--muted); stroke-dasharray: 7 6; }
+    .flowchart .connector.bus { marker-end: none; }
+    .flowchart .node { fill: var(--surface); stroke: var(--line); stroke-width: 2; }
+    .flowchart .node.start, .flowchart .node.end { fill: var(--brand-soft); stroke: var(--brand); }
+    .flowchart .node.decision { fill: var(--surface); stroke: var(--brand-bright); stroke-width: 3; }
+    .flowchart .node.warning { fill: var(--amber-soft); stroke: var(--amber); }
+    .flowchart .node.success { fill: var(--green-soft); stroke: var(--green); }
+    .flowchart .node.failure { fill: var(--red-soft); stroke: var(--red); }
+    .flowchart text { fill: var(--ink); font-family: var(--sans); font-size: 18px; }
+    .flowchart .node-title { font-size: 19px; font-weight: 750; }
+    .flowchart .node-copy { fill: var(--muted); font-size: 15px; }
+    .flowchart .branch-label { fill: var(--brand); font-size: 15px; font-weight: 800; }
+    .flowchart .lane-label { fill: var(--brand); font-size: 15px; font-weight: 800; letter-spacing: 1px; }
+    .flowchart-caption { padding: 12px 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: .84rem; }
+    .architecture-figure { margin: 18px 0; padding: 12px; border: 1px solid var(--line); background: var(--surface-soft); }
+    .architecture-figure img { display: block; width: 100%; height: auto; }
+    .architecture-figure figcaption { margin-top: 9px; color: var(--muted); font-size: .82rem; }
+    .sources { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; }
+    .sources p { margin: 0; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: .9rem; }
+    .decision-list { counter-reset: q; padding: 0; list-style: none; }
+    .decision-list li { position: relative; margin: 0; padding: 15px 12px 15px 52px; border-top: 1px solid var(--line); }
+    .decision-list li::before { counter-increment: q; content: "Q" counter(q, decimal-leading-zero); position: absolute; left: 0; top: 14px; color: var(--red); font-size: .76rem; font-weight: 800; }
+    .decision-list strong { display: block; }
+    .decision-state { margin: 8px 0 0; color: var(--muted); font-size: .84rem; }
+    .decision-state b { color: var(--amber); }
+    .round-status { color: var(--muted); font-weight: 700; }
+    .scenario-group { margin: 20px 0 0; border-top: 1px solid var(--line); }
+    .scenario-group > summary { padding: 14px 4px; color: var(--brand); font-weight: 750; cursor: pointer; }
+    .scenario-group > summary:focus-visible { outline: 3px solid var(--brand-bright); outline-offset: 3px; }
+    .scenario-group .table-wrap { margin-top: 0; }
+    .scenario-group table { min-width: 900px; }
+    .scenario-group table th:first-child, .scenario-group table td:first-child { width: 6rem; min-width: 6rem; }
+    .scenario-group table th:last-child, .scenario-group table td:last-child { width: 10rem; min-width: 10rem; }
+    .scenario-group table td:last-child .tag { white-space: normal; }
+    .status-summary-table th:last-child, .status-summary-table td:last-child { width: 12rem; min-width: 12rem; }
+    .variable-table th:last-child, .variable-table td:last-child { width: 11rem; min-width: 11rem; }
+    .variable-table td:last-child .tag { white-space: normal; }
+    .scenario-id { white-space: nowrap; color: var(--brand); font-weight: 800; }
+    .small { color: var(--muted); font-size: .84rem; }
+    .footer { padding: 12px 0 0; color: var(--muted); font-size: .82rem; }
+    .nowrap { white-space: nowrap; }
+    @media (max-width: 620px) {
+      .masthead-top { align-items: center; }
+      .theme-switch { gap: 1px; }
+      .theme-switch button { padding: 5px 8px; }
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; gap: 18px; padding: 18px; }
+      nav { position: static; max-height: none; }
+      nav a { display: inline-block; margin-right: 10px; }
+      .masthead-inner { padding: 28px 20px; }
+      section { padding: 22px; }
+      .flowchart { min-width: 760px; }
+      .flowchart-hint { display: block; }
+    }
+    @media (max-width: 620px) {
+      .metrics, .two-col, .flow, .sources { grid-template-columns: 1fr; }
+      section h2 { font-size: 1.55rem; }
+      th, td { min-width: 0; }
+      .meta-row { display: grid; gap: 5px; }
+    }
+    @media print {
+      :root { --paper: #fff; --surface: #fff; --shadow: none; }
+      body { background: #fff; font-size: 10pt; }
+      .masthead { color: #111; background: #fff; border-bottom: 2px solid #660099; }
+      .masthead-inner { padding: 12mm 0 8mm; }
+      .eyebrow, .dek, .meta-row { color: #333; }
+      .theme-switch { display: none; }
+      .layout { display: block; width: auto; padding: 0; }
+      nav { display: none; }
+      section { break-inside: avoid; margin: 0 0 8mm; padding: 7mm 0; border: 0; border-top: 1px solid #aaa; }
+      a { color: #174e3b; }
+      .architecture-figure img { max-height: 160mm; object-fit: contain; }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <div class="masthead-top">
+        <p class="eyebrow">Vivo Empresas · Fênix VE · FTAT-933 · Jornada APP</p>
+        <div class="theme-switch" role="group" aria-label="Tema de exibição">
+          <button type="button" data-theme-choice="light" aria-pressed="true">Claro</button>
+          <button type="button" data-theme-choice="dark" aria-pressed="false">Escuro</button>
+        </div>
+      </div>
+      <h1>Abertura de BD pelo VE</h1>
+      <p class="dek">Dossiê de análise para transformar histórias, telas e arquitetura em um fluxo publicável no Elastic Journey, sem preencher lacunas de negócio por suposição.</p>
+      <div class="meta-row">
+        <span>Análise em 04 nov 2026</span>
+        <span>Escopo de tela: APP / Jornada 5.2 — Abertura de BD pelo VE</span>
+        <span>13 histórias de usuário cruzadas</span>
+        <span>DAS v1.011 atualizado em 04 nov 2026</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav aria-label="Navegação do dossiê">
+      <h2>Conteúdo</h2>
+      <a href="#parecer">Parecer executivo</a>
+      <a href="#fontes">Fontes e versões</a>
+      <a href="#fluxo">Fluxo proposto</a>
+      <a href="#fluxograma">Fluxograma resumido</a>
+      <a href="#historias">Histórias 1–13</a>
+      <a href="#figma">Figma e divergências</a>
+      <a href="#arquitetura">Arquitetura</a>
+      <a href="#contratos">Contratos API</a>
+      <a href="#journey-admin">Implementação Journey</a>
+      <a href="#acompanhamento">Acompanhamento</a>
+      <a href="#decisoes">Pendências e respostas</a>
+      <a href="#rodadas">Publicações e testes</a>
+      <a href="#pronto">Próximo passo</a>
+      <a href="#cenarios">Cenários de validação</a>
+    </nav>
+
+    <main>
+      <section id="parecer">
+        <p class="lede-label">Conclusão da análise</p>
+        <h2>O caminho funcional está claro; os contratos de execução ainda não</h2>
+        <p class="lead">As 13 histórias descrevem uma jornada coerente em alto nível: verificar impedimentos, conduzir troubleshooting, acionar diagnóstico HPSD, oferecer horários WFM e abrir o BD. O Figma local permite conferir os textos, campos e estados de tela. O DAS v1.011 e os contratos esclarecem os componentes e as APIs de Trouble Ticket e Service Test.</p>
+        <div class="callout blue"><strong>Fronteira de execução:</strong> o canal/BFF deve integrar sempre pela fachada <code>ms-journey-v1</code>. O <code>journey-admin</code> é a POC de autoria, transformação e publicação do BPMN base em Camunda sem customizações; o BPMN produzido será levado ao <code>wf-journey-motor-v1</code>, o motor customizado. A fachada continua sendo o contrato público de runtime.</div>
+        <div class="callout red"><strong>A v3 sem simuladores ainda não está publicada para execução.</strong> v1/v2 estão UNPUBLISHED e v3 é a versão mais recente em DRAFT; a jornada está UNPUBLISHED porque falta o setup Kafka para INT10. Também faltam URLs internas dos INTs TBD, autenticação REST e schemas/mappings completos. O BPMN local anterior corresponde à v2 e não representa o fluxo atual v3.</div>
+        <div class="metrics" aria-label="Resumo da análise">
+          <div class="metric"><b>13</b><span>histórias examinadas</span></div>
+          <div class="metric"><b>27</b><span>frames/telas no mapa local do Figma</span></div>
+          <div class="metric"><b>49</b><span>cenários para validar</span></div>
+          <div class="metric"><b>9</b><span>decisões bloqueadoras ainda abertas</span></div>
+          <div class="metric"><b>12</b><span>perguntas rastreadas · START definido; BFF pendente</span></div>
+        </div>
+        <div class="callout green"><strong>Equivalência de nomes:</strong> neste dossiê, “Jornada 5.2” significa “Abertura de BD pelo VE” no APP, dentro do FTAT-933. O DAS também descreve a Jornada 5.1 WEB; não misturar os dois canais até confirmar se a mesma jornada publicada deverá atender ambos.</div>
+      </section>
+
+      <section id="acompanhamento">
+        <h2>O que falta agora</h2>
+        <p>Este é o ponto único de acompanhamento. As pendências abaixo separam o que bloqueia a integração real do que já permite modelar a jornada. O body e os valores concretos enviados pelo BFF ficam para a etapa de integração; não são necessários para declarar as variáveis START.</p>
+        <div class="table-wrap">
+          <table class="status-summary-table">
+            <thead><tr><th>Prioridade</th><th>Pendências</th><th>Estado atual</th></tr></thead>
+            <tbody>
+              <tr><td><span class="tag red">Bloqueia integração real</span></td><td>Q01–Q08 e Q12: body BFF/assignee, gaps de contratos/mappings, retries/idempotência e alinhamento BPMN/registry.</td><td><span class="round-status">Q01–Q05, Q07–Q09 e Q11–Q12 parciais; Q02 priorizada pela US, com mapping técnico a validar; Q06 aguardando</span></td></tr>
+              <tr><td><span class="tag amber">Refinamento</span></td><td>Q09: copy/layout de estados não desenhados. Q11: códigos e payload de saída SDUI do canal.</td><td><span class="round-status">Q09 parcialmente respondida pelo DFT, com UX pendente; Q11 parcialmente respondida pelo DFT; Q10 respondida</span></td></tr>
+              <tr><td><span class="tag">Admin / versões</span></td><td>Jornada atualizada para pontos DFT sem simuladores; publicar após configurar broker/credencial Kafka e contratos internos TBD.</td><td><span class="round-status">v3 DRAFT; v1/v2 UNPUBLISHED; jornada UNPUBLISHED até concluir setup</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small">Quando uma resposta chegar, o status e a resposta aprovada serão registrados diretamente na pendência correspondente abaixo. Não há outro arquivo de acompanhamento.</p>
+      </section>
+
+      <section id="fontes">
+        <h2>Fontes, versões e qualidade da evidência</h2>
+        <p>O dossiê separa evidência local verificável de referência externa. O canvas remoto do Figma retornou 401/403 nesta sessão; a análise visual usa os exports que foram adicionados ao repositório, e não presume acesso ao protótipo remoto.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Fonte</th><th>Uso nesta análise</th><th>Observação de versão/acesso</th></tr></thead>
+            <tbody>
+              <tr><td><a href="../Hist%C3%B3rias%20de%20usu%C3%A1rio%20V2%2004-11-2026%20Elastic%20Journey%20FTAT-933/1%20US%20Consulta%20Bilhete%20de%20Defeito%20aberto.docx">Histórias V2 FTAT-933</a></td><td>Critérios, regras, pré-condições e cenários de exceção das US-01 a US-13.</td><td>DOCX local; texto extraído integralmente para análise.</td></tr>
+              <tr><td><a href="../figma/abertura-bd-app.figma-export.json">abertura-bd-app.figma-export.json</a>, <a href="../figma/telas.json">telas.json</a>, <a href="../figma/estrutura-fluxo.json">estrutura-fluxo.json</a> e <a href="../figma/resumo-telas.md">resumo-telas.md</a></td><td>Hierarquia, nomes, IDs e conteúdo das telas do Figma.</td><td>Arquivo Figma “[B2B] Suporte Técnico”, versão <code>2417647411724896632</code>, atualizado em 03/11/2026. A raiz possui a página “Abertura de BD - App”; o export de telas indexa 27 frames.</td></tr>
+              <tr><td><a href="../figma/cenarios-bloqueio-chips.json">cenarios-bloqueio-chips.json</a></td><td>Componentes e variações de estados de bloqueio.</td><td>Export auxiliar, útil para conferir chips; não substitui a matriz de regras de negócio.</td></tr>
+              <tr><td><a href="https://wikicorp.telefonica.com.br/spaces/ADS/pages/740224312/DAS+INI-176+-+FTE-788+-+FTTH+-+BSIM+Fev+Bloco+3">DAS INI-176 / FTE-788</a></td><td>Visão de solução, Jornada 5, dependências, recursos e diagramas.</td><td>Versão 1.011; histórico registra atualização em 04/11/2026 com “Inclusão da geração de protocolo na Jornada 5”.</td></tr>
+              <tr><td><a href="../DFT_FTAT933_Jornada_EndToEnd_v1.2.pptx">DFT FTAT-933 End-to-End v1.2</a></td><td>Sequências INT01–INT28, fronteiras síncronas/assíncronas, endpoints de referência, métodos, rotas e sistemas responsáveis.</td><td>Para endpoints e método de integração, o DFT v1.2 é a fonte mais atual e prevalece sobre campos não preenchidos nas USs; confirmar ambiente, autenticação e schemas nos mappings/contratos. Para regras funcionais, prevalecem as USs quando divergirem do DFT (ex.: ownership do bloqueio financeiro).</td></tr>
+              <tr><td><a href="../PreDataMapping%20FTAT-933%20-%20Consulta%20de%20Slot%20WFM%20%28Revalida%C3%A7%C3%A3o%29%20-%20v2.2.xlsx">PreDataMapping Consulta de Slot WFM v2.2</a>, <a href="../PreDataMapping%20FTAT-933%20-%20Abertura%20de%20BD%20-%20v2.1.xlsx">PreDataMapping Abertura de BD v2.1</a> e <a href="../PreDataMapping%20FTAT-933%20-%20Consulta%20de%20BD%20-%20v2.0.xlsx">PreDataMapping Consulta de BD v2.0</a></td><td>Request/response de consulta e revalidação WFM; mapping de criação do BD (TMF629/TMF621), número externo; e filtro GET/status de BD ativo.</td><td>Arquivos locais recebidos em 05/11/2026. O WFM v2.2 cobre searchTimeSlot, não create/cancel work order; endpoints internos do MS seguem TBD.</td></tr>
+              <tr><td><a href="https://wikicorp.telefonica.com.br/spaces/ADS/pages/784061401/DATI+2.0+-+INI-176+-+FTE-788+-+FTTH+-+BSIM+Fev+Bloco+3">DATI 2.0 / FTAT-933</a> e <a href="https://wikicorp.telefonica.com.br/spaces/ADS/pages/870859882/DM+-+MS+Customer+Asset+Information+V2+-+GET+customer+id+assets+MS+Customer+Assets+V2">DM Customer Asset Information V2</a></td><td>Detalha a consulta de assets APP antes da Jornada 5 e referencia os mapeamentos de GET/POST Trouble Ticket.</td><td>Data mapping de assets v0, atualizado em 02/09/2026; o DATI diz que o cliente seleciona o asset antes de solicitar o início do workflow.</td></tr>
+              <tr><td><a href="../Trouble%20Ticket%20Management-V1.1.0.json">Trouble Ticket Management V1.1.0</a> e <a href="../Gtw%20Redes%20Service%20Test%20Management-V1.0.0-API.json">Gtw Redes Service Test Management V1.0.0</a></td><td>Parâmetros, payloads, headers e respostas de GET/POST do BD e POST TMF653.</td><td>Contratos OpenAPI locais. Não incluem o contrato do WFM nem o schema do evento de callback Kafka.</td></tr>
+              <tr><td><a href="../skills/README.md">Skill Fênix</a>, <a href="../skills/jornada_abertura_bd_ve.mjs">script da jornada</a> e <a href="../skills/organizar_bpmn.mjs">script BPMN</a></td><td>Fonte do fluxo e layout da jornada FTAT-933 no Journey Admin.</td><td>Atualizado para remover endpoints/tópicos simulados e usar os pontos do DFT v1.2. INTs sem endpoint confirmado permanecem TBD; não considerar publicável para execução integrada até receber URLs internas, auth/schema e configuração Kafka.</td></tr>
+              <tr><td><a href="../../journey/workspace/journey-admin/.claude/skills/criar_jornada_publicada/SKILL.md">Skill publicar jornada</a> e <a href="../../journey/workspace/journey-admin/.claude/skills/criar_jornada_publicada/scripts/sdui_helpers.mjs">sdui_helpers.mjs</a></td><td>Regras de construção SDUI, IDs, layout e publicação pelo admin/back.</td><td>Referência de implementação Journey Admin; não fornece contratos de negócio ausentes no Fênix.</td></tr>
+              <tr><td><a href="../../elastic-journey/comp-workspace-journey/Journey/repos/ms-journey-v1/docs/workflow-motor-api.md">Contrato ms-journey-v1</a></td><td>Fachada que canal/BFF deve consumir para operações da instância e resolução de telas das jornadas do portal.</td><td>Prefixo local documentado <code>/journey/v1</code>; ambiente externo/API Gateway ainda depende da configuração de publicação.</td></tr>
+              <tr><td><a href="../../elastic-journey/comp-workspace-journey/Journey/repos/wf-journey-motor-v1/README.md">wf-journey-motor-v1</a> e <a href="../../elastic-journey/comp-workspace-journey/Journey/repos/wf-journey-motor-v1/docs/return-endpoint.md">documentação do motor</a></td><td>Contrato e comportamento do runtime customizado Camunda.</td><td>Prefixo local <code>/journey-motor/v1</code>; não expor diretamente ao canal quando a arquitetura define a fachada.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small">O link do Figma originalmente apontado para node <code>41777:6650</code> não carregou visualmente nesta sessão. Os exports locais são a evidência utilizada, com a mesma versão registrada no metadado.</p>
+      </section>
+
+      <section id="fluxo">
+        <h2>Fluxo funcional de referência</h2>
+        <p>As consultas de impedimento serão sequenciais: primeiro Massiva/Manutenção, depois BD. As histórias não especificam um cenário detalhado de falha dessas consultas e o Figma não traz telas de exceção; esta jornada não criará telas para essas falhas.</p>
+        <ol class="flow">
+          <li><strong>Entrada do canal</strong>O VE seleciona o serviço/asset elegível e inicia a Jornada 5.2. A entrada deve carregar um identificador único da instância e dados suficientes para identificar cliente, asset e designador. O contrato de entrada não está entre os arquivos locais.</li>
+          <li><strong>Verificação de impedimentos</strong>Consultar BD preventivo/pró-ativo no Trouble Ticket Management e Massiva/Manutenção no Customer Problem Management/SIGITM. O VE fornece o payload de assets; conforme US-01/02/03, priorizadas sobre o DFT para esta regra, a Jornada interpreta <code>productStatus == "bloqueio"</code> como impedimento financeiro.</li>
+          <li><strong>Decisão de bloqueio</strong>Se existir impedimento, informar ao VE os dados disponíveis e uma CTA (Call to Action, ou chamada para ação) de saída para a área correspondente. As cinco telas Figma não definem precedência para todas as combinações possíveis.</li>
+          <li><strong>Troubleshooting pré-diagnóstico</strong>Apresentar reinício do modem e confirmar se a conexão voltou. “Não consigo reiniciar” e “reiniciei, mas continua” seguem para a etapa de diagnóstico após a confirmação prevista no Figma.</li>
+          <li><strong>Diagnóstico automático HPSD</strong>Enviar POST TMF653 e aguardar o callback assíncrono no Kafka. Interpretar ID06/07/10 como solucionado, ID09 como cenário de energia e os demais retornos como problema persistente, conforme US-12/13.</li>
+          <li><strong>Resolução ou persistência</strong>Se resolvido, perguntar se a conexão voltou após reiniciar; “Sim” encerra como resolvido, “Não” segue para a visita. ID09 conduz às telas de energia. Persistência segue para agendamento.</li>
+          <li><strong>Consulta e escolha de slot</strong>Consultar opções via microsserviço WFM, entregar ao VE, receber a data/horário selecionados e revalidar o slot antes de reservar. A lista Figma separa data e períodos, mas não define como a lista é atualizada ao trocar a data.</li>
+          <li><strong>Criação da WO e do BD</strong>WFM cria a Work Order. Após sucesso, o Journey chama POST /troubleTicket; a arquitetura prevê criação de CustomerContact via TMF629 como etapa anterior à criação do Trouble Ticket no ServiceNow.</li>
+          <li><strong>Resultado final</strong>Com BD criado, informar sucesso/visita agendada e os identificadores aprovados. Se falhar, aplicar as tentativas e o cancelamento da WO conforme decisão de negócio; hoje as histórias descrevem o limite de tentativas, mas não o comportamento técnico completo.</li>
+        </ol>
+        <div class="callout blue"><strong>Limite do que pode ser implementado agora:</strong> o fluxo acima pode orientar a estrutura de nós e telas; ainda não se deve fixar variáveis de entrada, filtros finais, chamadas WFM, correlação Kafka, retry ou payload de criação sem as confirmações listadas em “Decisões pendentes”.</div>
+      </section>
+
+      <section id="fluxograma">
+        <h2>Fluxograma resumido da jornada</h2>
+        <p>Fluxo principal em uma trilha contínua. Losangos são decisões; saídas laterais encerram o atendimento ou retornam ao caminho de agendamento.</p>
+        <figure class="flowchart-viewport" tabindex="0" aria-label="Fluxograma. Em telas estreitas, role horizontalmente para ver os ramos laterais.">
+          <svg class="flowchart" viewBox="0 0 1100 2530" role="img" aria-labelledby="flow-title flow-desc">
+            <title id="flow-title">Fluxograma funcional da jornada Abertura de BD pelo VE</title>
+            <desc id="flow-desc">O VE inicia a jornada, verifica impedimentos, faz troubleshooting, inicia diagnóstico HPSD, direciona pelos resultados e, se necessário, consulta horários, cria uma Work Order e tenta abrir o Bilhete de Defeito.</desc>
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--brand)"/></marker>
+            </defs>
+
+            <text class="lane-label" x="40" y="32">JORNADA APP · FTAT-933</text>
+
+            <rect class="node start" x="335" y="38" width="430" height="112" rx="10"/>
+            <text class="node-title" x="550" y="65" text-anchor="middle">Iniciar jornada pela fachada</text>
+            <text class="node-copy" x="550" y="91" text-anchor="middle">VE/BFF → ms-journey-v1 · POST /journey/v1/process-instance</text>
+            <text class="node-copy" x="550" y="116" text-anchor="middle">Facade converte variables START, define channel e encaminha ao motor</text>
+            <path class="connector" d="M550 150 V158"/>
+
+            <rect class="node" x="325" y="160" width="450" height="92" rx="8"/>
+            <text class="node-title" x="550" y="197" text-anchor="middle">Consultar impedimentos</text>
+            <text class="node-copy" x="550" y="222" text-anchor="middle">BD + Massiva/Manutenção + bloqueio de fatura do VE</text>
+            <path class="connector" d="M550 252 V290"/>
+
+            <polygon class="node decision" points="550,290 700,360 550,430 400,360"/>
+            <text class="node-title" x="550" y="355" text-anchor="middle">Há bloqueio?</text>
+            <text class="node-copy" x="550" y="379" text-anchor="middle">BD, Massiva ou fatura</text>
+
+            <path class="connector" d="M400 360 H310 V466"/>
+            <text class="branch-label" x="325" y="346">SIM</text>
+            <rect class="node warning" x="30" y="468" width="280" height="108" rx="8"/>
+            <text class="node-title" x="170" y="505" text-anchor="middle">Informar impedimento</text>
+            <text class="node-copy" x="170" y="530" text-anchor="middle">Mostrar dados e CTA correspondente</text>
+            <text class="node-copy" x="170" y="552" text-anchor="middle">Central de faturas / visitas / início</text>
+            <path class="connector" d="M170 576 V610"/>
+            <rect class="node end" x="65" y="612" width="210" height="62" rx="31"/>
+            <text class="node-title" x="170" y="650" text-anchor="middle">Fim</text>
+
+            <path class="connector" d="M550 430 V468"/>
+            <text class="branch-label" x="570" y="454">NÃO</text>
+            <rect class="node" x="325" y="470" width="450" height="92" rx="8"/>
+            <text class="node-title" x="550" y="507" text-anchor="middle">Troubleshooting</text>
+            <text class="node-copy" x="550" y="533" text-anchor="middle">Orientar reinício e confirmar se a internet voltou</text>
+            <path class="connector" d="M550 562 V598"/>
+
+            <polygon class="node decision" points="550,598 700,668 550,738 400,668"/>
+            <text class="node-title" x="550" y="663" text-anchor="middle">Internet voltou?</text>
+            <text class="node-copy" x="550" y="687" text-anchor="middle">ou cliente não consegue reiniciar</text>
+
+            <path class="connector" d="M700 668 H780"/>
+            <text class="branch-label" x="725" y="652">SIM</text>
+            <rect class="node success" x="780" y="618" width="290" height="100" rx="8"/>
+            <text class="node-title" x="925" y="656" text-anchor="middle">Informar resolução</text>
+            <text class="node-copy" x="925" y="682" text-anchor="middle">Encerrar sem HPSD ou nova WO</text>
+
+            <path class="connector" d="M550 738 V782"/>
+            <text class="branch-label" x="570" y="766">NÃO / CONTINUAR</text>
+            <rect class="node" x="325" y="784" width="450" height="94" rx="8"/>
+            <text class="node-title" x="550" y="822" text-anchor="middle">Iniciar diagnóstico HPSD</text>
+            <text class="node-copy" x="550" y="848" text-anchor="middle">POST TMF653 → aguardar callback Kafka correlacionado</text>
+
+            <path class="connector bus" d="M550 878 V925 M190 925 H910"/>
+            <path class="connector" d="M190 925 V968"/>
+            <path class="connector" d="M550 925 V968"/>
+            <path class="connector" d="M910 925 V968"/>
+
+            <rect class="node success" x="30" y="970" width="320" height="178" rx="8"/>
+            <text class="branch-label" x="50" y="996">ID06 / ID07 / ID10</text>
+            <text class="node-title" x="50" y="1028">Diagnóstico resolveu</text>
+            <text class="node-copy" x="50" y="1055">Perguntar se voltou após reinício.</text>
+            <text class="node-copy" x="50" y="1080">SIM → informar sucesso e terminar.</text>
+            <text class="node-copy" x="50" y="1105">NÃO → seguir para visita técnica.</text>
+
+            <rect class="node warning" x="390" y="970" width="320" height="178" rx="8"/>
+            <text class="branch-label" x="410" y="996">ID09 · ENERGIA</text>
+            <text class="node-title" x="410" y="1028">Verificar modem e endereço</text>
+            <text class="node-copy" x="410" y="1055">Conexão voltou ou falta energia?</text>
+            <text class="node-copy" x="410" y="1080">SIM, voltou / sem energia → terminar.</text>
+            <text class="node-copy" x="410" y="1105">Energia e falha persistente → visita.</text>
+
+            <rect class="node" x="750" y="970" width="320" height="178" rx="8"/>
+            <text class="branch-label" x="770" y="996">OUTRO ID</text>
+            <text class="node-title" x="770" y="1028">Problema persistente</text>
+            <text class="node-copy" x="770" y="1055">Diagnóstico não resolveu.</text>
+            <text class="node-copy" x="770" y="1080">Seguir para consulta de horários.</text>
+            <text class="node-copy" x="770" y="1115">Evento sem correlação: definir em Q07.</text>
+
+            <path class="connector bus" d="M190 1148 V1190 M550 1148 V1190 M910 1148 V1190 M190 1190 H910"/>
+            <path class="connector" d="M550 1190 V1230"/>
+            <text class="branch-label" x="568" y="1218">SE VISITA NECESSÁRIA</text>
+
+            <rect class="node" x="325" y="1232" width="450" height="82" rx="8"/>
+            <text class="node-title" x="550" y="1266" text-anchor="middle">Consultar horários no WFM</text>
+            <text class="node-copy" x="550" y="1291" text-anchor="middle">Enviar opções ao VE para escolha do cliente</text>
+            <path class="connector" d="M550 1314 V1350"/>
+            <rect class="node" x="325" y="1352" width="450" height="82" rx="8"/>
+            <text class="node-title" x="550" y="1386" text-anchor="middle">Cliente escolhe data e período</text>
+            <text class="node-copy" x="550" y="1411" text-anchor="middle">Receber seleção do VE e revalidar disponibilidade</text>
+            <path class="connector" d="M550 1434 V1470"/>
+            <rect class="node" x="325" y="1472" width="450" height="82" rx="8"/>
+            <text class="node-title" x="550" y="1506" text-anchor="middle">Reservar slot e criar WO</text>
+            <text class="node-copy" x="550" y="1531" text-anchor="middle">WFM retorna o identificador da Work Order</text>
+            <path class="connector" d="M550 1554 V1600"/>
+
+            <polygon class="node decision" points="550,1600 700,1670 550,1740 400,1670"/>
+            <text class="node-title" x="550" y="1665" text-anchor="middle">WO criada?</text>
+            <text class="node-copy" x="550" y="1689" text-anchor="middle">Reserva confirmada pelo WFM</text>
+            <path class="connector" d="M400 1670 H350"/>
+            <text class="branch-label" x="363" y="1654">NÃO</text>
+            <rect class="node failure" x="30" y="1618" width="320" height="108" rx="8"/>
+            <text class="node-title" x="190" y="1657" text-anchor="middle">Informar falha de agenda</text>
+            <text class="node-copy" x="190" y="1684" text-anchor="middle">Não abrir BD. Recuperação depende de Q05.</text>
+
+            <path class="connector" d="M550 1740 V1790"/>
+            <text class="branch-label" x="568" y="1775">SIM</text>
+            <rect class="node" x="325" y="1792" width="450" height="86" rx="8"/>
+            <text class="node-title" x="550" y="1828" text-anchor="middle">Criar BD · POST /troubleTicket</text>
+            <text class="node-copy" x="550" y="1854" text-anchor="middle">MS integra CustomerContact e ServiceNow</text>
+            <path class="connector" d="M550 1878 V1920"/>
+
+            <polygon class="node decision" points="550,1920 700,1990 550,2060 400,1990"/>
+            <text class="node-title" x="550" y="1985" text-anchor="middle">BD criado?</text>
+            <text class="node-copy" x="550" y="2009" text-anchor="middle">POST retorna sucesso ou falha</text>
+            <path class="connector" d="M400 1990 H350"/>
+            <text class="branch-label" x="363" y="1974">SIM · 201</text>
+            <rect class="node success" x="30" y="1940" width="320" height="108" rx="8"/>
+            <text class="node-title" x="190" y="1979" text-anchor="middle">Visita e BD confirmados</text>
+            <text class="node-copy" x="190" y="2006" text-anchor="middle">Informar data, período e protocolo</text>
+
+            <path class="connector" d="M550 2060 V2110"/>
+            <text class="branch-label" x="568" y="2095">NÃO</text>
+            <polygon class="node decision warning" points="550,2110 720,2190 550,2270 380,2190"/>
+            <text class="node-title" x="550" y="2182" text-anchor="middle">Tentar de novo?</text>
+            <text class="node-copy" x="550" y="2206" text-anchor="middle">Cliente aceita e ainda há tentativas?</text>
+
+            <path class="connector" d="M720 2190 H1030 V1835 H775"/>
+            <text class="branch-label" x="820" y="2174">SIM · Q06</text>
+            <text class="node-copy" x="820" y="1858">nova tentativa</text>
+            <path class="connector" d="M550 2270 V2310"/>
+            <text class="branch-label" x="568" y="2298">NÃO / LIMITE</text>
+            <rect class="node failure" x="325" y="2312" width="450" height="76" rx="8"/>
+            <text class="node-title" x="550" y="2343" text-anchor="middle">Cancelar WO confirmada</text>
+            <text class="node-copy" x="550" y="2367" text-anchor="middle">Só após confirmar que há identificador válido</text>
+            <path class="connector" d="M550 2388 V2420"/>
+            <rect class="node end" x="410" y="2422" width="280" height="62" rx="31"/>
+            <text class="node-title" x="550" y="2460" text-anchor="middle">Encerrar e informar VE</text>
+          </svg>
+          <figcaption class="flowchart-caption">Leitura de cima para baixo. Losangos representam decisões; saídas laterais encerram ou tratam falhas. Os ramos de retry, evento e regra de negócio ainda pendentes estão identificados com Q05–Q08.</figcaption>
+        </figure>
+        <p class="flowchart-hint">Em tela estreita, deslize o diagrama horizontalmente para ver todas as saídas.</p>
+      </section>
+
+      <section id="cenarios">
+        <h2>Cenários da jornada para validar</h2>
+        <p>Esta matriz transforma as histórias e as telas em casos de teste rastreáveis. Os IDs são estáveis para registrar resultados por rodada. <strong>A validar</strong> significa que o comportamento está descrito, mas ainda não foi exercitado; <strong>Regra pendente</strong> indica que precisamos de uma decisão antes de afirmar o resultado esperado.</p>
+        <div class="callout blue"><strong>Como usar:</strong> escolha um ID, configure os retornos indicados, execute a versão publicada e registre RUN, versão e evidência em Publicações e testes. Se o resultado observado divergir, mantenha o cenário aberto e acrescente a dúvida em Pendências e respostas.</div>
+        <div class="callout blue"><strong>Resultado por cenário:</strong> a <a href="../qa-integracoes/evidencias/2026-11-19-rodada-completa/README.md">reexecução completa RUN-005</a> classifica os 49 IDs em: 11 passaram com valores reais pela jornada; 3 passaram com integração real fora da jornada; 23 só passaram com simulação; 2 falharam com valores reais (INT06 500) e passaram simulados; 5 divergentes ou não conclusivos; 5 não testados. As etiquetas abaixo preservam a situação dos requisitos e não substituem o resultado das rodadas.</div>
+
+        <details class="scenario-group" open>
+          <summary>Entrada e elegibilidade · 2 cenários</summary>
+          <div class="table-wrap"><table>
+            <thead><tr><th>ID</th><th>Condição / estímulo</th><th>Resultado esperado</th><th>Fonte</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td class="scenario-id">E-01</td><td>VE inicia a jornada para um asset FTTH elegível, com identificadores requeridos válidos.</td><td>Instância inicia com correlação preservada; canal recebe a primeira tela de validação e as consultas previstas começam.</td><td>US-01 a US-03; Figma “Validação de status”; DAS Jornada 5.2</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">E-02</td><td>Payload sem asset/designador ou com identificador inválido.</td><td>Definir se a API de início rejeita a requisição ou se o Journey devolve estado de erro ao VE; não iniciar conectores com dados incompletos.</td><td>Contrato WF Journey/entrada VE ausente no workspace</td><td><span class="tag red">Regra pendente · Q01</span></td></tr>
+            </tbody>
+          </table></div>
+        </details>
+
+        <details class="scenario-group">
+          <summary>Impedimentos e combinações de bloqueio · 13 cenários</summary>
+          <div class="table-wrap"><table>
+            <thead><tr><th>ID</th><th>Condição / estímulo</th><th>Resultado esperado</th><th>Fonte</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td class="scenario-id">B-01</td><td>Sem BD ativo, sem Massiva/Manutenção e <code>productStatus != "bloqueio"</code>.</td><td>Não mostrar tela de bloqueio; seguir para troubleshooting pré-diagnóstico.</td><td>US-03; Figma status/troubleshooting</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">B-02</td><td>Massiva ativa + faturas em atraso; sem BD ativo.</td><td>Mostrar estado combinado Massiva + atraso, dados disponíveis e CTA para Central de faturas.</td><td>US-03 Req. 01; Figma Info Feedback Screen 42157:18876</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">B-03</td><td>Massiva ativa + visita/BD aberto; sem fatura em atraso.</td><td>Mostrar estado combinado Massiva + visita e CTA para Central de visitas.</td><td>Figma Info Feedback Screen 42157:18877</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">B-04</td><td>Somente Massiva/Manutenção ativa.</td><td>Mostrar previsão/protocolo se retornados e CTA “Ir para o início”.</td><td>US-02; Figma Info Feedback Screen 42157:18880</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">B-05</td><td>Somente <code>productStatus == "bloqueio"</code> (bloqueio financeiro/faturas em atraso).</td><td>Mostrar faturas e CTA para Central de faturas; não iniciar diagnóstico nem novo BD.</td><td>US-03 Req. 03; Figma Info Feedback Screen 42157:18878</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">B-06</td><td>Somente visita técnica/BD ativo.</td><td>Informar data, horário e protocolo disponíveis; CTA para Central de visitas.</td><td>US-01; Figma Info Feedback Screen 42157:18879</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">B-07</td><td>BD preventivo/pró-ativo ativo; sem Massiva nem bloqueio financeiro.</td><td>US-01 manda informar os dados do BD e encerrar; Figma não tem uma tela dedicada só para BD.</td><td>US-01; divergência com os cinco layouts Figma</td><td><span class="tag red">Regra/UX pendente · Q09</span></td></tr>
+              <tr><td class="scenario-id">B-08</td><td>BD ativo + Massiva ativa, sem bloqueio financeiro.</td><td>Informar os dois impedimentos e encaminhar à Central de visitas conforme US-03; validar qual layout combinado deve ser usado.</td><td>US-03 Req. 02; Figma não mostra esse par explicitamente</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">B-09</td><td>Sem BD e sem Massiva, com fatura em atraso.</td><td>Informar bloqueio financeiro e CTA para Central de faturas; encerrar a jornada.</td><td>US-03 Req. 03; Figma Info Feedback Screen 42157:18878</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">B-10</td><td>BD + fatura em aberto, sem Massiva; ou BD + Massiva + fatura simultâneos.</td><td>Combinações não especificadas nas histórias nem representadas no Figma; não criar regra, mensagem ou tela para elas nesta jornada.</td><td>US-03 cobre apenas três combinações; Figma não apresenta esses cruzamentos</td><td><span class="tag">Fora do escopo descrito</span></td></tr>
+              <tr><td class="scenario-id">B-11</td><td>GET de consulta de BD falha (timeout, 4xx/5xx ou serviço indisponível), exceto HTTP 404 com <code>code=60</code>, que indica ausência de BD aberto.</td><td>US-01 cita genericamente direcionar a outro atendimento ou tentar mais tarde, mas não especifica um cenário nem uma tela. Não criar tela de exceção nesta jornada.</td><td>US-01 Observação 2; Figma sem tela de erro</td><td><span class="tag">Exceção não modelada</span></td></tr>
+              <tr><td class="scenario-id">B-12</td><td>Consulta SIGITM/Massiva falha.</td><td>US-02 cita genericamente alternativa/tentar mais tarde, mas não especifica cenário ou tela de exceção. Não criar tela de erro nesta jornada.</td><td>US-02 Observação 2; Figma sem tela de erro</td><td><span class="tag">Exceção não modelada</span></td></tr>
+              <tr><td class="scenario-id">B-13</td><td>Consulta sequencial de BD ou Massiva falha ou retorna dados parciais.</td><td>As histórias não especificam cenário detalhado para a falha nem o Figma apresenta tela de exceção; não criar tratamento/tela específico nesta jornada.</td><td>US-01/02 citam falha genericamente; Figma sem tela de erro</td><td><span class="tag">Exceção não modelada</span></td></tr>
+            </tbody>
+          </table></div>
+        </details>
+
+        <details class="scenario-group">
+          <summary>Troubleshooting pré-diagnóstico · 6 cenários</summary>
+          <div class="table-wrap"><table>
+            <thead><tr><th>ID</th><th>Condição / estímulo</th><th>Resultado esperado</th><th>Fonte</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td class="scenario-id">T-01</td><td>Cliente executa o primeiro reinício e responde “Sim, a internet voltou”.</td><td>Mostrar conclusão de problema resolvido e terminar sem chamar HPSD.</td><td>US-04; Figma DISCONNECTIONS 76</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">T-02</td><td>Cliente responde “Não” à pergunta se a internet voltou.</td><td>Exibir preparo para diagnóstico automático; aguardar CTA “Continuar” antes da chamada HPSD.</td><td>US-06; Figma Diagnóstico Automático</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">T-03</td><td>Cliente seleciona “Não consigo reiniciar”.</td><td>Figma conduz à tela de preparo de diagnóstico; US-05 diz que o Journey aciona HPSD. Confirmar se a chamada é imediata ou após “Continuar”.</td><td>US-05; Figma ATC-MVF-NDIG-FUNBL-TECPART 42160:6264</td><td><span class="tag red">Regra pendente · Q05</span></td></tr>
+              <tr><td class="scenario-id">T-04</td><td>Cliente seleciona “Continuar” na tela de preparo do diagnóstico.</td><td>Iniciar a solicitação TMF653 e apresentar estado de espera; não interpretar “Continuar” como retorno do teste.</td><td>Figma Diagnóstico Automático 42160:6399; US-12</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">T-05</td><td>Cliente seleciona “Ir para o início” na tela de preparo do diagnóstico.</td><td>Encerrar/retornar ao canal sem chamar HPSD.</td><td>Figma Diagnóstico Automático 42160:6399</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">T-06</td><td>Cliente percorre instruções de reinício (retirar da tomada, aguardar 30 segundos, religar).</td><td>Verificar textos, CTA “Já reiniciei” e alternativa “Não consigo reiniciar”; respostas seguem T-01/T-02 ou T-03.</td><td>Figma ATC-MVF-NDIG-FUNBL-TECPART 42160:6264</td><td><span class="tag amber">A validar</span></td></tr>
+            </tbody>
+          </table></div>
+        </details>
+
+        <details class="scenario-group">
+          <summary>Diagnóstico HPSD e retorno Kafka · 14 cenários</summary>
+          <div class="table-wrap"><table>
+            <thead><tr><th>ID</th><th>Condição / estímulo</th><th>Resultado esperado</th><th>Fonte</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td class="scenario-id">H-01</td><td>POST /serviceTest aceito; callback chega com correlação da instância.</td><td>Receber exatamente o evento associado à solicitação, persistir resultado e seguir uma única vez para o ramo correspondente.</td><td>Contrato TMF653; DAS Jornada 5.2</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">H-02</td><td>Callback contém ID06 (falha corrigida).</td><td>Classificar como resolvido e pedir ao cliente para reiniciar/confirmar recuperação.</td><td>US-12</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">H-03</td><td>Callback contém ID07 (sem falha técnica).</td><td>Seguir o mesmo ramo de resolvido previsto para ID06.</td><td>US-12</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">H-04</td><td>Callback contém ID10 (reset do modem).</td><td>Seguir o ramo de resolvido e apresentar a pergunta de confirmação após reinício.</td><td>US-12</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">H-05</td><td>Após ID06/07/10, cliente confirma que a internet voltou.</td><td>Informar sucesso e encerrar; não consultar slots, criar WO ou abrir BD.</td><td>US-12; Figma final “Sua internet voltou a funcionar”</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">H-06</td><td>Após ID06/07/10, cliente responde que a internet não voltou.</td><td>Seguir para agendamento de visita técnica.</td><td>US-12; Figma DISCONNECTIONS 76</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">H-07</td><td>Callback contém ID09 (possível falta de energia).</td><td>Mostrar “O modem não está recebendo energia” com CTAs “Já verifiquei” e “Não consigo verificar”.</td><td>US-13 Req. 01; Figma 42162:35553</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">H-08</td><td>ID09 e cliente seleciona “Não consigo verificar”.</td><td>Seguir para consulta de horários WFM.</td><td>US-13 Req. 02</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">H-09</td><td>ID09, cliente verifica tomada/cabo e confirma que a internet voltou.</td><td>Mostrar sucesso e encerrar a jornada.</td><td>US-13 Req. 01; Figma 42162:35567</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">H-10</td><td>ID09, cliente verificou e responde que a internet não voltou.</td><td>Exibir a pergunta “Tem energia elétrica no seu endereço?” com Sim/Não.</td><td>US-13 Req. 03; Figma 42162:35578</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">H-11</td><td>Na pergunta de energia, cliente responde “Não”.</td><td>Mostrar orientação sobre problema na rede elétrica, CTA “Ir para o início” e encerrar sem agendamento.</td><td>US-13 Req. 04; Figma Final de fluxo 42016:12914</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">H-12</td><td>Na pergunta de energia, cliente responde “Sim”.</td><td>Seguir para consulta/agendamento de visita técnica.</td><td>US-13 Req. 03</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">H-13</td><td>Callback contém qualquer ID diferente de 06, 07, 10 e 09.</td><td>Classificar como problema persistente e seguir para consulta de slots.</td><td>US-12/13; US-07</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">H-14</td><td>Evento Kafka atrasado, duplicado, sem correlação ou com ID em formato inesperado.</td><td>Não avançar instância errada nem executar ramo duas vezes. Timeout, descarte/reprocessamento e formato canônico do ID dependem do contrato/evento.</td><td>Contrato de callback não está nos arquivos locais</td><td><span class="tag red">Regra pendente · Q07</span></td></tr>
+            </tbody>
+          </table></div>
+        </details>
+
+        <details class="scenario-group">
+          <summary>Slots e Work Order (WFM) · 6 cenários</summary>
+          <div class="table-wrap"><table>
+            <thead><tr><th>ID</th><th>Condição / estímulo</th><th>Resultado esperado</th><th>Fonte</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td class="scenario-id">W-01</td><td>WFM retorna horários disponíveis.</td><td>Entregar as opções ao VE com rótulos/valores necessários; respeitar endereço/asset e seleção da data.</td><td>US-07; Figma “Escolha do horário”</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">W-02</td><td>Cliente seleciona data/período; WFM revalida o slot e cria a WO com sucesso.</td><td>Guardar o identificador retornado pela autoridade WFM e iniciar a criação do BD.</td><td>US-07/08; DAS ms-ooap-tlf-wfm-journey-v1</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">W-03</td><td>Slot escolhido deixou de estar disponível na revalidação/reserva.</td><td>Definir mensagem e retorno à seleção de horário; não mostrar confirmação nem criar BD.</td><td>Não há estado/copy explícito no Figma</td><td><span class="tag red">Regra pendente · Q04/Q09</span></td></tr>
+              <tr><td class="scenario-id">W-04</td><td>Consulta de slots falha tecnicamente.</td><td>Informar indisponibilidade ao VE, sem prosseguir para escolha ou criação de WO.</td><td>US-07; resposta e recuperação detalhadas dependem do contrato WFM</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">W-06</td><td>WFM responde HTTP 204 No Content para a pesquisa de slots.</td><td>Interpretar como consulta concluída sem disponibilidade (não como falha técnica); não seguir para escolha/reserva. Mensagem/alternativa ao cliente ainda precisa de definição de UX.</td><td>PreDataMapping FTAT-933 Consulta de Slot WFM v2.2, aba “RESP sem Slot”</td><td><span class="tag amber">Contrato definido; UX pendente · Q09</span></td></tr>
+              <tr><td class="scenario-id">W-05</td><td>Criação/reserva da WO falha.</td><td>US-09 pede informar falha e encerrar; no mesmo texto pede cancelar uma WO “criada”. Resolver a contradição e só cancelar quando houver ID de WO válido.</td><td>US-09; divergência interna</td><td><span class="tag red">Regra pendente · Q05</span></td></tr>
+            </tbody>
+          </table></div>
+        </details>
+
+        <details class="scenario-group">
+          <summary>Criação do BD, tentativas e cancelamento · 8 cenários</summary>
+          <div class="table-wrap"><table>
+            <thead><tr><th>ID</th><th>Condição / estímulo</th><th>Resultado esperado</th><th>Fonte</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td class="scenario-id">BD-01</td><td>WO criada; POST /troubleTicket retorna 201.</td><td>Guardar ID e externalIdentifier do BD; informar visita agendada com data/período e protocolo conforme definição aprovada.</td><td>US-11; OpenAPI TT 1.1.0; Figma Success Feedback 42016:12908</td><td><span class="tag red">Protocolo pendente · Q08</span></td></tr>
+              <tr><td class="scenario-id">BD-02</td><td>Primeira chamada de criação do BD falha.</td><td>Informar falha ao VE e pedir decisão do cliente sobre nova tentativa.</td><td>US-10 Req. 01/04</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">BD-03</td><td>Após falha inicial, cliente aceita tentar novamente; segunda chamada retorna sucesso.</td><td>Criar BD sem duplicação e mostrar sucesso; não cancelar a WO.</td><td>US-10 Req. 02</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">BD-04</td><td>Primeira e segunda chamadas falham; cliente aceita terceira tentativa; terceira retorna sucesso.</td><td>Mostrar sucesso com um único BD criado e manter WO.</td><td>US-10 Req. 03; total de tentativas sujeito à confirmação</td><td><span class="tag red">Regra pendente · Q06</span></td></tr>
+              <tr><td class="scenario-id">BD-05</td><td>Terceira tentativa falha definitivamente.</td><td>Informar que não foi possível criar o BD e solicitar cancelamento da WO existente.</td><td>US-10 Req. 03/CA003</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">BD-06</td><td>Cliente recusa nova tentativa após a primeira ou segunda falha.</td><td>Informar encerramento ao VE e cancelar a WO já criada; não enviar novo POST de BD.</td><td>US-10 Req. 04/CA004</td><td><span class="tag amber">A validar</span></td></tr>
+              <tr><td class="scenario-id">BD-07</td><td>POST do BD expira no cliente, mas o ServiceNow pode ter criado o ticket.</td><td>Evitar duplicidade antes de repetir: usar idempotência/consulta de reconciliação conforme contrato aprovado.</td><td>OpenAPI TT e data mapping não fecham idempotência</td><td><span class="tag red">Regra pendente · Q06</span></td></tr>
+              <tr><td class="scenario-id">BD-08</td><td>Cancelamento da WO falha após recusa ou terceira tentativa.</td><td>Definir retry/escalonamento e feedback operacional; não declarar cancelamento concluído sem confirmação WFM.</td><td>Sem comportamento de erro detalhado na US-10</td><td><span class="tag red">Regra pendente · Q04/Q06</span></td></tr>
+            </tbody>
+          </table></div>
+        </details>
+        <p class="small">Total: 49 cenários. Os que estão como “Regra pendente” orientam a conversa, mas não devem ser marcados como aprovados até a resposta ficar registrada nesta página.</p>
+      </section>
+
+      <section id="historias">
+        <h2>Crosswalk das 13 histórias</h2>
+        <p>Resumo por história com o comportamento pedido e o ponto que afeta a modelagem. Os links abrem os DOCX originais.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>US</th><th>Comportamento descrito</th><th>Implicação / incoerência a resolver</th></tr></thead>
+            <tbody>
+              <tr><td><a href="../Hist%C3%B3rias%20de%20usu%C3%A1rio%20V2%2004-11-2026%20Elastic%20Journey%20FTAT-933/1%20US%20Consulta%20Bilhete%20de%20Defeito%20aberto.docx">01 · BD aberto</a></td><td>Consultar BD preventivo/pró-ativo. Se houver BD, retornar data/hora/protocolo e direcionar à Central de visitas; falha de consulta deve orientar outro atendimento ou nova tentativa posterior.</td><td>PreDataMapping Consulta de BD v2.0 define filtro `designatorId:…;status:Active;ticketType:Case`; no backend ServiceNow mapeia status Active para `active=true` e designador para `correlation_display`. A resposta HTTP 404 com <code>code=60</code> indica nenhum registro para o filtro e é tratada como consulta concluída sem BD aberto; outros 404 não recebem automaticamente esse tratamento. Fonte e limite do contrato na seção Trouble Ticket.</td></tr>
+              <tr><td><a href="../Hist%C3%B3rias%20de%20usu%C3%A1rio%20V2%2004-11-2026%20Elastic%20Journey%20FTAT-933/2%20US%20Consulta%20Massiva%20e-ou%20Manuten%C3%A7%C3%A3o%20aberta.docx">02 · Massiva</a></td><td>US-02 identifica a camada Customer Problem Management v1; se houver ocorrência, devolver dia, hora e protocolo, com CTA “Ir para o início”. A observação de falha é genérica.</td><td>Para endpoint/método, usar o DFT v1.2 INT01: <code>POST https://cssp.redecorp.br/customer-problem-management/v1</code>, síncrono, rota indicada como “Internal API”. O caminho downstream Customer Problem Management→SIGITM é INT02/TMF724 e não é chamado diretamente pela Jornada. A US deixa API/CURL como “?” e o PreDataMapping de Massivas referenciado não está disponível localmente; autenticação, schema completo de entrada/saída e mapping de campos ainda precisam ser confirmados. O simulador REST não é contrato real.</td></tr>
+              <tr><td><a href="../Hist%C3%B3rias%20de%20usu%C3%A1rio%20V2%2004-11-2026%20Elastic%20Journey%20FTAT-933/3%20US%20BDs_Massivas_Faturas_abertas.docx">03 · Combinações</a></td><td>Define três casos: Massiva + atraso; BD + Massiva sem atraso; sem BD/Massiva com atraso. O bloqueio financeiro é interpretado pelo Journey a partir do payload de assets recebido do VE.</td><td>O Figma também tem Massiva + visita e estados isolados. Não há prioridade fechada para BD + atraso sem Massiva nem para as três condições simultâneas. A premissa exclui consulta adicional de faturas.</td></tr>
+              <tr><td><a href="../Hist%C3%B3rias%20de%20usu%C3%A1rio%20V2%2004-11-2026%20Elastic%20Journey%20FTAT-933/4%20US%20Pr%C3%A9%20Diag%20Autom_Problema%20Resolvido.docx">04 · Resolvido antes do HPSD</a></td><td>Após o primeiro reinício, perguntar se a internet voltou. “Sim” termina como resolvido.</td><td>O Figma contém primeiro a tela de instrução de reinício e depois a pergunta “Depois de reiniciar…?”. A história sintetiza os dois passos; manter ambos e não confundir com o CTA “Continuar” do diagnóstico.</td></tr>
+              <tr><td><a href="../Hist%C3%B3rias%20de%20usu%C3%A1rio%20V2%2004-11-2026%20Elastic%20Journey%20FTAT-933/5%20US%20Pr%C3%A9%20Diag%20Autom_Cliente%20N%C3%A3o%20Consegue%20Reiniciar.docx">05 · Não consegue reiniciar</a></td><td>O VE informa a resposta e a história manda acionar HPSD.</td><td>No Figma, “Não consigo reiniciar” abre a tela “Agora, vamos testar a sua conexão”, com CTA “Continuar” e saída “Ir para o início”. Confirmar se HPSD só deve ser chamado após “Continuar”, como no Figma.</td></tr>
+              <tr><td><a href="../Hist%C3%B3rias%20de%20usu%C3%A1rio%20V2%2004-11-2026%20Elastic%20Journey%20FTAT-933/6%20US%20Pr%C3%A9%20Diag%20Autom_Problema%20Persiste.docx">06 · Persistência pré-diagnóstico</a></td><td>Cliente reinicia, problema persiste, e o Journey chama HPSD.</td><td>É compatível com o Figma: a pergunta de conexão precede a tela de diagnóstico; a resposta “Não” chega ao passo do HPSD. Confirmar se há outro readiness flag além da ação “Continuar”.</td></tr>
+              <tr><td><a href="../Hist%C3%B3rias%20de%20usu%C3%A1rio%20V2%2004-11-2026%20Elastic%20Journey%20FTAT-933/7%20US%20P%C3%B3s%20Diag%20Auto%20Probl%20T%C3%A9c%20Persistente%20-%20Consulta%20de%20Slot%20no%20WFM.docx">07 · Consulta de slot</a></td><td>HPSD retorna persistência por callback Kafka; consultar slots, devolver opções ao VE, receber escolha e chamar WFM para confirmar.</td><td>Nome do tópico confirmado no DAS, mas não há schema local do evento nem contrato de WFM. A tela separa data e períodos; definir reconsulta/reaferição de disponibilidade.</td></tr>
+              <tr><td><a href="../Hist%C3%B3rias%20de%20usu%C3%A1rio%20V2%2004-11-2026%20Elastic%20Journey%20FTAT-933/8%20US%20Gera%C3%A7%C3%A3o%20e%20Cria%C3%A7%C3%Aã%20de%20WO%20no%20WFM%20-%20Visita%20T%C3%A9cnica%20Agendada.docx">08 · Criar WO</a></td><td>O Journey “gera o ID da WO” e chama WFM para criar a ordem no slot escolhido.</td><td>O DAS atribui a criação de WO ao microsserviço WFM. Confirmar quem emite o ID e qual ID retorna; não criar UUID substituto se WFM é a autoridade.</td></tr>
+              <tr><td><a href="../Hist%C3%B3rias%20de%20usu%C3%A1rio%20V2%2004-11-2026%20Elastic%20Journey%20FTAT-933/9%20US%20Visita%20T%C3%A9cnica%20N%C3%A3o%20Agendado.docx">09 · Slot não agendado</a></td><td>Se WFM falhar ao criar WO, informar o VE e terminar o processo.</td><td>A história também pede “posteriormente” cancelar a WO “criada” embora o resultado afirme que não foi criada. Cancelar uma WO inexistente é contraditório; separar falha de reserva de cancelamento pós-reserva.</td></tr>
+              <tr><td><a href="../Hist%C3%B3rias%20de%20usu%C3%A1rio%20V2%2004-11-2026%20Elastic%20Journey%20FTAT-933/10%20US%20Visita%20T%C3%A9cnica%20Agendada%20com%20Sucesso%20-%20BD%20n%C3%A3o%20criado.docx">10 · BD não criado</a></td><td>WO bem-sucedida; tentar POST do BD até três vezes no total, com decisão do cliente entre falhas; após recusa ou última falha, cancelar a WO.</td><td>“Retentar o processo 3 vezes ao todo” pode ser interpretado como chamadas automáticas, mas os requisitos 2–4 especificam nova tentativa após resposta do cliente. Definir se são 3 chamadas no total ou 3 retries além da primeira.</td></tr>
+              <tr><td><a href="../Hist%C3%B3rias%20de%20usu%C3%A1rio%20V2%2004-11-2026%20Elastic%20Journey%20FTAT-933/11%20US%20Visita%20T%C3%A9cnica%20Agendada%20com%20Sucesso%20-%20BD%20Criado.docx">11 · BD criado</a></td><td>Após reserva de slot e criação do BD, retornar sucesso e encerrar.</td><td>O Figma mostra data e período, não o número do BD. O DAS recebeu em 04/11 a “geração de protocolo na Jornada 5”; definir se é o ID externo do BD, um protocolo de interação ou outro recurso.</td></tr>
+              <tr><td><a href="../Hist%C3%B3rias%20de%20usu%C3%A1rio%20V2%2004-11-2026%20Elastic%20Journey%20FTAT-933/12%20US%20Diagn%C3%B3stico%20Autom%C3%A1tico%20Problema%20Resolvido.docx">12 · Diagnóstico resolvido</a></td><td>IDs 06/07/10 significam corrigido; depois pedir que o cliente reinicie e confirme. Outros IDs significam persistência.</td><td>Confirmar formato canônico do ID (ex.: <code>06</code>, <code>ID06</code>, número) e como o callback relaciona resultado com a instância. A chamada síncrona é apenas aceite do teste; resultado vem por evento.</td></tr>
+              <tr><td><a href="../Hist%C3%B3rias%20de%20usu%C3%A1rio%20V2%2004-11-2026%20Elastic%20Journey%20FTAT-933/13%20US%20P%C3%B3s%20Diagn%C3%B3stico%20Autom%C3%A1tico%20Problema%20T%C3%A9cnico%20Persistente%20-%20Sem%20energia%20el%C3%A9trica.docx">13 · ID09 / energia</a></td><td>ID09 abre tela de energia: verificar modem, perguntar se a conexão voltou e, se necessário, perguntar se há energia no endereço. Sem energia encerra; com energia segue a visita.</td><td>O Figma mostra ambos os CTAs e a tela “O problema pode estar na rede elétrica”. Alinhar a semântica exata dos botões com a história: “Sim” para existe energia vai à visita; “Não” termina com orientação.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="figma">
+        <h2>Figma: telas, sequência e divergências</h2>
+        <p>O arquivo local de telas tem 27 frames nomeados; a seção “Fluxo Completo” contém frames agrupados, cartões e vetores de navegação. O resumo textual inclui desambiguadores anteriores à jornada, os cinco estados de bloqueio, troubleshooting, diagnóstico e agendamento.</p>
+        <div class="two-col">
+          <div>
+            <h3>Sequência visual reconhecível</h3>
+            <ol class="plain-list">
+              <li>Entrada no Suporte Técnico → seleção de serviço/Internet, endereço e perfil/empresa (desambiguação do VE).</li>
+              <li>“Agora, vamos verificar…” → carregamento “Analisando e fazendo ajustes”.</li>
+              <li>Se não houver impedimento: instruções de reinício → pergunta se a internet voltou.</li>
+              <li>Se necessário: tela de diagnóstico com “Continuar”/“Ir para o início” → carregamento.</li>
+              <li>Após resultado: internet voltou; reiniciar novamente; ou cenário de modem sem energia.</li>
+              <li>Persistindo: “Vamos agendar uma visita técnica” → data, períodos, aceite de aviso → confirmação.</li>
+              <li>Saídas terminam no canal/VE: Central de faturas, Central de visitas, início ou final de sucesso.</li>
+            </ol>
+          </div>
+          <div>
+            <h3>Estados de bloqueio representados</h3>
+            <ul class="plain-list">
+              <li>Massiva + faturas em atraso → CTA “Ir pra Central de faturas”.</li>
+              <li>Massiva + visita técnica → CTA “Ir pra Central de visitas”.</li>
+              <li>Massiva sem os outros cartões → CTA “Ir para o início”.</li>
+              <li>Faturas em atraso sem massiva → CTA “Ir pra Central de faturas”.</li>
+              <li>Visita técnica sem massiva → CTA “Ir pra Central de visitas”.</li>
+            </ul>
+            <p class="small">Os exemplos mostram visita com data/horário/protocolo e faturas em lista. Há conteúdo ilustrativo no Figma; não reutilizar os valores de exemplo como dados reais.</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Comparação</th><th>Evidência nas fontes</th><th>Impacto na construção</th></tr></thead>
+            <tbody>
+              <tr><td>Entrada / escopo APP</td><td>Figma tem desambiguação de perfil, CNPJ, serviço e endereço. DAS diz que a Jornada 5 começa depois da seleção do asset, e a integração do canal inicia a instância.</td><td>Essas telas são do VE, não necessariamente <code>USER_TASK</code> da jornada. Definir as variáveis de início com VE; não reconstruir o seletor de asset dentro do Journey sem requisito.</td></tr>
+              <tr><td>Bloqueios combinados</td><td>US-03 especifica Massiva + fatura sem BD, BD + Massiva sem fatura e fatura sem BD/Massiva. BD + fatura sem Massiva e os três impedimentos simultâneos não estão descritos nas histórias nem representados no Figma.</td><td>Construir somente os cenários especificados e os estados isolados documentados; não inventar regra/tela para as combinações ausentes. A precedência do script antigo não é requisito aprovado.</td></tr>
+              <tr><td>Exceções e sequência das consultas</td><td>US-01/02 mencionam genericamente alternativa de atendimento ou tentar mais tarde se a consulta falhar; não descrevem cenário detalhado nem telas de exceção. O Figma também não apresenta essas telas.</td><td>Decisão da jornada: consultar primeiro Massiva/Manutenção e depois BD. Não criar telas nem política de retry para falhas dessas consultas; a exceção fica sem tratamento de UX até existir requisito aprovado.</td></tr>
+              <tr><td>Loading</td><td>O Figma tem “Analisando e fazendo ajustes” e “Por favor, aguarde”; em outras telas informa que os testes “podem levar alguns minutos”.</td><td>Loading não exige coleta de resposta. Modelar espera do canal, evitar um USER_TASK sem ação e definir timeout/evento de erro.</td></tr>
+              <tr><td>Reinício / ready</td><td>A tela de reinício tem “Já reiniciei” e “Não consigo reiniciar”; depois há pergunta “Depois de reiniciar…” e, para diagnóstico, outra tela com “Continuar”/“Ir para o início”.</td><td>Separar ação de troubleshooting da confirmação de prontidão. US-05 diz chamar HPSD quando não consegue reiniciar, mas Figma passa por uma tela de preparo e CTA “Continuar”. Confirmar a ordem.</td></tr>
+              <tr><td>Diagnóstico</td><td>A tela de instrução não mostra prazo numérico, apenas “alguns minutos”. As histórias dizem que o retorno é assíncrono pelo EVENT BROKER/Kafka.</td><td>Timeout e semântica de resultado não vêm do layout. A decisão de 180 segundos anotada no script é uma hipótese de laboratório, não SLA aprovado.</td></tr>
+              <tr><td>Agendamento</td><td>Figma mostra endereço, seletor de data, períodos, checkbox “avise se surgir horário mais cedo” e confirmação. Não há tela explícita de conflito do slot nem retry do POST do BD.</td><td>Definir fonte do endereço, sincronização data→períodos, suporte WFM ao checkbox, comportamento de slot ocupado e telas de falha/retentativa. O script antigo inventa telas de erro para cobrir alguns estados.</td></tr>
+              <tr><td>Sucesso/protocolo</td><td>A tela de sucesso do Figma informa data/período e presença de maior de 18 anos; botões “Salvar na agenda” e “Ir para o início”. O conteúdo de tela não exibe ID de BD.</td><td>DAS v1.011 adicionou “geração de protocolo” em 04/11/2026. Definir qual protocolo será gerado/retornado e se muda o Figma/SDUI, sem confundir protocolo, ID da WO e número externo do BD.</td></tr>
+              <tr><td>CTAs fora da jornada</td><td>Central de faturas, visitas, agenda e início são destinos do app/VE.</td><td>Skill Journey Admin recomenda que links para áreas externas ao fluxo sejam tratados pelo canal; encerra-se a etapa/jornada ou retorna-se conforme o contrato SDUI, sem inventar URL em action.openUrl.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><a href="https://www.figma.com/design/krz3cFCXs0W4C4hI2m5r0D/-B2B--Suporte-T%C3%A9cnico?node-id=41777-6650&p=f&t=2m4XGCMyScGW7lA8-0">Abrir o arquivo Figma</a> · <a href="../figma/resumo-telas.md">Abrir resumo local de telas</a> · <a href="../figma/estrutura-fluxo.json">Abrir estrutura local de fluxo</a></p>
+      </section>
+
+      <section id="arquitetura">
+        <h2>Arquitetura da solução e integração</h2>
+        <p>O DAS v1.011 (atualizado em 04/11/2026) define a Jornada 5.2 como APP, e lista os recursos em vez de permitir chamadas diretas do Journey aos provedores finais. O fluxo esperado é: VE/MVE → API Gateway Cloud/APIM → Elastic Journey; chamadas de domínio passam pelos microsserviços e gateways autorizados.</p>
+        <figure class="architecture-figure">
+          <a href="https://wikicorp.telefonica.com.br/download/attachments/784061401/%5BComponente%5D%20Jornada%205.2%20-%20FTTH%20-%20Abertura%20de%20BD%20pelo%20VE%20%28APP%29.drawio.png?version=3&amp;modificationDate=1792158743000&amp;api=v2">
+            <img src="https://wikicorp.telefonica.com.br/download/attachments/784061401/%5BComponente%5D%20Jornada%205.2%20-%20FTTH%20-%20Abertura%20de%20BD%20pelo%20VE%20%28APP%29.drawio.png?version=3&amp;modificationDate=1792158743000&amp;api=v2" alt="Diagrama de componentes da Jornada 5.2 Abertura de BD pelo VE APP">
+          </a>
+          <figcaption>Diagrama de componente da Jornada 5.2 no DATI 2.0. O acesso à imagem pode exigir sessão no WikiCorp. <a href="https://wikicorp.telefonica.com.br/spaces/ADS/pages/784061401/DATI+2.0+-+INI-176+-+FTE-788+-+FTTH+-+BSIM+Fev+Bloco+3">Abrir DATI 2.0</a>.</figcaption>
+        </figure>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Trecho</th><th>Componente / contrato arquitetural</th><th>Como tratar no Journey</th><th>Confiança</th></tr></thead>
+            <tbody>
+              <tr><td>Autoria e POC Camunda</td><td><code>journey-admin</code> monta nós/SDUI, valida a jornada e publica snapshots pela API de publicação do runtime POC, que transforma e implanta BPMN no Camunda não customizado.</td><td>Usar o admin para criar a jornada no formato conhecido, conferir/obter o BPMN produzido e levá-lo ao ambiente do motor customizado pelo procedimento de deployment definido para esse motor. Esta POC não vira a API de runtime do canal.</td><td><span class="tag">Autoria / POC</span></td></tr>
+              <tr><td>Busca da jornada no Admin</td><td>Identificador/nome exato para localizar ou reutilizar a jornada FTAT-933 no produto “Vivo empresas - VE”.</td><td>Buscar por <code>fenix-abertua-bd-ve</code> (grafia definida para a busca). “Abertura de BD pelo VE” permanece como título funcional exibido no dossiê/Figma; não usar o título funcional como termo de busca no Admin.</td><td><span class="tag green">Nome de busca definido</span></td></tr>
+              <tr><td>Fachada de runtime do canal</td><td><code>ms-journey-v1</code>; prefixo local <code>/journey/v1</code>. Rotas principais: <code>POST /process-instance</code>, <code>GET /process-instance/{id}</code>, <code>POST /process-instance/{id}/advance</code>, <code>/complete</code>, <code>/cancel</code> e <code>/return</code>.</td><td>Canal/BFF chama sempre a fachada. Para processos <code>Journey_<uuid></code>, a fachada converte variables/answers conforme START/tela publicada, inclui <code>channel</code> e acrescenta <code>form</code> SDUI às respostas quando encontra User Task publicada. Não codificar o path interno do motor no canal.</td><td><span class="tag green">Contrato ms-journey</span></td></tr>
+              <tr><td>Motor customizado</td><td><code>wf-journey-motor-v1</code>, prefixo local <code>/journey-motor/v1</code>. Recebe a fachada via <code>JOURNEY_MOTOR_BASE_URL</code>; contrato de criação requer <code>businessKey</code>, <code>processDefinitionKey</code> e <code>assignee</code>, e aceita <code>variables</code>/<code>processDefinitionVersionTag</code>.</td><td>Não chamar diretamente do canal. O motor customizado executa o BPMN compatível; para a fachada resolver telas, deployment e registry precisam concordar em journey UUID, <code>processDefinitionKey</code>, <code>versionTag</code> e snapshot SDUI.</td><td><span class="tag green">Contrato do motor</span></td></tr>
+              <tr><td>Consulta de assets antes da jornada</td><td>O APP/VE consulta o MS Customer Asset Information V2 por <code>GET /customers/{id}/assets</code>. Para B2B, envia <code>X-Vivo-System: B2B</code>; <code>systemOwner</code> seleciona Salesforce B2B/Siebel e, quando omitido, consulta as origens disponíveis em paralelo e consolida o modelo canônico. O mapping downstream chama o MS Customer Asset V2 por <code>GET /assets?documentNumber=…</code>.</td><td>É uma etapa do canal antes do Journey. A resposta canônica inclui <code>content[]</code>; <code>idDesignador</code> vem de <code>asset.logicalResource.id</code>, com dados de cliente, oferta e endereço. O asset escolhido é contexto de entrada, mas o mapping não define o JSON exato enviado à fachada.</td><td><span class="tag green">DATI §6 + DM Asset</span></td></tr>
+              <tr><td>Início da instância</td><td>DFT v1.2 lista WF Journey v1 no API Gateway Cloud em <code>https://api.telefonica.com.br/wfJourney/v1</code> e descreve POST; o inventário também cita a rota <code>/wf-journey-v1</code>. A fachada local documenta <code>/journey/v1/process-instance</code>.</td><td>Referência externa agora encontrada, mas confirmar URL/path efetivo por ambiente e como o gateway mapeia para a rota local. Enviar key, businessKey no formato acordado, assignee, variables START e channelType MOBILE. Body real do BFF, assignee e seleção de versão continuam pendentes.</td><td><span class="tag amber">Contrato parcial; Q01</span></td></tr>
+              <tr><td>Consultar/criar BD</td><td>MS Trouble Ticket Management v1 (<code>https://spmg.redecorp.azr/troubleTicketManagement/v1</code>), métodos <code>GET /troubleTicket</code> e <code>POST /troubleTicket</code>. O MS chama APIs ServiceNow via Gateway Externo.</td><td>Conector REST do Journey para o MS, com OAuth2/JWT e env base URL. Não chamar ServiceNow direto do Journey.</td><td><span class="tag green">DAS + OpenAPI</span></td></tr>
+              <tr><td>Criar parte relacionada ao ticket</td><td>O data mapping de POST tem etapa TMF629 <code>POST /customer</code> para criação/atualização de CustomerContact; o response alimenta o POST TMF621 Trouble Ticket.</td><td>Chamar somente o MS Trouble Ticket; a orquestração do dois passos pertence à integração. Receber o retorno normalizado do MS.</td><td><span class="tag green">Data mapping</span></td></tr>
+              <tr><td>Case no Salesforce</td><td>DFT v1.2 INT24–26: ServiceNow envia ao MuleSoft criação TMF621 <code>POST</code> e alteração TMF621 <code>PATCH</code>; MuleSoft chama Salesforce, normaliza cada resposta e devolve ao ServiceNow.</td><td>Fluxo downstream, sem chamada do Journey ao Salesforce descrita. O DFT não confirma que esse Case seja o próprio BD nem se criação/alteração é obrigatória no caminho FTAT-933; confirmar relação, IDs retornados e impacto de falha antes de modelar dependências.</td><td><span class="tag amber">Fluxo identificado; vínculo com BD pendente · Q08</span></td></tr>
+              <tr><td>Consultar impedimento de rede</td><td>DFT v1.2 INT01 define Journey → Customer Problem Management v1: <code>POST https://cssp.redecorp.br/customer-problem-management/v1</code>, síncrono, rota “Internal API”. A consulta envia identificadores de cliente e serviço, citando <code>idDesignador</code>. INT02 é a chamada downstream do MS ao SIGITM TMF724: <code>POST https://ooap.redecorp.br/tmf724-incident-management/v1/</code>, rota <code>/MS</code>. O SIGITM consulta Massiva Report/ODS; o MS consolida e responde à Jornada.</td><td>Para endpoints e método, prevalece o DFT, mais atualizado que a US-02 (que deixa API/CURL como “?”). A URL configurada na jornada é a referência de INT01, não a URL do SIGITM. Pendente confirmar ambiente liberado, autenticação/headers, payload completo (incluindo identificador do cliente), resposta e nomes dos campos para dia/hora/protocolo; o PreDataMapping de Massivas citado não está local. <b>Evidência de ambiente:</b> o OpenAPI publicado pela própria API em PREPROD (<code>https://cssp-preprod.redecorp.br/customer-problem-management/v1/v3/api-docs.yaml</code>) expõe a consulta por designador como <code>GET /incidents?serviceDesignator=…</code> (opcionais <code>status</code>, <code>startDate</code>, <code>endDate</code>; janela padrão de 180 dias), com resposta <code>{totalResults, incidents[{incidentId, status, type, source, openDate, expectedResolutionDate, description, affectedServices, serviceDesignator}]}</code>; o POST na raiz <code>/v1</code> retorna 405. Teste com token OAM HML e designador fictício retornou HTTP 200 com lista vazia. DEV (<code>cssp-dev</code>) retornou 503 e o host <code>cssp-test</code> tem certificado inválido. Divergência DFT (POST) × API (GET /incidents) a decidir.</td><td><span class="tag amber">Endpoint/método divergente DFT × API; validado GET /incidents em PREPROD · Q03</span></td></tr>
+              <tr><td>Diagnóstico</td><td>DFT v1.2 INT06/07 indica POST TMF653 ao GTW Redes Service Test Management (<code>https://api.telefonica.com.br/gtw-redes/serviceTestManagement/v1</code>) e aceite inicial HPSD.</td><td>Mapping Abertura BD v2.1 inclui estrutura de ServiceTestCreateEvent em característica do ticket, mas não é o schema de callback. Body/IDs TMF653 e schema Kafka ainda exigem o PreDataMapping de Diagnóstico.</td><td><span class="tag amber">Fluxo/endpoint identificados; payload parcial · Q07</span></td></tr>
+              <tr><td>Resultado HPSD</td><td>DFT v1.2 INT08–10 descreve processamento pelo Service Test Result e publicação assíncrona no tópico <code>telco.service.servicetestmanagement.servicetestresult</code>; DAS também identifica esse tópico.</td><td>Tópico e arquitetura assíncrona confirmados. Faltam schema/correlationId do evento, representação canônica de IDs, timeout/SLA e política de evento atrasado/duplicado.</td><td><span class="tag amber">Parcialmente mapeado · Q07</span></td></tr>
+              <tr><td>Consulta de slots WFM</td><td>DFT v1.2 INT11/12: Jornada → WFM Orchestration (endpoint interno ainda TBD); downstream TMF646 `POST https://oss.vivo.com.br/tmf-api/appointment/v1/searchTimeSlot`. PreDataMapping WFM v2.2 define headers obrigatórios, janela requestedTimeSlot, relatedPlace/geographicAddress e variantes VIVO1/VIVO2.</td><td>Response com slots HTTP 200; sem slots HTTP 204 No Content; mapping mostra erro 401. Confirmar URL/path interno por ambiente, auth e como derivar no VE os campos geográficos/rede obrigatórios.</td><td><span class="tag amber">Contrato parcialmente mapeado · Q04</span></td></tr>
+              <tr><td>Criar e cancelar WO</td><td>DFT v1.2 INT14–17 identifica Journey → WFM Orchestration `POST /createWorkOrder` e cancelamento `DELETE /workOrder` (endpoints internos TBD); downstream criação TMF697 `POST /workOrderManagement/v2/workOrder`, Appointment TMF646 `POST /appointment/v1/appointment` e cancelamento TMF697 por workorder_id. WFM retorna IDs/status ou erro.</td><td>Arquitetura e rotas downstream de referência disponíveis; PreDataMapping WFM v2.2 cobre consulta de slots, não criação/cancelamento. Endpoints internos, schemas, vínculo WO/Appointment e regra de cancelamento em falha ainda requerem mapping/validação.</td><td><span class="tag amber">Contrato parcialmente mapeado · Q05</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout amber"><strong>Conferência do header WFM:</strong> o PreDataMapping v2.2 escreve o exemplo de Authorization como <code>Baerer {{token}}</code>. Confirmar/corrigir a grafia do scheme para <code>Bearer</code> com o time WFM antes de implementar; não copiar o typo literalmente.</div>
+        <div class="callout"><strong>Nome divergente nas histórias:</strong> a US-09 menciona <code>ms-wfm-journey-orchestration-v1</code>; o DAS identifica <code>ms-ooap-tlf-wfm-journey-v1</code> e a integração <code>wfm-journey-orchestration-v1</code>. Usar o nome da arquitetura após confirmação do time WFM.</div>
+        <div class="callout blue"><strong>URLs por ambiente:</strong> produção e PREPROD têm URLs diferentes. As URLs do DFT citadas neste dossiê são de produção (<code>cssp.redecorp.br</code>, <code>spmg.redecorp.azr</code>, <code>api.telefonica.com.br</code>); a jornada no Journey Admin usa PREPROD (<code>cssp-preprod.redecorp.br</code>, <code>spmg-preprod.redecorp.azr</code> e <code>api-hml.telefonica.com.br</code>, este a confirmar). Não identificadas em nenhum dos dois ambientes: WFM Orchestration (INT11/14/16), cluster Kafka (INT10) e a entrada <code>wf-journey-v1</code> em PREPROD. Tabela completa em <a href="dossie-integracoes-bd-ve.html#ambientes">dossiê de integrações</a>.</div>
+        <div class="callout red"><strong>Compatibilidade de publicação a provar antes do teste integrado:</strong> o Journey Admin gera a convenção <code>Journey_&lt;UUID sem hífens&gt;</code> e publica cada versão com <code>versionTag = vN</code>. A fachada reconhece essa chave e usa o <code>processDefinitionVersionTag</code> retornado pelo motor para localizar o snapshot/tela no registry. Porém, o código atual do motor inicia por <code>startProcessInstanceByKey</code> (última versão implantada); embora o DTO aceite <code>processDefinitionVersionTag</code>, o serviço de start não aparenta usá-lo para selecionar uma versão. Precisamos garantir a ordem/alinhamento de BPMN implantado e snapshot publicado, ou definir como a fachada/runtime selecionará versões.</div>
+      </section>
+
+      <section id="contratos">
+        <h2>Contratos REST, Kafka e dados necessários</h2>
+        <h3>Trouble Ticket Management V1.1.0</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Operação</th><th>Contrato local</th><th>O que precisa ser mapeado</th></tr></thead>
+            <tbody>
+              <tr><td>Consulta</td><td><code>GET /troubleTicket</code>; parâmetro query <code>filter</code> usa pares <code>campo:valor</code> separados por <code>;</code>, cada par equivale a AND. PreDataMapping Consulta BD v2.0 exemplifica <code>designatorId:…;status:Active;ticketType:Case</code>; <code>offset</code>/<code>limit</code> são opcionais.</td><td>No backend ServiceNow, o mapping aplica <code>ticketType=Case</code>, <code>sys_class_name=sn_sprb_mgmt_case</code>, <code>active=true</code> e designador em <code>correlation_display</code>. Sem BD aberto: lista 200/206 sem ticket aberto ou HTTP 404 com <code>code=60</code>; a decisão funcional confirmada em 19/11 interpreta este último como consulta concluída sem BD aberto, não uma falha. Outros 404 continuam falha. Fonte: <a href="../PreDataMapping%20FTAT-933%20-%20Consulta%20de%20BD%20-%20v2.0.xlsx">PreDataMapping Consulta de BD v2.0</a>, aba “MS T T x ServiceNow - Resp ERRO”, K8 (404), K16 (“No Record found for given filter criteria”) e B22 (exemplo <code>code: 60</code>). A aba documenta o retorno downstream; a interpretação funcional foi confirmada pelo responsável e observada na URL temporária ServiceNow em RUN-003, sem homologar o MS.</td></tr>
+              <tr><td>Criação</td><td>PreDataMapping Abertura BD v2.1 descreve o payload Camunda→MS, etapa TMF629 POST /customer e etapa TMF621 POST /troubleTicket; sucesso da criação retorna identificadores do ticket e número externo.</td><td>O response mapping explicita <code>externalIdentifier.id</code> como “Número do BD no SN” (exemplo SPC0001432), além do ID/status do Trouble Ticket. Isso responde a identificação técnica do número do BD; não prova sozinho que o “protocolo” incluído no DFT v1.011 seja esse mesmo campo nem define onde será exibido.</td></tr>
+              <tr><td>Autenticação/rastreio</td><td>Arquitetura define OAuth2/JWT para o MS e APIs de gateway.</td><td>Receber escopo, audience, nomes de credenciais e base URL por ambiente no processo de configuração; não incluir tokens no script ou neste dossiê.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>O GET está descrito em <a href="https://wikicorp.telefonica.com.br/spaces/ADS/pages/886348112/DM+-+MS+Trouble+Ticket+Management+v1+-+GET+troubleTicket+-+API+GTW+Externo+ServiceNow+Trouble+Ticket+v1">Data Mapping GET /troubleTicket</a>. A criação é descrita em <a href="https://wikicorp.telefonica.com.br/spaces/ADS/pages/886347177/DM+-+MS+Trouble+Ticket+Management+v1+-+POST+troubleTicket+-+API+GTW+Externo+Servicenow+Tmf629+Customer+Management+v1+Passo+01">TMF629 POST /customer</a> e <a href="https://wikicorp.telefonica.com.br/spaces/ADS/pages/886347439/DM+-+MS+Trouble+Ticket+Management+v1+-+POST+troubleTicket+-+API+GTW+Externo+ServiceNow+Trouble+Ticket+v1+Passo+02">TMF621 POST /troubleTicket</a>.</p>
+
+        <h3>Service Test Management / TMF653</h3>
+        <p>O contrato local define <code>POST /serviceTest</code> e resposta HTTP 201. O corpo de criação requer <code>name</code>, <code>relatedService</code> e <code>testSpecification</code>. O ID da especificação do teste e o ID do serviço FTTH precisam vir do data mapping de diagnóstico, que não está no diretório local.</p>
+        <pre><code>POST https://api.telefonica.com.br/gtw-redes/serviceTestManagement/v1/serviceTest
+Authorization: Bearer &lt;JWT&gt;
+X-Vivo-Transaction-Id: &lt;UUID v4&gt;
+X-Vivo-Correlation-Id: &lt;UUID v4&gt;
+Content-Type: application/json
+
+{
+  "name": "&lt;nome definido no mapping&gt;",
+  "relatedService": { "id": "&lt;serviço FTTH&gt;" },
+  "testSpecification": { "id": "&lt;especificação HPSD&gt;" }
+}</code></pre>
+        <p>Os dois headers UUID são obrigatórios no POST assíncrono; a especificação diz que o callback deve ecoar <code>X-Vivo-Correlation-Id</code> no campo <code>correlationId</code>. O contrato da mensagem Kafka não está no workspace.</p>
+
+        <h3>Evento e correlação Kafka</h3>
+        <ul class="plain-list">
+          <li>Tópico arquitetural: <code>telco.service.servicetestmanagement.servicetestresult</code>.</li>
+          <li>Permissão: application do Elastic Journey autorizado como consumer; OAuth2/JWT indicado pelo DAS.</li>
+          <li>Payload ainda necessário: <code>correlationId</code>, ID de retorno, estrutura do evento, possíveis estados/erros, chave de partição e política de duplicidade.</li>
+          <li>Não codificar <code>eljy.eventos.entrada</code> ou qualquer tópico plausível de laboratório no fluxo real.</li>
+        </ul>
+        <h3>Entrada de VE e WFM</h3>
+        <p>As histórias citam o payload de assets e tags como CNPJ, endereço e designador, mas não trazem o JSON efetivo. O início do Journey precisa de variáveis formalizadas: identificador da instância/correlação, cliente, asset/serviço, designador, canal e dados necessários às chamadas seguintes. O WFM precisa fornecer mapeamento para consulta de horários, revalidação/reserva, retorno do ID da WO, erros e cancelamento.</p>
+      </section>
+
+      <section id="journey-admin">
+        <h2>Autoria, deployment e fachada de runtime</h2>
+        <p>O Journey Admin é a ferramenta de autoria desta POC: usamos seu modelo de jornada para construir nós/SDUI, validar e gerar/publicar BPMN base num Camunda sem customizações. A jornada de desenvolvimento, porém, executa no <code>wf-journey-motor-v1</code>; canal/BFF integra exclusivamente via <code>ms-journey-v1</code>.</p>
+        <div class="callout blue"><strong>Pipeline-alvo:</strong> Journey Admin cria/valida o modelo → publica snapshot e gera BPMN base na POC → extrai/exporta o BPMN → implanta o artefato no motor customizado pelo procedimento acordado → registra/alinha a mesma jornada e versão no registry SDUI → canal/BFF chama <code>ms-journey-v1</code>, que encaminha ao motor e resolve <code>form</code> para jornadas publicadas pelo portal.</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Camada</th><th>Responsabilidade</th><th>Implicação para FTAT-933</th></tr></thead>
+            <tbody>
+              <tr><td>Journey Admin / autoria</td><td>Modela <code>nodes</code>/<code>connections</code>, telas SDUI, START variables, conectores, layout e versão de negócio. A POC transforma o snapshot em BPMN para Camunda sem customizações.</td><td>Usar IDs <code>Node_*</code>/<code>Flow_*</code>, um START e ao menos um END; publicar para validar o formato e obter o BPMN. O deploy feito pela POC não prova compatibilidade com o motor customizado.</td></tr>
+              <tr><td>Artefato BPMN</td><td>O processo da jornada publicada usa <code>processDefinitionKey = Journey_&lt;journey UUID sem hífens&gt;</code>; a versão de negócio é gravada como <code>versionTag = vN</code>.</td><td>Exportar o BPMN gerado e preservar processo, chave e versionTag acordados. Definir o procedimento de transporte/deploy no <code>wf-journey-motor-v1</code>; não basta copiar apenas os nós do fluxo.</td></tr>
+              <tr><td>Motor customizado</td><td><code>wf-journey-motor-v1</code> executa Camunda customizado e expõe internamente o prefixo <code>/journey-motor/v1</code>. Seu POST requer <code>businessKey</code>, <code>processDefinitionKey</code> e <code>assignee</code>; inicia por chave.</td><td>Essa API é chamada pela fachada, não pelo canal. O motor atual inclui <code>processDefinitionVersionTag</code> no request DTO, mas a criação observada inicia por key; confirmar seleção da versão/deployment e retorno do versionTag.</td></tr>
+              <tr><td>Fachada ms-journey-v1</td><td>Expõe <code>/journey/v1</code>, valida/autentica e encaminha ao motor. Para <code>Journey_&lt;uuid&gt;</code>, converte <code>variables</code>/<code>answers</code> conforme o schema publicado, adiciona <code>channel</code> e enriquece respostas com <code>form</code>.</td><td>É o contrato obrigatório para canal/BFF. O registry precisa conter a publicação/telas compatíveis com o BPMN em execução para a fachada resolver o form do passo corrente.</td></tr>
+              <tr><td>Variáveis e SDUI</td><td>START variables são declaradas no nó START; a fachada converte os valores recebidos para nomes/tipos de engine. O snapshot publicado inclui envelopes SDUI e a versão de negócio.</td><td>Mapear o contrato confirmado do canal para variáveis START. Campo SDUI pode repetir nome entre telas, mas não colidir com START variables ou outputs de integração.</td></tr>
+              <tr><td>Conectores REST/Kafka</td><td>O BPMN gerado carrega configs de conectores; o motor customizado e seus workers executam integrações e mensageria.</td><td>Usar APIs/filas reais aprovadas, credenciais e schemas do ambiente customizado; não herdar endpoints locais e tópico mockado do script de laboratório.</td></tr>
+              <tr><td>Publicação e versão</td><td>Journey Admin publica snapshot/telas na POC; no ambiente alvo, BPMN e registry SDUI devem ser implantados/alinhados separadamente conforme processo definido.</td><td>Após cada rodada, confirmar chave, versionTag, deployment ativo e snapshot/versão no registry antes do teste pela fachada. A seleção de versão no start deve ser validada ponta a ponta.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Estado do script Fênix</h3>
+        <p><a href="../skills/jornada_abertura_bd_ve.mjs">jornada_abertura_bd_ve.mjs</a> mantém as decisões funcionais e agora aponta os conectores para os pontos de integração do DFT v1.2. Os marcados como TBD ficam sem destino simulado, aguardando configuração real:</p>
+        <ul class="plain-list">
+          <li>INT01 Massiva: o conector usa o POST de referência do DFT, mas a API publicada em PREPROD responde em <code>GET /incidents?serviceDesignator=…</code> (HTTP 200 validado; POST na raiz retorna 405). Decidir o contrato antes de ajustar o conector; mapear <code>incidents[]</code> para dia/hora/protocolo da US-02.</li>
+          <li>INT03 (consulta BD), INT11 (slots WFM), INT14/16 (criação/cancelamento WO) e INT18 (criação BD) seguem sem URL interna no DFT. Seus conectores estão TBD, não apontam para ServiceNow/TMF646/TMF697 downstream.</li>
+          <li>TMF653 usa o endpoint do DFT e o shape obrigatório do OpenAPI local; valores de relatedService/testSpecification/ExternalId precisam ser fornecidos pelo contrato do canal e falta mecanismo de autenticação executável no runtime atual.</li>
+          <li>INT10 usa o tópico do DFT <code>telco.service.servicetestmanagement.servicetestresult</code>, mas falta cluster/broker e credencial de ambiente; o Admin não deve substituir isso pelo Kafka Local de teste.</li>
+          <li>Response mappings de Massiva/BD/WFM/callback ainda contêm campos provisórios onde o DFT não publica schema JSON; validar com os respectivos Data Mappings antes de executar.</li>
+          <li>Criação de BD em falha cancela a WO imediatamente no fluxo atual; US-10 prevê decisões do cliente e até três tentativas totais.</li>
+          <li>Inclui decisões/telas não confirmadas pelo Figma, como resultado de slot ocupado e tela genérica de falha técnica. Manter apenas após aprovação de UX/Produto.</li>
+        </ul>
+      </section>
+
+      <section id="decisoes">
+        <h2>Pendências e respostas</h2>
+        <p>Os itens começaram aguardando resposta; o status atual de cada um está registrado abaixo, com a fonte que sustenta a resposta parcial ou completa e as lacunas que ainda bloqueiam a implementação.</p>
+        <div class="callout blue"><strong>Regra de integração adotada:</strong> canal/BFF → <code>ms-journey-v1</code> → <code>wf-journey-motor-v1</code>. O canal não chama diretamente o motor. O Journey Admin serve para modelar a jornada e gerar/publicar o BPMN base da POC; no ambiente alvo, esse artefato é implantado no motor customizado e alinhado com o registry SDUI usado pela fachada.</div>
+        <h3>Dados para instanciar a Jornada 5.2 — Abertura de BD pelo VE</h3>
+        <p>Para montar a jornada, definir no START os nomes e tipos das variáveis; os valores concretos serão preenchidos pelo BFF ao instanciar cada execução. O envelope e a origem desses valores são contrato de integração posterior. “Candidato” não significa campo obrigatório já aprovado no request.</p>
+        <div class="table-wrap">
+          <table class="variable-table">
+            <thead><tr><th>Campo / informação</th><th>Necessidade</th><th>Origem / uso</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td><code>processDefinitionKey</code></td><td>Obrigatório para criar a instância.</td><td>Derivado do UUID da jornada publicada: <code>Journey_&lt;UUID sem hífens&gt;</code>. Não vem do asset.</td><td><span class="tag green">Contrato confirmado</span></td></tr>
+              <tr><td><code>businessKey</code></td><td>Obrigatório pelo motor; a fachada não o cria.</td><td>Padrão informado: <code>TID_ELJY_FTAT933INT009_YYYY-MM-DDTHH24:MI:SS.FFFZ</code>, com timestamp único por instância, fornecido pelo canal/BFF.</td><td><span class="tag green">Formato definido</span></td></tr>
+              <tr><td><code>assignee</code></td><td>Obrigatório pelo DTO e validação do motor.</td><td>Identidade/atribuição de quem responde às User Tasks; precisa ser compatível com a regra de autenticação/autorização do runtime.</td><td><span class="tag amber">Semântica e valor a confirmar</span></td></tr>
+              <tr><td><code>channelType</code></td><td>Opcional na fachada; default <code>MOBILE</code>.</td><td>APP deve enviar <code>MOBILE</code>. A fachada remove esse campo do body encaminhado, cria a variável <code>channel</code> e usa o tipo para resolver telas compatíveis.</td><td><span class="tag green">Confirmado para Jornada 5.2</span></td></tr>
+              <tr><td><code>designador</code> — START <code>string</code></td><td>Variável do asset necessária aos conectores previstos; seu valor é dado de runtime, não conteúdo fixo da jornada.</td><td>Deriva do asset FTTH selecionado; o mapping associa <code>idDesignador</code> a <code>asset.logicalResource.id</code>.</td><td><span class="tag green">Declarar nome e tipo no START</span></td></tr>
+              <tr><td><code>productStatus</code> — START <code>string</code></td><td>Variável para avaliar o bloqueio financeiro; seu valor é dado de runtime, não conteúdo fixo da jornada.</td><td>Deriva de <code>asset[i].stsProduct.productStatus</code>. Pela regra funcional priorizada das US-01/02/03, o Journey interpreta o valor <code>"bloqueio"</code> como impedimento financeiro. O DM de assets mapeia status técnicos para <code>content[i].status</code> (Ativo→Active, Suspenso→Suspended, Cancelado→Cancelled, Pendente→Pending), mas não lista "bloqueio"; validar como esse valor chega no payload e alinhar tecnicamente a divergência de responsabilidade descrita no DFT v1.2.</td><td><span class="tag amber">Regra definida pela US; mapping técnico a validar · Q02</span></td></tr>
+              <tr><td><code>relatedServiceId</code>, <code>testSpecificationId</code>, <code>serviceTestExternalId</code>, <code>transactionId</code>, <code>correlationId</code></td><td>Entradas START adicionadas no v3 para os campos exigidos pelo OpenAPI TMF653/DFT INT06.</td><td>O canal/BFF deve fornecer os IDs de serviço/especificação e ExternalId, além dos UUIDs exigidos nos headers. Não assumir que designador, businessKey e esses IDs sejam equivalentes.</td><td><span class="tag amber">Declaradas no v3; origem/valores e autenticação pendentes · Q01/Q07</span></td></tr>
+              <tr><td>Identidade do cliente e documento</td><td>Candidato para o POST do Trouble Ticket/etapa TMF629 e para rastreio.</td><td>O asset canônico tem ID/nome de relatedParty, tipo e número de documento (CNPJ/CPF). Confirmar qual ID de CRM é aceito pelo mapping da criação de CustomerContact; manter documento como string para preservar zeros.</td><td><span class="tag amber">Mapear necessidade por operação</span></td></tr>
+              <tr><td>Asset, produto e serviço FTTH</td><td>Candidatos para o Service Test TMF653 e para criação do BD.</td><td>O mapping de assets retorna IDs/códigos de produto/oferta e designador. Ainda não está provado se <code>relatedService.id</code> do HPSD é o designador ou outro ID; não tratar esses identificadores como equivalentes sem mapping.</td><td><span class="tag red">ID exato por integração pendente</span></td></tr>
+              <tr><td>Endereço de instalação</td><td>Candidato para consulta/reserva WFM e contexto da visita.</td><td>Figma exibe o endereço selecionado; o asset mapping retorna componentes de endereço em <code>place.place</code> e subunidades. Enviar somente os campos exigidos pelo contrato WFM e achatar em variáveis escalares START se necessário.</td><td><span class="tag amber">Contrato WFM pendente</span></td></tr>
+              <tr><td>Contato do solicitante (nome/e-mail/telefone)</td><td>Possível dado de entrada para o POST de CustomerContact antes de criar o BD.</td><td>O data mapping TMF629 descreve contato e meios de contato; não está confirmado se VE envia esses campos no start, se o MS os consulta ou se já existe Contact ID reutilizável.</td><td><span class="tag amber">Origem e obrigatoriedade a confirmar</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout blue"><strong>Prioridade da regra financeira:</strong> quando US e DFT divergem, para esta jornada prevalece a regra de negócio das US-01/02/03: o Journey interpreta <code>asset[i].stsProduct.productStatus == "bloqueio"</code> como fatura em aberto e aplica os bloqueios/CTAs definidos pelas histórias. O DFT v1.2, slide 4, atribui a decisão ao VE/APP; essa diferença fica registrada como alinhamento técnico de responsabilidade e não altera a regra funcional priorizada. O DM de assets não documenta uma transformação explícita para "bloqueio", portanto a presença desse valor no payload/runtime ainda deve ser validada.</div>
+        <div class="callout"><strong>Não passar o asset inteiro como objeto aninhado em <code>variables</code>.</strong> A fachada converte as variáveis START uma a uma; o conversor aceita escalares e, para valor não declarado, infere o tipo chamando <code>toString()</code>. Assim, um mapa aninhado não é preservado como JSON estruturado. A jornada declara os escalares necessários e seus tipos; o BFF extrai e fornece seus valores em runtime.</div>
+        <p>Shape conceitual das declarações START; os valores entre marcadores serão fornecidos em runtime, <strong>não são conteúdo fixo da jornada nem payload aprovado do BFF</strong>:</p>
+        <pre><code>POST /journey/v1/process-instance
+{
+  "businessKey": "TID_ELJY_FTAT933INT009_&lt;timestamp UTC&gt;",
+  "processDefinitionKey": "Journey_&lt;UUID da jornada sem hifens&gt;",
+  "assignee": "&lt;identidade conforme contrato do motor&gt;",
+  "variables": {
+    "designador": "&lt;asset.logicalResource.id&gt;",
+    "productStatus": "&lt;asset selecionado: stsProduct.productStatus&gt;"
+  },
+  "channelType": "MOBILE"
+}</code></pre>
+        <p class="small">Para autoria, basta declarar <code>designador: string</code> e <code>productStatus: string</code>; não é necessário conhecer agora os valores de cada instância. O formato de <code>businessKey</code> está definido acima; o request real, o valor de <code>assignee</code>, a URL publicada no gateway e o tratamento de versão serão confirmados com VE/BFF na integração. A fachada converte <code>variables</code> conforme o START e deriva <code>channel</code> de <code>channelType</code>.</p>
+        <div class="callout blue"><strong>Evidência do wf-journey-motor-v1 para Q01:</strong> o DTO de criação aceita <code>variables: Map&lt;String,Object&gt;</code>; o README local mostra o envelope mínimo e o teste de serviço inicia um fluxo com <code>variables: {"prioridade":"alta"}</code>. O serviço injeta <code>assignee</code> nas variáveis e inicia por <code>processDefinitionKey</code>. Isso confirma o formato do request downstream do motor, não o body público do canal. Para o canal, manter o envelope da fachada acima; enviar nomes declarados no START (<code>designador</code>, <code>productStatus</code>), sem prefixar com <code>data_</code>. A fachada transforma-os em <code>data_designador</code>/<code>data_productStatus</code> no motor. Fontes: <a href="../../elastic-journey/comp-workspace-journey/Journey/repos/wf-journey-motor-v1/README-servicebus-local.md">exemplo local</a>, <a href="../../elastic-journey/comp-workspace-journey/Journey/repos/wf-journey-motor-v1/src/main/java/br/com/tlf/eljy/controller/request/CreateProcessInstanceRequest.java">DTO do motor</a>, <a href="../../elastic-journey/comp-workspace-journey/Journey/repos/wf-journey-motor-v1/src/test/java/br/com/tlf/eljy/service/impl/FluxoServiceImplTest.java">teste de criação</a> e <a href="../../elastic-journey/comp-workspace-journey/Journey/repos/ms-journey-v1/src/main/java/br/com/tlf/eljy/core/domain/specregistry/VariableConversion.java">conversão da fachada</a>.</div>
+        <div class="callout green"><strong>Escopo da Q01:</strong> resolvido para montar a jornada, com START declarando <code>designador: string</code> e <code>productStatus: string</code>; os valores serão dados pelo BFF em runtime. O padrão de <code>businessKey</code> também está definido. Para a integração, ainda faltam o body real, o valor de <code>assignee</code> e o tratamento de versão.</div>
+        <div class="callout blue"><strong>Endpoint externo de referência no DFT v1.2:</strong> API Gateway Cloud / WF Journey v1, <code>https://api.telefonica.com.br/wfJourney/v1</code>. O inventário também cita POST <code>/wf-journey-v1</code>, enquanto o contrato local da fachada documenta <code>/journey/v1/process-instance</code>. Confirmar path final e URL por ambiente; não concatenar essas referências sem validação.</div>
+        <ol class="decision-list">
+          <li><strong>Contrato de início pela fachada <code>ms-journey-v1</code> (P0)</strong>Qual é o JSON real do canal/BFF para <code>POST /journey/v1/process-instance</code> em cada ambiente? Qual valor será usado em <code>assignee</code>? Confirmar o conteúdo de <code>variables</code>, envio de <code>channelType: MOBILE</code> e se <code>processDefinitionVersionTag</code> é enviado ou omitido.<p class="decision-state"><b>Status:</b> Parcialmente respondida · <b>Consulta de assets confirmada:</b> antes da Jornada 5, APP/VE consulta <code>GET /customers/{id}/assets</code> no Customer Asset Information V2 com <code>X-Vivo-System: B2B</code>. <code>systemOwner</code> seleciona Salesforce B2B/Siebel; omitido, consulta as origens disponíveis em paralelo. O modelo canônico usa <code>content[]</code>; <code>idDesignador</code> mapeia de <code>asset.logicalResource.id</code>, além de dados de cliente, oferta e endereço. O cliente seleciona o asset antes de solicitar o início. <b>Contrato da fachada confirmado:</b> rota local <code>/journey/v1/process-instance</code>; para jornadas do portal, <code>processDefinitionKey</code> segue <code>Journey_&lt;UUID sem hífens&gt;</code>; requer <code>businessKey</code>, <code>processDefinitionKey</code> e <code>assignee</code>; <code>variables</code> é convertido conforme START e <code>channelType</code> é opcional (padrão <code>MOBILE</code>), convertido para a variável <code>channel</code>. <code>businessKey</code> definido como <code>TID_ELJY_FTAT933INT009_YYYY-MM-DDTHH24:MI:SS.FFFZ</code>. Fonte: <a href="../../elastic-journey/comp-workspace-journey/Journey/repos/ms-journey-v1/docs/workflow-motor-api.md">contrato da fachada</a>, <a href="../../elastic-journey/comp-workspace-journey/Journey/repos/ms-journey-v1/src/main/java/br/com/tlf/eljy/core/application/service/specregistry/JourneyProcessService.java">conversão da fachada</a>, <a href="https://wikicorp.telefonica.com.br/spaces/ADS/pages/784061401/DATI+2.0+-+INI-176+-+FTE-788+-+FTTH+-+BSIM+Fev+Bloco+3">DATI §6</a> e <a href="https://wikicorp.telefonica.com.br/spaces/ADS/pages/870859882/DM+-+MS+Customer+Asset+Information+V2+-+GET+customer+id+assets+MS+Customer+Assets+V2">DM GET assets</a>. <b>Ainda falta:</b> exemplo real do request enviado pelo canal/BFF, valor de <code>assignee</code> e confirmação do path externo publicado no gateway.</p></li>
+          <li><strong>Matriz de impedimentos e regra de bloqueio (P0)</strong><p class="decision-state"><b>Status:</b> Regra funcional definida; integração parcialmente pendente · <b>Prioridade:</b> quando US e DFT divergem, prevalecem as US-01/02/03 para a regra desta jornada: o Journey interpreta <code>productStatus == "bloqueio"</code> como impedimento financeiro. Implementar os três cruzamentos descritos pela US-03 e os estados isolados US-01/02/Figma. BD + fatura sem Massiva e BD + Massiva + fatura não estão descritos/desenhados; não inventar resultado ou tela. Consultas iniciais sequenciais: primeiro Massiva/Manutenção, depois BD; sem fallback visual/retry nessas consultas. <b>Pendente técnico:</b> o DFT v1.2, slide 4, atribui a decisão ao VE/APP, e o DM de assets não documenta transformação para "bloqueio". Manter a regra das US no Journey e validar com os responsáveis como o valor chega no payload e a alocação técnica correspondente. Fontes: US-01/02/03, DFT v1.2 e PreDataMapping Customer Asset Information V2.</p></li>
+          <li><strong>Contrato SIGITM / Customer Problem Management (P0)</strong>Qual é o schema/Data Mapping aprovado e a autenticação/filtro completos?<p class="decision-state"><b>Status:</b> Parcialmente respondida · <b>DFT v1.2 INT01/02:</b> Journey faz POST ao Customer Problem Management em <code>https://cssp.redecorp.br/customer-problem-management/v1</code>; o MS faz POST downstream ao SIGITM TMF724 em <code>https://ooap.redecorp.br/tmf724-incident-management/v1/</code>, rota indicada como <code>/MS</code>. A consulta usa identificadores do cliente/serviço, incluindo designador; a resposta consolidada traz existência/ausência, situação, abrangência, previsão e dados do evento. US-02 também espera dia, hora e protocolo. <b>Pendente:</b> confirmar ambiente/URLs vigentes, auth/headers, filtro/shape exato do request e response e obter o PreDataMapping “Consulta de Massivas” citado pela US. <b>Atualização:</b> o OpenAPI de PREPROD (<code>cssp-preprod</code>) define <code>GET /incidents?serviceDesignator=…</code> → <code>ListIncidentsDTO</code> e <code>GET /customers/{customerId}/customerProblems</code> (exige <code>X-Origin</code>, <code>X-System</code>, <code>X-Referer</code>, <code>X-TraceId</code>, datas e <code>asset</code>); <code>GET /incidents</code> respondeu 200 com token OAM HML. Falta confirmar qual operação a Jornada usa e qual campo representa o protocolo. <b>Decisão 07/11/2026:</b> a Jornada usa <code>GET /incidents?serviceDesignator=…</code> e decide a Massiva por <code>totalResults &gt; 0</code>; <code>customerProblems</code> fica na collection. <b>Campo protocolo: aguardando resposta</b> (pendência na nota da etapa Consulta Massiva). Detalhes em <a href="dossie-integracoes-bd-ve.html#perguntas">dossiê de integrações</a>. Links: <a href="../DFT_FTAT933_Jornada_EndToEnd_v1.2.pptx">DFT v1.2</a>, <a href="../Hist%C3%B3rias%20de%20usu%C3%A1rio%20V2%2004-11-2026%20Elastic%20Journey%20FTAT-933/2%20US%20Consulta%20Massiva%20e-ou%20Manuten%C3%A7%C3%A3o%20aberta.docx">US-02</a>.</p></li>
+          <li><strong>Contrato e semântica WFM (P0)</strong>Confirmar endpoint interno/auth por ambiente e mappings de criação/cancelamento da WO; validar como derivar os dados de endereço/rede e se o aviso de horário mais cedo é suportado.<p class="decision-state"><b>Status:</b> Parcialmente respondida · <b>Consulta de slot:</b> PreDataMapping v2.2 define POST downstream TMF646 <code>https://oss.vivo.com.br/tmf-api/appointment/v1/searchTimeSlot</code>, headers Authorization, <code>flow=B2B_MASSIVO</code>, <code>requestSystem=MVE</code>, transaction/correlation IDs; body com janela <code>requestedTimeSlot[].validFor</code> e local/rede em <code>relatedPlace.geographicAddress</code> (mediaType, networkOwner, CNL e dados de central/site). Resposta: HTTP 200 com <code>availableTimeSlot[]</code>; HTTP 204 quando não há slots; mapping mostra erro 401 (JWT expirado). DFT v1.2 INT11/12 diz que o Journey chama a WFM Orchestration, mas o endpoint interno continua TBD. <b>Criação/cancelamento:</b> DFT INT14–17 indica operações (ver Q05), porém o mapping v2.2 não cobre seus payloads. Pendente auth/base URL interna por ambiente, mapeamento do asset para geografia/rede, detalhe completo de erros e confirmação do checkbox. Fontes: <a href="../PreDataMapping%20FTAT-933%20-%20Consulta%20de%20Slot%20WFM%20%28Revalida%C3%A7%C3%A3o%29%20-%20v2.2.xlsx">PreDataMapping WFM v2.2</a> e <a href="../DFT_FTAT933_Jornada_EndToEnd_v1.2.pptx">DFT v1.2</a>.</p></li>
+          <li><strong>Falha de WO (P0)</strong>Confirmar o contrato interno de erro/retorno e a condição exata em que existe um ID válido para cancelamento; esclarecer a contradição de US-09 sobre cancelar WO que afirma não ter sido criada.<p class="decision-state"><b>Status:</b> Parcialmente respondida · <b>DFT v1.2 INT14–17:</b> criação Journey→WFM Orchestration é POST <code>/createWorkOrder</code> (endpoint/base interno TBD); downstream usa TMF697 POST <code>/workOrderManagement/v2/workOrder</code> e TMF646 POST <code>/appointment/v1/appointment</code>. Cancelamento Journey→Orchestration é DELETE <code>/workOrder</code> (interno TBD), downstream DELETE TMF697 <code>/workOrder/{workorder_id}</code>. A WFM Orchestration consolida IDs/status ou erro. Isso indica que cancelamento exige identificar a WO; se criação falhou e não há ID, não há objeto conhecido a cancelar. Ainda faltam mappings e semântica de WO parcial/reserva, códigos de erro e UX/copy; manter explícita a contradição da US-09. Fonte: <a href="../DFT_FTAT933_Jornada_EndToEnd_v1.2.pptx">DFT v1.2 INT14–17</a> e <a href="../Hist%C3%B3rias%20de%20usu%C3%A1rio%20V2%2004-11-2026%20Elastic%20Journey%20FTAT-933/9%20US%20Visita%20T%C3%A9cnica%20N%C3%A3o%20Agendado.docx">US-09</a>.</p></li>
+          <li><strong>Retry do BD e cancelamento de WO (P0)</strong>“Três vezes ao todo” significa três tentativas totais, incluindo a primeira? O cliente decide a cada falha? Recusar retry cancela a WO imediatamente? Falha técnica de POST conta como tentativa? Como evitar duplicar tickets em timeout após criação bem-sucedida?<p class="decision-state"><b>Status:</b> Aguardando resposta · <b>Resposta/decisão:</b> revistos DFT v1.2 e PreDataMapping Abertura BD v2.1; não definem contagem de tentativas, idempotência/reconciliação de timeout nem retries do cancelamento. O inventário DFT marca Retry “AS-IS”, sem especificar política. A hipótese visual de 3 chamadas no rascunho não é decisão aprovada.</p></li>
+          <li><strong>TMF653 e callback HPSD (P0)</strong>Qual é o body e mapping aprovados, os IDs <code>testSpecification</code>/<code>relatedService</code>, headers/correlationId e prazo do callback? Como normalizar os IDs de resultado?<p class="decision-state"><b>Status:</b> Parcialmente respondida · <b>DFT v1.2 INT06–10:</b> confirma POST ao GTW Redes Service Test Management, aceite inicial HPSD, processamento pelo Service Test Result e publicação assíncrona no tópico <code>telco.service.servicetestmanagement.servicetestresult</code>. PreDataMapping Abertura BD v2.1 contém exemplos de IDs TMF621 e um objeto ServiceTestCreateEvent dentro de uma característica do ticket, mas isso não é o mapping do POST TMF653 nem o schema do callback Kafka. <b>Pendente:</b> PreDataMapping Diagnóstico Automático, IDs aprovados, esquema da mensagem, correlação/headers UUID, SLA/timeout e formato canônico dos códigos. Não inferir o contrato do callback a partir do evento embutido no mapping do Trouble Ticket. Fonte: <a href="../DFT_FTAT933_Jornada_EndToEnd_v1.2.pptx">DFT v1.2 INT06–10</a> e <a href="../PreDataMapping%20FTAT-933%20-%20Abertura%20de%20BD%20-%20v2.1.xlsx">PreDataMapping Abertura BD v2.1</a>.</p></li>
+          <li><strong>Protocolo de 04/11 (P0)</strong>O que significa “geração de protocolo” e onde aparece no retorno ao VE/tela de sucesso?<p class="decision-state"><b>Status:</b> Parcialmente respondida · <b>PreDataMapping Abertura BD v2.1:</b> response TMF621 mapeia <code>externalIdentifier.id</code> como “Número do BD no SN” (exemplo SPC0001432). O DFT v1.2 slide 10 diz que ServiceNow retorna número do BD; o histórico DAS 1.011 menciona “geração de protocolo” na Jornada 5. Isso identifica o número externo do BD como candidato concreto, mas as fontes não confirmam que o termo “protocolo” seja exatamente esse campo nem onde o VE o exibirá. <b>07/11/2026:</b> a Consulta BD (INT03) passou a <code>GET</code> no MS Trouble Ticket; a resposta não traz previsão e o protocolo segue pendente — <code>bdProtocoloAtendimento</code>/<code>bdPrevisaoConclusao</code> ficam com jsonPath provisório e a pendência está nas notas da Consulta BD e das telas de impedimento. A Abertura de BD grava <code>externalIdentifier.id</code> em <code>bdCriadoNumero</code>. Fonte: <a href="../PreDataMapping%20FTAT-933%20-%20Abertura%20de%20BD%20-%20v2.1.xlsx">PreDataMapping Abertura BD v2.1</a> e <a href="../DFT_FTAT933_Jornada_EndToEnd_v1.2.pptx">DFT v1.2 slide 10</a>.</p></li>
+          <li><strong>Comportamento de UX fora das telas desenhadas (P1)</strong>Qual experiência/copy o VE apresentará para falha de consulta de slots, falha de WO e retries de BD, já que o Figma não desenha esses estados?<p class="decision-state"><b>Status:</b> Parcialmente respondida · <b>DFT v1.2:</b> falhas de integração devem retornar detalhes/status e o Journey deve informar ao VE orientação de tratamento (ex.: INT15, US-09); US-07 também pede informar indisponibilidade/alternativa. Isso define responsabilidade e retorno funcional, mas não copy, layout ou códigos SDUI aprovados. As consultas iniciais Massiva/BD seguem a decisão anterior de não criar tela de exceção detalhada. Pendente aprovação do conteúdo/telas para WFM/BD. Fonte: <a href="../DFT_FTAT933_Jornada_EndToEnd_v1.2.pptx">DFT v1.2</a>, US-07/09/10 e Figma.</p></li>
+          <li><strong>Limites da Jornada 5.2 (P1)</strong>Confirmar canal <code>MOBILE</code>/APP e se WEB será uma jornada irmã. Confirmar que desambiguação e consulta de assets ficam integralmente no canal antes do START do Journey.<p class="decision-state"><b>Status:</b> Respondida · <b>Resposta/decisão:</b> Jornada 5.2 é “Abertura de BD pelo VE” no APP; o DAS distingue a Jornada 5.1 WEB. A seleção do asset ocorre no VE antes do START. Não misturar os canais no escopo desta jornada.</p></li>
+          <li><strong>Contrato de saída SDUI (P1)</strong>Quais códigos de estado/CTA o BFF espera, como representa espera assíncrona e conclusão, e como navega para Central de visitas/faturas, agenda e início sem abrir URL externa?<p class="decision-state"><b>Status:</b> Parcialmente respondida · <b>DFT v1.2 INT27/28:</b> descreve mensagem da jornada com estado, próxima atividade, dados de exibição e identificadores de correlação, encaminhada pela API wf-journey-v1 ao VE e com response do VE retornando à jornada. Isso esclarece o envelope conceitual e o ciclo request/response, mas não fornece schema JSON, códigos de estado, contrato das CTAs nem payload SDUI. Fonte: <a href="../DFT_FTAT933_Jornada_EndToEnd_v1.2.pptx">DFT v1.2 INT27/28</a>; contrato detalhado continua pendente com VE/BFF.</p></li>
+          <li><strong>Alinhamento BPMN, versão e registry (P0)</strong>Confirmar que o BPMN produzido pelo Journey Admin/POC, incorporado manualmente pelo responsável ao motor customizado, preservará <code>processDefinitionKey = Journey_&lt;UUID sem hífens&gt;</code> e <code>processDefinitionVersionTag = vN</code>; que as telas SDUI da mesma versão estarão publicadas no registry; e que o start pela fachada executará a versão alinhada, sem depender de um <code>versionTag</code> ignorado pelo motor ao iniciar por chave.<p class="decision-state"><b>Status:</b> Parcialmente respondida · <b>Resposta/decisão:</b> incorporação do BPMN será manual pelo responsável. Pendentes a validação de chave/tag no deployment, sincronização com o registry <code>ms-journey-v1</code> e seleção efetiva da versão no start.</p></li>
+        </ol>
+      </section>
+
+      <section id="rodadas">
+        <h2>Publicações e testes</h2>
+        <p>Uma linha por publicação. Registramos o que mudou, a versão gerada, o cenário testado e o resultado; se um teste abrir nova dúvida, ela entra na lista de pendências acima.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Rodada</th><th>Alteração</th><th>Versão/status</th><th>Cenário e resultado</th><th>Próximo passo</th></tr></thead>
+            <tbody>
+              <tr><td>RUN-001</td><td>Conectores de laboratório removidos; v3 salva com pontos DFT e endpoints internos TBD.</td><td><span class="round-status">v3 DRAFT; v1/v2 UNPUBLISHED; jornada UNPUBLISHED</span></td><td>Sem teste integrado. O publish da v3 foi bloqueado por falta de cluster/credencial Kafka para INT10; INT03/11/14/16/18 permanecem TBD.</td><td>Obter URLs internas, auth/schema dos MS, mapping de callback e configuração do broker; então publicar v3. O BPMN local anterior corresponde à v2 e não é o artefato atual.</td></tr>
+              <tr><td>RUN-002</td><td>07/11/2026 02:04 · script novo <code>skills/jornada_abertura_bd_ve_integracoes.mjs</code> com as decisões P01–P07/A–D do <a href="dossie-integracoes-bd-ve.html#jornada">dossiê de integrações</a>: INT01 em <code>GET /incidents</code>; INT03 <code>GET</code> e INT18 <code>POST</code> no MS Trouble Ticket com body do mapping v2.1; headers TID/CID dos mappings; INT11 com headers/body VIVO1; START com 59 variáveis; notas de pendência em todas as etapas com integração. Telas sem alteração.</td><td><span class="round-status">v3 DRAFT (reaproveitada); v1/v2 UNPUBLISHED; jornada UNPUBLISHED</span></td><td>Sem teste integrado. Publish bloqueado (422) somente por INT10 sem cluster/tópico/credencial de mensageria; nenhuma outra violação apontada.</td><td>Aguardar P05 (URLs WFM), P06 (IDs TMF653), P07 e Q07 (Kafka), campo protocolo (P03/Q08); ajustar jsonPaths provisórios antes de executar.</td></tr>
+              <tr><td>RUN-003</td><td>19/11/2026 · pré-produção; fachada usada como BFF de teste, com massa do Asset e referência da collection de 18/11.</td><td><span class="round-status">fenix-ve-abertura-bd · v1 · versão técnica 19</span></td><td>E-01 e caminho B-01 observados; T-01 e T-02/T-05/T-06 percorridos com ressalvas sobre CTAs de navegação e uso da URL temporária de consulta de BD. Duas instâncias concluídas. <a href="../qa-integracoes/evidencias/2026-11-19-rodada-inicial/README.md">Resultados, respostas JSON sanitizadas e capturas</a>.</td><td>Alinhar o encerramento pelo canal real; completar a validação de T-05 sem chamada à INT06 com evidência do histórico de execução e homologar a consulta pelo MS.</td></tr>
+              <tr><td>RUN-004</td><td>19/11/2026 · pré-produção; designadores informados para BD aberto e sem BD; status financeiro fornecido pelo BFF de teste.</td><td><span class="round-status">fenix-ve-abertura-bd · v1 · versão técnica 19</span></td><td>E-02, B-05/B-09, B-06, B-12/B-13, T-03 e T-04 observados com ressalvas. INT06 retornou 500; não foi possível alcançar callback, WFM ou BD pela jornada. <a href="../qa-integracoes/evidencias/2026-11-19-rodada-complementar/README.md">Cobertura, 19 respostas sanitizadas e capturas</a>.</td><td>Restabelecer INT06, obter massas de Massiva e resultados HPSD, homologar endpoint do MS e alinhar CTAs e fluxo WFM/BD.</td></tr>
+              <tr><td>RUN-005</td><td>19/11/2026 · reexecução completa: fachada como BFF (7 percursos), integrações reais pela página de QA (INT00–INT16, WO criada e cancelada) e scripts/gateways do BPMN com respostas reais ou simuladas para INT06, callback e INT18.</td><td><span class="round-status">fenix-ve-abertura-bd · v1 · versão técnica 19</span></td><td>Real: 11 passaram pela jornada e 3 fora dela; 23 passaram só com simulação; T-04/H-01 falharam (INT06 500); divergentes: B-11/B-12/B-13 (BPMN mostra tela de falha não prevista) e W-05 (BPMN tenta cancelar WO após falha da criação); B-07 não conclusivo; 5 não testados. <a href="../qa-integracoes/evidencias/2026-11-19-rodada-completa/README.md">Índice, respostas e prints</a>.</td><td>Corrigir INT06 e INT18 e repetir os cenários simulados com valores reais; decidir a tela de falha das consultas iniciais e a regra de cancelamento da WO (Q05); obter massa com Massiva ativa.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small">As linhas seguintes serão acrescentadas aqui após cada publicação e teste, sem criar um arquivo de histórico separado.</p>
+      </section>
+
+      <section id="pronto">
+        <h2>Como vamos avançar</h2>
+        <p>Não precisamos esperar todas as respostas para começar. Com as respostas confirmadas para uma fatia, construímos e publicamos essa parte, testamos, atualizamos a rodada e voltamos às pendências que o teste revelar.</p>
+        <ul class="plain-list">
+          <li>no START, declarar nomes/tipos necessários (<code>designador: string</code>, <code>productStatus: string</code>); o BFF preencherá os valores em runtime na etapa de integração;</li>
+          <li>tabela de decisão para impedimentos e resultados HPSD;</li>
+          <li>contratos/destinos de SIGITM e WFM, incluindo ambientes e credenciais;</li>
+          <li>headers e schema do callback Kafka, correlação e timeout;</li>
+          <li>política de retry, idempotência e cancelamento de WO/BD;</li>
+          <li>definição do protocolo exibido e compatibilidade da tela de sucesso;</li>
+          <li>aprovação das telas novas que não existem no Figma;</li>
+          <li>ambiente e produto/jornada onde a versão será criada, sem sobrescrever dados de outra jornada.</li>
+        </ul>
+        <div class="callout green"><strong>Primeiro passo:</strong> montar a jornada com as variáveis START declaradas, sem fixar valores de asset. O body real e a origem dos valores serão fechados com o BFF depois; demais contratos pendentes continuam limitando a integração real, não a declaração dessas entradas.</div>
+        <p class="small">Este documento é uma análise de requisitos e arquitetura, não uma aprovação dos contratos nem autorização para chamar ambientes corporativos. Endpoints de produção não foram executados.</p>
+        <div class="footer">Esta página HTML é o único registro de acompanhamento. Atualizar as pendências e as rodadas diretamente nela.</div>
+      </section>
+    </main>
+  </div>
+  <script>
+    const scenarioSection = document.getElementById('cenarios');
+    document.querySelector('main').append(scenarioSection);
+
+    const flowViewport = document.querySelector('.flowchart-viewport');
+    if (flowViewport && flowViewport.scrollWidth > flowViewport.clientWidth) {
+      flowViewport.scrollLeft = (flowViewport.scrollWidth - flowViewport.clientWidth) / 2;
+    }
+
+    const themeButtons = document.querySelectorAll('[data-theme-choice]');
+
+    function setTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+      themeButtons.forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.themeChoice === theme));
+      });
+      try { localStorage.setItem('fenix-dossie-theme', theme); } catch {}
+    }
+
+    themeButtons.forEach((button) => {
+      button.addEventListener('click', () => setTheme(button.dataset.themeChoice));
+    });
+    setTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+  </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "run": "R2",
+  "etapa": "ir_inicio",
+  "quando": "2026-11-19T23:24:06.499Z",
+  "http": 200,
+  "observacoes": {},
+  "resposta": {
+    "processInstanceId": "4c4b4f44-e470-11f1-8248-06dfec022e82",
+    "previousActivityId": "Node_TesteConexao",
+    "activityId": null,
+    "activityType": null,
+    "executionId": null,
+    "taskId": null,
+    "status": "COMPLETED",
+    "activeProcessInstanceId": null,
+    "variables": {},
+    "matchedTransition": {
+      "kind": "guarded",
+      "label": null,
+      "eventName": null
+    }
+  }
+}

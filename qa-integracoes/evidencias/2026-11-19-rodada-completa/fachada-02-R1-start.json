@@ -1,0 +1,173 @@
+{
+  "run": "R1",
+  "etapa": "start",
+  "quando": "2026-11-19T23:23:33.247Z",
+  "http": 201,
+  "observacoes": {},
+  "resposta": {
+    "processInstanceId": "3c93dfd3-e470-11f1-8248-06dfec022e82",
+    "businessKey": "FTAT933-QA-R1-1795130612534",
+    "processDefinitionKey": "fenix-ve-abertura-bd",
+    "processDefinitionVersionTag": "v1",
+    "processDefinitionId": "fenix-ve-abertura-bd:19:f909c753-e420-11f1-81f7-06dfec022e82",
+    "processDefinitionVersion": 19,
+    "activityId": "Node_Inicio",
+    "activityType": "userTask",
+    "activityName": "Vamos verificar seu serviço",
+    "executionId": "3c93dfd3-e470-11f1-8248-06dfec022e82",
+    "taskId": "Node_Inicio",
+    "assignee": "ve-app",
+    "tenantId": null,
+    "activeProcessInstanceId": "3c93dfd3-e470-11f1-8248-06dfec022e82",
+    "variables": {
+      "data_wo_dateOfSale": "[DADO SUPRIMIDO]",
+      "data_requestTimestamp": "2026-11-19T23:23:32.534Z",
+      "data_wo_customerCategory": "[DADO SUPRIMIDO]",
+      "data_wo_mobileNumber": "[DADO SUPRIMIDO]",
+      "data_wo_cnlAcronym": "[DADO SUPRIMIDO]",
+      "channel": "MOBILE",
+      "data_wfmTelephonicArea": "[DADO SUPRIMIDO]",
+      "data_bd_relatedServiceId": "[DADO SUPRIMIDO]",
+      "data_wo_acessoDesignador": "[DADO SUPRIMIDO]",
+      "data_wo_streetName": "[DADO SUPRIMIDO]",
+      "data_wo_workNumber": "[DADO SUPRIMIDO]",
+      "data_wo_orderDetail": "[DADO SUPRIMIDO]",
+      "data_wo_contactName": "[DADO SUPRIMIDO]",
+      "data_bd_relatedServiceSpecificationId": "[DADO SUPRIMIDO]",
+      "data_issServiceNow": "[DADO SUPRIMIDO]",
+      "data_wfmCentralOffice": "[DADO SUPRIMIDO]",
+      "data_wo_phoneNumber": "[DADO SUPRIMIDO]",
+      "data_wo_neighborhood": "[DADO SUPRIMIDO]",
+      "data_wo_longitude": "[DADO SUPRIMIDO]",
+      "data_wfmMediaType": "[DADO SUPRIMIDO]",
+      "data_wfmAttendantId": "[DADO SUPRIMIDO]",
+      "data_correlationId": "CID_VE_FTAT933_QA_1795130612534",
+      "data_wo_stateOrProvince": "[DADO SUPRIMIDO]",
+      "data_wo_acessoId": "[DADO SUPRIMIDO]",
+      "data_wfmGeographicSiteId": "[DADO SUPRIMIDO]",
+      "data_wo_streetCode": "[DADO SUPRIMIDO]",
+      "data_wo_streetNr": "[DADO SUPRIMIDO]",
+      "data_wfmNetworkOwner": "[DADO SUPRIMIDO]",
+      "data_productStatus": "Ativo",
+      "data_designador": "[DADO SUPRIMIDO]",
+      "data_wo_documentNumber": "[DADO SUPRIMIDO]",
+      "data_bd_productInventoryId": "[DADO SUPRIMIDO]",
+      "data_wo_orderId": "[DADO SUPRIMIDO]",
+      "data_wfmPostcode": "[DADO SUPRIMIDO]",
+      "data_wo_complement": "[DADO SUPRIMIDO]",
+      "data_wo_customerName": "[DADO SUPRIMIDO]",
+      "data_wfmCnl": "[DADO SUPRIMIDO]",
+      "data_wo_city": "[DADO SUPRIMIDO]",
+      "data_wo_emailAddress": "[DADO SUPRIMIDO]",
+      "data_wo_latitude": "[DADO SUPRIMIDO]",
+      "data_wo_productId": "[DADO SUPRIMIDO]",
+      "data_wo_customerId": "[DADO SUPRIMIDO]",
+      "data_wo_orderProtocol": "[DADO SUPRIMIDO]",
+      "assignee": "ve-app",
+      "data_wo_addressReference": "[DADO SUPRIMIDO]",
+      "data_wo_detail": "[DADO SUPRIMIDO]"
+    },
+    "status": "ACTIVE",
+    "suspended": false,
+    "wasJustCreated": true,
+    "outcome": null,
+    "created": null,
+    "endTime": null,
+    "removalTime": null,
+    "form": {
+      "id": null,
+      "name": "Vamos verificar seu serviço",
+      "description": null,
+      "sdui": {
+        "schemaVersion": "1.0.0",
+        "catalogVersion": "1.0.0",
+        "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+        "journeyVersion": 1,
+        "uiStepId": "Node_Inicio",
+        "status": "published",
+        "publishedAt": "2026-11-09T12:00:00Z",
+        "supportedTargets": [
+          "react.mobile",
+          "flutter.mobile"
+        ],
+        "minRendererVersion": {
+          "react.mobile": "1.0.0",
+          "flutter.mobile": "1.0.0"
+        },
+        "dataSources": {},
+        "data": [
+          "ui.screen",
+          {
+            "id": "screen_inicio",
+            "title": "Suporte técnico",
+            "version": "1.0.0",
+            "scrollable": true,
+            "paddingToken": "spacing.md",
+            "backgroundToken": "color.background.primary"
+          },
+          [
+            [
+              "ui.stack",
+              {
+                "id": "stack_inicio",
+                "version": "1.0.0",
+                "alignment": "stretch",
+                "direction": "vertical",
+                "spacingToken": "spacing.md"
+              },
+              [
+                [
+                  "ui.text",
+                  {
+                    "id": "in_titulo",
+                    "text": "Agora, vamos verificar o que pode estar acontecendo com sua internet",
+                    "align": "start",
+                    "variant": "title",
+                    "version": "1.0.0",
+                    "maxLines": 2,
+                    "colorToken": "color.text.primary"
+                  }
+                ],
+                [
+                  "ui.text",
+                  {
+                    "id": "in_sub",
+                    "text": "Antes dos testes, vamos conferir o seu serviço para identificar possíveis problemas",
+                    "align": "start",
+                    "variant": "body",
+                    "version": "1.0.0",
+                    "maxLines": 2,
+                    "colorToken": "color.text.primary"
+                  }
+                ],
+                [
+                  "ui.button",
+                  {
+                    "id": "in_continuar",
+                    "size": "medium",
+                    "label": "Continuar",
+                    "$events": {
+                      "onPress": {
+                        "action": "action.submit",
+                        "params": {}
+                      }
+                    },
+                    "loading": false,
+                    "variant": "primary",
+                    "version": "1.0.0",
+                    "disabled": false,
+                    "fullWidth": true
+                  }
+                ]
+              ]
+            ]
+          ]
+        ]
+      },
+      "context": {
+        "form": {},
+        "data": "[DADOS SUPRIMIDOS]"
+      }
+    }
+  }
+}

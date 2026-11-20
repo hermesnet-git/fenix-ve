@@ -1,0 +1,2029 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa das integrações · Fenix VE</title>
+<!--
+  Fenix VE: verificador das integrações da jornada fenix-ve-abertura-bd (FTAT-933).
+  Arquivo único: abra direto no navegador, sem servidor. Token informado manualmente e mantido só em memória.
+-->
+<style>
+  :root {
+    --fundo: #fbfaf8; --superficie: #ffffff; --superficie-2: #f3f1ee; --texto: #1c1917; --suave: #6b645c;
+    --borda: #e6e2dc; --acento: #5b1a8a; --acento-texto: #ffffff; --acento-suave: #efe5f6; --linha: #d8d2ca;
+    --ok: #157a4a; --ok-fundo: #e5f4ec; --lento: #8a5a00; --lento-fundo: #fbf0d9;
+    --alerta: #a2470b; --alerta-fundo: #fbe9dd; --falha: #b3261e; --falha-fundo: #fbe4e2;
+    --pulado: #6b6672; --pulado-fundo: #eeecf1; --executando: #1f5fbf;
+    --raio: 10px; --raio-p: 6px;
+    --sans: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; font: 14px/1.5 var(--sans); color: var(--texto); background: var(--fundo); font-variant-numeric: tabular-nums;
+    min-height: 100vh; display: grid; grid-template-rows: auto 1fr; }
+  ::selection { background: var(--acento); color: var(--acento-texto); }
+  :focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; border-radius: 4px; }
+  * { scrollbar-width: thin; scrollbar-color: var(--borda) transparent; }
+  h1, h2, h3, h4 { text-wrap: balance; margin: 0; }
+  code { font: 12.5px var(--mono); }
+  .ico { flex: none; vertical-align: -3px; }
+  .ico-executando { animation: girar 0.9s linear infinite; }
+  @keyframes girar { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .ico-executando { animation: none; } * { transition: none !important; } }
+
+  /* Campos */
+  .campo { display: grid; gap: 4px; }
+  .campo label { font-size: 12px; font-weight: 600; color: var(--suave); }
+  .campo input, .campo select, .campo textarea {
+    width: 100%; font: inherit; font-size: 13px; color: var(--texto); background: var(--superficie);
+    border: 1px solid var(--borda); border-radius: var(--raio-p); padding: 7px 9px; transition: border-color .15s, box-shadow .15s; }
+  .campo textarea { font-family: var(--mono); font-size: 12px; resize: vertical; }
+  .campo input::placeholder, .campo textarea::placeholder { color: var(--suave); opacity: .75; }
+  .campo input:hover, .campo select:hover, .campo textarea:hover { border-color: color-mix(in srgb, var(--acento) 35%, var(--borda)); }
+  .campo input:focus, .campo select:focus, .campo textarea:focus { outline: none; border-color: var(--acento); box-shadow: 0 0 0 3px var(--acento-suave); }
+  .campo-checkbox { display: flex; align-items: flex-start; gap: 8px; }
+  .campo-checkbox input { width: 16px; height: 16px; margin: 2px 0 0; accent-color: var(--acento); }
+  .campo-checkbox label { font-weight: 500; color: var(--texto); font-size: 13px; }
+  .campo-pendente { font-size: 11px; line-height: 1.35; color: var(--alerta); }
+
+  /* Botões */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font: inherit; font-size: 13px; font-weight: 600;
+    border-radius: var(--raio-p); padding: 8px 14px; border: 1px solid var(--borda); background: var(--superficie); color: var(--texto);
+    cursor: pointer; transition: background .15s, border-color .15s, transform .1s; white-space: nowrap; }
+  .btn:hover { border-color: color-mix(in srgb, var(--acento) 40%, var(--borda)); }
+  .btn:active { transform: translateY(1px); }
+  .btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+  .btn-primario { background: var(--acento); border-color: var(--acento); color: var(--acento-texto); }
+  .btn-primario:hover { background: color-mix(in srgb, var(--acento) 86%, #000); border-color: transparent; }
+  .btn-primario[data-estado="pronto"] { color: var(--ok); background: var(--ok-fundo); border-color: color-mix(in srgb, var(--ok) 35%, transparent); }
+  .btn-primario[data-estado="pronto"]:hover { background: var(--ok-fundo); border-color: color-mix(in srgb, var(--acento) 40%, var(--borda)); }
+  .btn-fantasma { background: transparent; border-color: transparent; color: var(--suave); }
+  .btn-fantasma:hover { color: var(--texto); background: var(--superficie-2); }
+
+  /* Selo de estado */
+  .selo { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 2px 8px 2px 6px; border-radius: 999px; white-space: nowrap; }
+  .selo[data-estado="ok"] { color: var(--ok); background: var(--ok-fundo); }
+  .selo[data-estado="lento"] { color: var(--lento); background: var(--lento-fundo); }
+  .selo[data-estado="alerta"] { color: var(--alerta); background: var(--alerta-fundo); }
+  .selo[data-estado="falha"] { color: var(--falha); background: var(--falha-fundo); }
+  .selo[data-estado="pulado"], .selo[data-estado="pendente"] { color: var(--pulado); background: var(--pulado-fundo); }
+  .selo[data-estado="executando"] { color: var(--executando); background: color-mix(in srgb, var(--executando) 12%, transparent); }
+
+  /* Token */
+  .token-status { font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+  .token-status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--pulado); }
+  .token-status[data-estado="valido"]::before { background: var(--ok); }
+  .token-status[data-estado="expirado"]::before { background: var(--falha); }
+  .msg-erro { color: var(--falha); font-size: 12px; margin: 0; }
+  .msg-erro:empty { display: none; }
+  .acoes-token { display: flex; gap: 8px; }
+  .token-resumo { overflow-wrap: anywhere; }
+  .passo-urls > .btn { justify-self: start; }
+  #painel-token textarea { min-height: 220px; }
+  .btn-navegador { justify-self: start; }
+  .btn-navegador[data-estado="verificando"] { color: var(--suave); }
+  .btn-navegador[data-estado="liberado"] { color: var(--ok); background: var(--ok-fundo); border-color: color-mix(in srgb, var(--ok) 35%, transparent); }
+  .btn-navegador[data-estado="bloqueado"] { color: var(--alerta); background: var(--alerta-fundo); border-color: color-mix(in srgb, var(--alerta) 35%, transparent); }
+
+  /* Detalhe */
+  .det { display: grid; gap: 14px; }
+  .det-motivo { margin: 0; font-weight: 600; font-size: 13px; }
+  .det-motivo.det-falha { color: var(--falha); }
+  .det-motivo.det-alerta { color: var(--alerta); }
+  .det-motivo.det-lento { color: var(--lento); }
+  .det-motivo.det-pulado { color: var(--suave); }
+  .det-bloco header { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .det-bloco h4 { font-size: 12px; font-weight: 700; color: var(--suave); margin-right: auto; }
+  .det-acao { display: inline-flex; align-items: center; gap: 5px; font: inherit; font-size: 12px; font-weight: 600; color: var(--suave);
+    background: transparent; border: 1px solid var(--borda); border-radius: var(--raio-p); padding: 3px 8px; cursor: pointer; }
+  .det-acao:hover { color: var(--texto); border-color: var(--acento); }
+  .det-pre { margin: 0; font: 12px/1.55 var(--mono); background: var(--superficie-2); border: 1px solid var(--borda); border-radius: var(--raio-p);
+    padding: 10px 12px; max-height: 340px; overflow: auto; white-space: pre-wrap; word-break: break-word; color: var(--texto); }
+  .det-checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+  .det-checks li { display: grid; grid-template-columns: 16px minmax(0, 1fr) auto; gap: 8px; align-items: baseline; font-size: 13px; }
+  .det-checks li.ok .ico { color: var(--ok); }
+  .det-checks li.nok .ico { color: var(--falha); }
+  .det-check-detalhe { color: var(--suave); font-size: 12px; text-align: right; overflow-wrap: anywhere; }
+
+  /* Página */
+  .barra { display: flex; align-items: center; gap: 14px; padding: 16px 32px; border-bottom: 1px solid var(--borda); background: var(--fundo); }
+  .barra h1 { font-size: 16px; letter-spacing: -0.01em; margin-right: auto; }
+  .barra h1 small { display: block; font-size: 12px; font-weight: 500; color: var(--suave); }
+  .barra { gap: 10px; padding: 14px 24px; }
+  .barra h1 { flex: 1; min-width: 180px; }
+  .barra h1 small { max-width: 240px; }
+  .barra > .token-status { max-width: 150px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; }
+  .passo-barra { display: inline-flex; align-items: center; gap: 6px; flex: none; }
+  .passo-barra .bolinha { width: 20px; height: 20px; font-size: 11px; }
+  #cfg.config { display: contents; }
+  .placar { font-size: 13px; color: var(--suave); }
+  .placar b { color: var(--texto); }
+  .config { display: none; grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); gap: 22px 32px; padding: 22px 32px 26px; background: var(--superficie); border-bottom: 1px solid var(--borda); }
+  .config.aberta { display: grid; }
+  .col-passos { display: grid; gap: 26px; align-content: start; }
+  .passo { display: grid; gap: 10px; align-content: start; }
+  .passo > h2 { display: flex; align-items: center; gap: 8px; font-size: 14px; letter-spacing: -0.01em; margin-bottom: 2px; }
+  .bolinha { flex: none; width: 22px; height: 22px; border-radius: 50%; display: inline-grid; place-items: center; background: var(--acento); color: var(--acento-texto); font-size: 12px; font-weight: 700; }
+  .passo h3 { font-size: 12px; font-weight: 700; color: var(--suave); margin-bottom: 2px; }
+  .duas-colunas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; }
+  .grupo { display: grid; gap: 10px; }
+  .dica { font-size: 12px; color: var(--suave); margin: 0; }
+  .visualmente-oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .palco { display: grid; grid-template-columns: minmax(0, 1fr) 8px minmax(0, var(--largura-painel, 560px)); min-height: 0; }
+  #asset-titulo { margin-top: 40px; }
+  .divisor-painel { cursor: col-resize; touch-action: none; background: var(--borda); position: sticky; top: 0; height: 100dvh; }
+  .divisor-painel:hover, .divisor-painel:focus-visible { background: var(--acento); outline: none; }
+  body.redimensionando { cursor: col-resize; user-select: none; }
+  @media (max-width: 760px) {
+    .palco { grid-template-columns: minmax(0, 1fr); }
+    .divisor-painel { display: none; }
+    .lado { position: static !important; max-height: none !important; }
+  }
+  .mapa { padding: 44px 32px 40px; overflow: auto; }
+  .mapa > p { color: var(--suave); max-width: 70ch; margin: 0 0 34px; }
+  .mapa > p.aviso { color: var(--alerta); background: var(--alerta-fundo); border-radius: var(--raio-p); padding: 10px 14px; margin-bottom: 20px; max-width: none; }
+  .trilho { display: flex; gap: 0; min-width: 900px; }
+  .fase { flex: var(--n) 1 0; display: grid; grid-template-rows: auto auto; align-content: start; min-width: 0; }
+  .fase h2 { font-size: 12px; font-weight: 700; color: var(--suave); padding: 0 6px 14px; border-bottom: 2px solid var(--linha); margin: 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .estacoes { display: flex; }
+  #asset-integracao .estacoes { justify-content: flex-start; }
+  #asset-integracao .estacao { flex: 0 0 150px; }
+  .estacao { flex: 1 1 0; min-width: 0; position: relative; display: grid; justify-items: center; align-content: start; text-align: center; padding: 0 6px; cursor: pointer; background: none; border: 0; font: inherit; color: inherit; }
+  .estacao::before { content: ""; position: absolute; top: 27px; left: 0; right: 0; height: 4px; background: var(--linha); z-index: 0; }
+  .fase:first-child .estacao:first-child::before { left: 50%; }
+  .fase:last-child .estacao:last-child::before { right: 50%; }
+  .ponto { position: relative; z-index: 1; margin-top: 12px; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--fundo); border: 3px solid var(--linha); color: var(--suave); transition: transform .25s cubic-bezier(.16,1,.3,1), background .2s, border-color .2s; }
+  .estacao:hover .ponto { transform: scale(1.08); }
+  .estacao[aria-current="true"] .ponto { box-shadow: 0 0 0 5px var(--acento-suave); border-color: var(--acento); }
+  .estacao[data-estado="ok"] .ponto { background: var(--ok); border-color: var(--ok); color: #fff; }
+  .estacao[data-estado="lento"] .ponto { background: var(--lento); border-color: var(--lento); color: #fff; }
+  .estacao[data-estado="alerta"] .ponto { background: var(--alerta); border-color: var(--alerta); color: #fff; }
+  .estacao[data-estado="falha"] .ponto { background: var(--falha); border-color: var(--falha); color: #fff; }
+  .estacao[data-estado="executando"] .ponto { border-color: var(--executando); color: var(--executando); }
+  .estacao[data-estado="ok"]::before { background: color-mix(in srgb, var(--ok) 45%, var(--linha)); }
+  .rot { margin-top: 12px; display: grid; gap: 2px; max-width: 150px; overflow-wrap: anywhere; }
+  .rot b { font: 600 12px var(--mono); color: var(--suave); }
+  .rot strong { font-size: 13px; line-height: 1.3; }
+  .rot span { font-size: 12px; color: var(--suave); }
+  .rot em { font-style: normal; font-size: 11px; font-weight: 700; color: var(--alerta); }
+  .rot small.nota { font-size: 11px; line-height: 1.35; color: var(--executando); }
+  .url-integracao { margin: 0 0 18px; overflow-wrap: anywhere; }
+  .url-integracao dt { font-size: 12px; font-weight: 600; color: var(--suave); margin-bottom: 4px; }
+  .url-integracao dd { margin: 0; font: 12px/1.5 var(--mono); color: var(--executando); }
+  .nota-lado { margin: -6px 0 16px; padding: 8px 10px; font-size: 12px; color: var(--executando); background: color-mix(in srgb, var(--executando) 8%, transparent); border-radius: var(--raio-p); overflow-wrap: anywhere; }
+  .legenda { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 40px; font-size: 12px; color: var(--suave); }
+  .legenda span { display: inline-flex; align-items: center; gap: 6px; }
+  .legenda i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .lado { border-left: 1px solid var(--borda); background: var(--superficie); padding: 26px 26px 40px; overflow: auto; }
+  .lado h3 { font-size: 18px; letter-spacing: -0.015em; margin: 6px 0 2px; }
+  .lado .sub { color: var(--suave); font-size: 13px; margin: 0 0 16px; }
+  .lado .linha-topo { display: flex; align-items: center; gap: 8px; }
+  .lado .linha-topo .btn { margin-left: auto; }
+  .lado .vazio { color: var(--suave); margin-top: 8px; }
+  .lado { position: sticky; top: 0; align-self: start; max-height: 100dvh; }
+  .editor-request { display: grid; gap: 18px; padding: 18px 0; border-top: 1px solid var(--borda); }
+  .editor-request h4 { font-size: 13px; }
+  .editor-request .grupo { gap: 12px; }
+  .editor-request details { border-top: 1px solid var(--borda); padding-top: 14px; }
+  .editor-request summary { cursor: pointer; font-weight: 600; margin-bottom: 12px; }
+  .editor-request textarea { min-height: 100px; }
+  .editor-request .request-body { min-height: 220px; }
+  .editor-acoes { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .config { grid-template-columns: minmax(0, 1fr); }
+  body:has(.liberar[open]) { overflow: hidden; }
+  .liberar { position: fixed; inset: 0 0 0 auto; margin: 0; width: min(560px, 100%); max-width: 100%; height: 100%; height: 100dvh;
+    max-height: 100%; padding: 0; border: 0; border-left: 1px solid var(--borda); color: var(--texto); background: var(--superficie);
+    box-shadow: -16px 0 48px rgba(28,25,23,.16); }
+  .liberar[open] { display: grid; grid-template-rows: auto minmax(0, 1fr); animation: abrir-lateral .2s ease-out; }
+  .liberar::backdrop { background: rgba(28,25,23,.28); }
+  .liberar-cabecalho { display: flex; align-items: center; gap: 16px; padding: 20px 24px; border-bottom: 1px solid var(--borda); }
+  .liberar h2 { flex: 1; font-size: 16px; letter-spacing: 0; }
+  .liberar-fechar { flex: none; width: 40px; height: 40px; padding: 0; }
+  .liberar-conteudo { display: grid; align-content: start; gap: 28px; padding: 24px; overflow-y: auto; overscroll-behavior: contain; }
+  .liberar-conteudo > div { min-width: 0; }
+  .liberar .btn { white-space: normal; }
+  @keyframes abrir-lateral { from { transform: translateX(100%); } to { transform: translateX(0); } }
+  @media (prefers-reduced-motion: reduce) { .liberar[open] { animation: none; } }
+  .liberar p { margin: 0 0 12px; color: var(--suave); max-width: 62ch; }
+  .cuidados { margin: 0; padding-left: 18px; color: var(--suave); font-size: 13px; display: grid; gap: 4px; }
+  .abas { display: inline-flex; padding: 3px; gap: 2px; background: var(--superficie-2); border-radius: var(--raio-p); }
+  .seletores { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .abas button { font: inherit; font-size: 13px; font-weight: 600; color: var(--suave); background: transparent; border: 0; border-radius: 4px; padding: 5px 12px; cursor: pointer; }
+  .abas button[aria-selected="true"] { background: var(--superficie); color: var(--texto); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .abas small { font-weight: 500; color: var(--suave); }
+  .passos { margin: 0 0 14px; padding-left: 20px; display: grid; gap: 6px; }
+  .acoes-so { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .liberar .dica { margin-bottom: 6px; }
+  .aviso button { margin-left: 8px; font: inherit; font-weight: 700; color: inherit; background: none; border: 0; padding: 0; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  @media (max-width: 640px) { .liberar-cabecalho { padding: 16px; } .liberar-conteudo { padding: 20px 16px; } }
+  @media (max-width: 1300px) { .passo-urls { grid-column: 1 / -1; } }
+  @media (max-width: 900px) { .config { grid-template-columns: 1fr; } .duas-colunas { grid-template-columns: 1fr; } }
+  @media (max-width: 640px) { .barra { padding: 12px 16px; flex-wrap: wrap; } .config { padding: 18px 16px; } .mapa { padding: 26px 16px; } }
+</style>
+</head>
+<body>
+<header class="barra">
+  <h1>Mapa das integrações<small>fenix-ve-abertura-bd · na ordem em que o motor chama</small></h1>
+  <span class="placar" id="placar" aria-live="polite"></span>
+  <span class="token-status" id="token-status">Sem token</span>
+  <div class="passo-barra" role="group" aria-label="Passo 1: liberar navegador">
+    <span class="bolinha" aria-hidden="true">1</span>
+    <button class="btn btn-navegador" type="button" id="abrir-liberar" data-estado="verificando" aria-expanded="false" aria-controls="liberar">Verificando navegador…</button>
+  </div>
+  <div class="passo-barra" role="group" aria-label="Passo 2: informar token">
+    <span class="bolinha" aria-hidden="true">2</span>
+    <button class="btn btn-primario" type="button" id="abrir-token" aria-expanded="false" aria-controls="painel-token">Informar token</button>
+  </div>
+  <div class="passo-barra" role="group" aria-label="Passo 3: configurar URL e ambiente">
+    <span class="bolinha" aria-hidden="true">3</span>
+    <button class="btn btn-primario" type="button" id="abrir-urls" aria-expanded="false" aria-controls="painel-urls" title="Configurar URL e Ambiente">Configurar</button>
+  </div>
+  <button class="btn" type="button" id="exportar" disabled><span data-ico="baixar"></span>JSON</button>
+  <button class="btn btn-primario" type="button" id="rodar-tudo"><span data-ico="play"></span>Percorrer a jornada</button>
+  <button class="btn" type="button" id="parar-jornada" disabled title="Parar a execução da jornada"><span data-ico="stop"></span>Parar</button>
+</header>
+<form class="config" id="cfg" autocomplete="off" onsubmit="return false">
+  <div hidden><div id="g-jornada"></div><div id="g-wfm"></div></div>
+  <dialog class="liberar" id="painel-token" aria-labelledby="token-titulo">
+    <header class="liberar-cabecalho">
+      <h2 id="token-titulo">Informar token</h2>
+      <button class="btn btn-fantasma liberar-fechar" type="button" data-fechar-painel aria-label="Fechar painel" title="Fechar painel"><span data-ico="falha" aria-hidden="true"></span></button>
+    </header>
+    <div class="liberar-conteudo">
+      <div class="editor-acoes">
+        <span class="token-status token-resumo" id="token-resumo" aria-live="polite">Sem token</span>
+        <button class="btn btn-fantasma" type="button" id="limpar-token">Limpar</button>
+      </div>
+      <div class="grupo">
+        <div id="g-token" class="grupo"></div>
+        <p class="msg-erro" id="erro-token" role="alert"></p>
+        <p class="dica">Cole o access_token do OAM (por exemplo, gerado no Postman). Fica só na memória desta aba.</p>
+      </div>
+      <div class="acoes-token"><button class="btn btn-primario" type="button" id="usar">Usar este token</button></div>
+    </div>
+  </dialog>
+  <dialog class="liberar" id="painel-urls" aria-labelledby="urls-titulo">
+    <header class="liberar-cabecalho">
+      <h2 id="urls-titulo">Configurar URLs</h2>
+      <button class="btn btn-fantasma liberar-fechar" type="button" data-fechar-painel aria-label="Fechar painel" title="Fechar painel"><span data-ico="falha" aria-hidden="true"></span></button>
+    </header>
+    <div class="liberar-conteudo">
+      <div id="g-amb"></div>
+      <div id="g-avancado" class="grupo"></div>
+      <div id="g-execucao"></div>
+      <div><button class="btn btn-primario" type="button" data-fechar-painel>Concluir</button></div>
+    </div>
+  </dialog>
+</form>
+<dialog class="liberar" id="liberar" aria-labelledby="liberar-titulo">
+  <header class="liberar-cabecalho">
+    <h2 id="liberar-titulo">Liberar navegador</h2>
+    <button class="btn btn-fantasma liberar-fechar" type="button" id="fechar-liberar" aria-label="Fechar painel" title="Fechar painel" autofocus><span data-ico="falha" aria-hidden="true"></span></button>
+  </header>
+  <div class="liberar-conteudo">
+  <div>
+    <p>Os gateways do CPM e do Trouble Ticket ainda não liberam CORS para páginas, então o navegador bloqueia essas chamadas (o Postman não passa por essa regra). Para testar por aqui, abra esta página numa janela separada do Chrome ou do Edge com a checagem desligada.</p>
+    <ul class="cuidados">
+      <li>A janela usa um perfil próprio; o seu navegador normal não muda.</li>
+      <li>Use essa janela só para esta página. Sem a proteção, sites abertos nela podem ler dados de outros sites: não faça login em nada nela.</li>
+      <li>A faixa amarela "sinalização de linha de comando não suportada" confirma que funcionou.</li>
+      <li>A VPN continua necessária.</li>
+    </ul>
+  </div>
+  <div>
+    <div class="seletores">
+      <div class="abas" role="tablist" aria-label="Sistema operacional">
+        <button type="button" role="tab" data-so="mac" aria-selected="false">macOS</button><button type="button" role="tab" data-so="win" aria-selected="false">Windows</button>
+      </div>
+      <div class="abas" role="tablist" aria-label="Navegador">
+        <button type="button" role="tab" data-nav="chrome" aria-selected="false">Chrome</button><button type="button" role="tab" data-nav="edge" aria-selected="false">Edge</button>
+      </div>
+    </div>
+    <ol class="passos" id="passos"></ol>
+    <div class="acoes-so">
+      <button class="btn btn-primario" type="button" id="baixar-atalho"></button>
+      <button class="btn" type="button" id="copiar-comando">Copiar comando</button>
+    </div>
+    <p class="dica" id="dica-comando"></p>
+    <pre class="det-pre" id="comando"></pre>
+  </div>
+  </div>
+</dialog>
+<div class="palco">
+  <main class="mapa">
+    <p class="aviso" id="aviso" hidden></p>
+    <section aria-labelledby="asset-titulo">
+      <div id="asset-integracao"></div>
+      <h2 id="asset-titulo">Entrada da Jornada</h2>
+    </section>
+    <p>Integrações da Jornada Fenix - Abertura de BD.</p>
+    <div class="trilho" id="trilho"></div>
+    <div class="legenda">
+      <span><i style="background:var(--ok)"></i>Operacional</span><span><i style="background:var(--lento)"></i>Lento</span>
+      <span><i style="background:var(--alerta)"></i>Fora do contrato</span><span><i style="background:var(--falha)"></i>Indisponível</span>
+      <span><i style="background:var(--linha)"></i>Não executado</span>
+    </div>
+  </main>
+  <div class="divisor-painel" id="divisor-painel" role="separator" tabindex="0" aria-label="Largura do painel lateral" aria-orientation="vertical" aria-controls="lado" title="Arraste para redimensionar o painel lateral"></div>
+  <aside class="lado" id="lado" aria-live="polite"></aside>
+</div>
+<script>
+(function () {
+  'use strict';
+
+  // ===== Ambientes e especificação das chamadas (iguais aos httpTask do BPMN) =====
+  const AMBIENTES = {
+    preprod: {
+      nome: 'Preprod',
+      asset: 'https://csin-preprod.redecorp.br/customerAssetInformation/v2',
+      cpm: 'https://cssp-preprod.redecorp.br/customer-problem-management/v1',
+      tt: 'https://spmg-preprod.redecorp.azr/troubleTicketManagement/v1',
+      ttConsulta: 'https://api-hml.telefonica.com.br/serviceNowTroubleTicket/v1',
+      hpsd: 'https://api-hml.telefonica.com.br/gtw-redes/serviceTestManagement/v1',
+      motor: 'https://eljy-preprod.redecorp.azr/journey-motor/v1',
+      wfm: 'http://preprod.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1',
+    },
+    dev: {
+      nome: 'Dev',
+      cpm: 'https://cssp-preprod.redecorp.br/customer-problem-management/v1',
+      tt: 'https://spmg-dev.redecorp.azr/troubleTicketManagement/v1',
+      hpsd: 'https://api-dev.telefonica.com.br/gtw-redes/serviceTestManagement/v1',
+      motor: 'https://eljy-dev.redecorp.azr/journey-motor/v1',
+      wfm: '',
+    },
+  };
+  const HPSD_TOPIC = 'telco.service.servicetestmanagement.servicetestresult';
+  const LIMITE_LENTO_MS = 10000;
+  const LIMITE_TIMEOUT_MS = 30000;
+  const MAX_RESPOSTA = 20000;
+  let navegadorLiberado = false;
+
+  const uuid = () => (crypto.randomUUID ? crypto.randomUUID()
+    : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0;
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    }));
+  const tid = codigo => 'TID_ELJY_FTAT933' + codigo + '_' + new Date().toISOString();
+  const enc = encodeURIComponent;
+
+  function headersBase(ctx, extra) {
+    const h = Object.assign({ Accept: 'application/json' }, extra || {});
+    if (ctx.token) h.Authorization = 'Bearer ' + ctx.token;
+    return h;
+  }
+  const comCorrelacao = (ctx, h) => Object.assign(h, ctx.params.correlationId ? { 'X-Vivo-Correlation-Id': ctx.params.correlationId } : {});
+  const WFM_HEADERS = { flow: 'B2B_MASSIVO', requestSystem: 'MVE' };
+  const ISS_SERVICENOW = '3912e8705df940629d040c63cad9c0bc';
+  // INT14: valores do curl do time WFM (18/11/2026) para campos sem origem identificada na jornada (pendência).
+  const PADROES_INT14 = {
+    wo_customerCategory: 'ONE', wo_contactName: 'João da Silva', wo_emailAddress: 'gustavo.souza.ext@telefonica.com',
+    wo_mobileNumber: '11920001000', wo_phoneNumber: '1120001000', wo_workNumber: '1130002000',
+    wo_orderId: '500W400000lPdj3IAC', wo_orderProtocol: '31072026-8572624', wo_dateOfSale: '2025-10-30T23:35:14.000Z',
+    wo_orderDetail: 'REDE SATURADA;SA-1004', wo_cnlAcronym: 'CTA', wo_streetCode: '27421', wo_complement: 'AP 401 AND 4',
+    wo_longitude: '-49.32869', wo_latitude: '-25.44258', wfmGeographicSiteId: 'PRCTA_G1D23', wo_productCode: '21000',
+    wo_velocidade: '500 Mbps', wo_ipFixo: 'IP Fixo', wo_roteador: 'HGU', wo_detail: 'Autenticação',
+    wo_addressReference: 'PROXIMO ESCOLA PORTUGA',
+  };
+  const UF_POR_NOME = { acre: 'AC', alagoas: 'AL', amapa: 'AP', amazonas: 'AM', bahia: 'BA', ceara: 'CE', 'distrito federal': 'DF',
+    'espirito santo': 'ES', goias: 'GO', maranhao: 'MA', 'mato grosso': 'MT', 'mato grosso do sul': 'MS', 'minas gerais': 'MG',
+    para: 'PA', paraiba: 'PB', parana: 'PR', pernambuco: 'PE', piaui: 'PI', 'rio de janeiro': 'RJ', 'rio grande do norte': 'RN',
+    'rio grande do sul': 'RS', rondonia: 'RO', roraima: 'RR', 'santa catarina': 'SC', 'sao paulo': 'SP', sergipe: 'SE', tocantins: 'TO' };
+  // A Asset devolve o estado por extenso ("São Paulo"); o WFM espera a sigla ("SP").
+  function siglaUf(valor) {
+    const texto = String(valor || '').trim();
+    if (/^[A-Za-z]{2}$/.test(texto)) return texto.toUpperCase();
+    return UF_POR_NOME[texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()] || texto || null;
+  }
+  const CARACTERISTICAS_BD = ['estadoDescricao', 'city', 'endBairro', 'postcode', 'telephonicArea', 'streetName', 'streetNr', 'complement',
+    'reclamanteNome', 'documentNumber', 'clienteClassificacao', 'contatoLocal', 'telefoneContatoLocal1', 'telefoneContatoLocal2',
+    'motivo', 'submotivo', 'SLA', 'tipoDescricao', 'tipoOferta', 'designadorAcesso', 'velocidade', 'servicoCpccNome',
+    'WorkOrder', 'WorkOrderItem', 'etapa', 'telefoneTitular1', 'telefoneTitular2', 'telefoneReclamante1', 'telefoneReclamante2',
+    'horarioFuncionamento', 'preferenciaContato', 'palitagemFinal', 'previsaoAtendimento', 'caseOrigin', 'payloadDiagnostico', 'idAppointment'];
+  function parametrosBd(ctx) {
+    const p = ctx.params, slot = ctx.saidas.slot;
+    const fontes = {
+      bd_customerId: p.wo_customerId,
+      bd_customerName: p.wo_customerName, bd_email: p.wo_emailAddress, bd_phone: p.wo_phoneNumber || p.wo_mobileNumber,
+      bd_estadoDescricao: p.wo_stateOrProvince, bd_city: p.wo_city, bd_endBairro: p.wo_neighborhood,
+      bd_postcode: p.wfmPostcode, bd_telephonicArea: p.wfmTelephonicArea, bd_streetName: p.wo_streetName,
+      bd_streetNr: p.wo_streetNr, bd_complement: p.wo_complement, bd_reclamanteNome: p.wo_contactName,
+      bd_documentNumber: p.wo_documentNumber, bd_telefoneContatoLocal1: p.wo_mobileNumber || p.wo_phoneNumber,
+      bd_telefoneContatoLocal2: p.wo_workNumber, bd_designadorAcesso: p.designador,
+      bd_WorkOrder: ctx.saidas.woNumero, bd_WorkOrderItem: ctx.saidas.woItemId,
+      bd_previsaoAtendimento: slot ? previsaoAtendimento(slot) : undefined,
+      bd_requestedResolutionDate: slot?.inicio, bd_expectedResolutionDate: slot?.fim,
+      bd_description: 'Abertura de BD pelo VE (FTAT-933): diagnóstico automático não resolveu o problema',
+      bd_severity: '3', bd_name: 'Queda de Conexão', bd_channel: 'Alert', bd_etapa: 'TRIAGEM',
+    };
+    const resultado = { ...p };
+    Object.entries(fontes).forEach(([nome, valor]) => {
+      const vazio = resultado[nome] === undefined || resultado[nome] === null || String(resultado[nome]).trim() === '';
+      if (vazio && valor !== undefined && valor !== null) resultado[nome] = String(valor);
+    });
+    return resultado;
+  }
+  // Mesmo formato do exemplo do mapping (12/01/2026 13:30-15:30), no fuso de São Paulo.
+  function previsaoAtendimento(slot) {
+    const fuso = { timeZone: 'America/Sao_Paulo' };
+    const hora = valor => new Date(valor).toLocaleTimeString('pt-BR', { ...fuso, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+    return new Date(slot.inicio).toLocaleDateString('pt-BR', fuso) + ' ' + hora(slot.inicio) + (slot.fim ? '-' + hora(slot.fim) : '');
+  }
+
+  function check(nome, ok, detalhe) { return { nome, ok: !!ok, detalhe: detalhe || '' }; }
+  function lerJsonInformado(texto) {
+    try { return { valor: JSON.parse(texto) }; } catch (e) { return { erro: e.message }; }
+  }
+  function dataConsultaWfm(data) {
+    const partes = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23', timeZoneName: 'longOffset' }).formatToParts(data).map(parte => [parte.type, parte.value]));
+    const fuso = partes.timeZoneName.replace('GMT', '') || '+00:00';
+    return partes.year + '-' + partes.month + '-' + partes.day + 'T' + partes.hour + ':' + partes.minute + ':' + partes.second + '.' + String(data.getUTCMilliseconds()).padStart(3, '0') + fuso;
+  }
+  function periodoConsultaWfm(agora = new Date()) {
+    const hoje = dataConsultaWfm(agora);
+    const inicio = hoje.slice(0, 10) + 'T00:00:00.000' + hoje.slice(-6);
+    const fim = dataConsultaWfm(new Date(Date.parse(inicio) + 7 * 24 * 60 * 60 * 1000));
+    return { inicio, fim };
+  }
+  function padroesHorarioSimulado() {
+    const amanha = dataConsultaWfm(new Date(Date.parse(periodoConsultaWfm().inicio) + 86400000)).slice(0, 10);
+    return {
+      wfmSimuladoInicio: amanha + 'T12:00:00.000-03:00',
+      wfmSimuladoFim: amanha + 'T14:00:00.000-03:00',
+      wfmSimuladoPeriodo: '12:00-14:00',
+      wfmSimuladoRecursoId: 'BKT_GRUPO_02_NV_FB',
+      wfmSimuladoRecursoNome: 'Bucket - Bucket_Curitiba Vivo',
+    };
+  }
+  function horarioParaInt14(ctx) {
+    if (ctx.params.wfmUsarHorarioSimulado !== true) return ctx.saidas.slot;
+    const p = Object.assign(padroesHorarioSimulado(), ctx.params);
+    const inicio = p.wfmSimuladoInicio, fim = p.wfmSimuladoFim;
+    const comFuso = valor => typeof valor === 'string' && /T.*(?:Z|[+-]\d{2}:\d{2})$/.test(valor) && Number.isFinite(Date.parse(valor));
+    if (!comFuso(inicio) || !comFuso(fim) || Date.parse(fim) <= Date.parse(inicio)) throw new Error('Horário simulado: informe início e fim válidos com fuso e fim posterior ao início.');
+    if (!p.wfmSimuladoPeriodo?.trim() || !p.wfmSimuladoRecursoId?.trim()) throw new Error('Horário simulado: período e resourceId são obrigatórios.');
+    return { inicio, fim, timeslot: p.wfmSimuladoPeriodo, resourceId: p.wfmSimuladoRecursoId,
+      resourceName: p.wfmSimuladoRecursoNome || '', simulado: true };
+  }
+  function confirmarHorarioManual(parametros) {
+    const horario = horarioParaInt14({ params: { ...parametros, wfmUsarHorarioSimulado: true }, saidas: {} });
+    if (Date.parse(horario.inicio) <= Date.now()) throw new Error('O horário manual deve estar no futuro.');
+    return { ...horario, origem: 'manual' };
+  }
+  function atualizarCampoCorpoInt14(body, nome, valor) {
+    const wo = body.WorkOrder_Create, appointment = body.Appointment_Create;
+    const cliente = wo?.relatedParty?.find(item => item['@type'] === 'CustomerValue');
+    const pedido = wo?.relatedParty?.find(item => item['@type'] === 'CustomerOrderValue');
+    const item = wo?.workOrderItem?.[0];
+    const contato = cliente?.contactMedium?.[0];
+    const characteristic = contato?.characteristic?.[0];
+    const horario = appointment?.relatedParty?.find(entidade => entidade['@type'] === 'TimeSlot');
+    const produto = id => item?.relatedEntity?.find(entidade => entidade.id === id);
+    const banda = item?.relatedEntity?.find(entidade => entidade.name === 'Banda Larga');
+    let acesso = item?.relatedEntity?.find(entidade => entidade.name === 'ACESSO');
+    // Corpo gerado antes da Asset não tem o ACESSO: cria a entidade quando o dado chega.
+    if (!acesso && (nome === 'wo_acessoId' || nome === 'wo_acessoDesignador') && valor && Array.isArray(item?.relatedEntity)) {
+      acesso = { '@type': 'ProductEntity', id: null, name: 'ACESSO', status: 'Ativo', action: 'Ativo',
+        characteristic: [{ '@type': 'Characteristic', name: 'Designator', value: null }] };
+      item.relatedEntity.splice(banda ? item.relatedEntity.indexOf(banda) + 1 : 0, 0, acesso);
+    }
+    const mapa = {
+      wfmSimuladoInicio: [horario?.validFor, 'startDateTime'], wfmSimuladoFim: [horario?.validFor, 'endDateTime'],
+      wfmSimuladoPeriodo: [horario, 'id'], wfmSimuladoRecursoId: [horario, 'resourceId'], wfmSimuladoRecursoNome: [horario, 'resourceName'],
+      wo_customerCategory: [cliente, 'category'], wo_documentNumber: [cliente, 'documentNumber'],
+      wo_customerId: [cliente, 'id'], wo_customerName: [cliente, 'name'],
+      wo_contactName: [contato, 'name'], wo_emailAddress: [characteristic, 'emailAddress'],
+      wo_mobileNumber: [characteristic, 'mobileNumber'], wo_phoneNumber: [characteristic, 'phoneNumber'], wo_workNumber: [characteristic, 'workNumber'],
+      wo_dateOfSale: [pedido, 'dateOfSale'], wo_orderId: [pedido, 'id'], wo_orderProtocol: [pedido, 'orderProtocol'],
+      wfmCnl: [item?.place, 'cnl'], wfmPostcode: [item?.place, 'postcode'],
+      wfmNetworkOwner: [item?.place, 'networkOwner'], wfmMediaType: [item?.place, 'accessTechnology'],
+      wfmCentralOffice: [item?.place, 'centralOffice'], wfmTelephonicArea: [item?.place, 'telephonicArea'],
+      wfmGeographicSiteId: [item?.place?.geographicSite, 'id'],
+      wo_cnlAcronym: [item?.place, 'cnlAcronym'], wo_city: [item?.place, 'city'], wo_neighborhood: [item?.place, 'neighborhood'],
+      wo_stateOrProvince: [item?.place, 'stateOrProvince'], wo_streetCode: [item?.place, 'streetCode'],
+      wo_streetName: [item?.place, 'streetName'], wo_streetNr: [item?.place, 'streetNr'],
+      wo_complement: [item?.place?.geographicSubAddress, 'name'],
+      wo_productId: [banda, 'id'], wo_acessoId: [acesso, 'id'],
+      wo_velocidade: [produto('Banda Larga-VEL'), 'name'], wo_ipFixo: [produto('Banda Larga-IPFIXO'), 'name'], wo_roteador: [produto('Roteador'), 'name'],
+      wo_canBeAntecipated: [appointment, 'canBeAntecipated'],
+    };
+    if (nome === undefined) {
+      const valores = Object.fromEntries(Object.entries(mapa).filter(([, [destino, chave]]) => destino && destino[chave] !== undefined && destino[chave] !== null)
+        .map(([campo, [destino, chave]]) => [campo, destino[chave]]));
+      valores.wo_longitude = item?.place?.geographicLocation?.bbox?.[0] ?? '';
+      valores.wo_latitude = item?.place?.geographicLocation?.bbox?.[1] ?? '';
+      valores.designador = banda?.characteristic?.find(entrada => entrada.name === 'Designator')?.value ?? '';
+      valores.wo_productCode = banda?.characteristic?.find(entrada => entrada.name === 'Code')?.value ?? '';
+      valores.wo_acessoDesignador = acesso?.characteristic?.find(entrada => entrada.name === 'Designator')?.value ?? '';
+      valores.wo_orderDetail = pedido?.characteristic?.find(entrada => entrada.name === 'Detail')?.value ?? '';
+      valores.wo_detail = item?.specification?.specificationDescription?.find(entrada => entrada.name === 'DETALHE')?.value ?? '';
+      valores.wo_addressReference = appointment?.note?.find(entrada => entrada.id === 'ADDRESS_REFERENCE')?.text ?? '';
+      return valores;
+    }
+    if (mapa[nome]) {
+      const [destino, chave] = mapa[nome];
+      if (!destino) throw new Error('O corpo manual não contém a estrutura de ' + nome + '. Edite o JSON diretamente.');
+      destino[chave] = valor === '' ? null : valor;
+    }
+    if (nome === 'wfmSimuladoInicio' && Number.isFinite(Date.parse(valor))) {
+      appointment.scheduleDate = new Date(valor).toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' });
+    }
+    if (nome === 'wo_longitude' || nome === 'wo_latitude') {
+      if (!item?.place?.geographicLocation?.bbox) throw new Error('O corpo manual não contém geographicLocation.bbox.');
+      item.place.geographicLocation.bbox[nome === 'wo_longitude' ? 0 : 1] = valor || null;
+    }
+    const preencherCaracteristica = (lista, chave, value) => {
+      if (!Array.isArray(lista)) throw new Error('O corpo manual não contém a lista de características.');
+      const existente = lista.find(entrada => entrada.name === chave);
+      if (existente) existente.value = value || null;
+      else lista.push({ '@type': 'Characteristic', name: chave, value: value || null });
+    };
+    if (nome === 'designador' || nome === 'wfmMediaType') preencherCaracteristica(banda?.characteristic, nome === 'designador' ? 'Designator' : 'Technology', valor);
+    if (nome === 'wo_productCode') preencherCaracteristica(banda?.characteristic, 'Code', valor);
+    if (nome === 'wo_acessoDesignador') preencherCaracteristica(acesso?.characteristic, 'Designator', valor);
+    if (nome === 'wo_orderDetail') preencherCaracteristica(pedido?.characteristic, 'Detail', valor);
+    if (nome === 'wo_detail') preencherCaracteristica(item?.specification?.specificationDescription, 'DETALHE', valor);
+    if (nome === 'wo_addressReference') {
+      if (!Array.isArray(appointment?.note)) throw new Error('O corpo manual não contém Appointment_Create.note.');
+      const nota = appointment.note.find(entrada => entrada.id === 'ADDRESS_REFERENCE');
+      if (nota) nota.text = valor;
+      else appointment.note.push({ id: 'ADDRESS_REFERENCE', text: valor });
+    }
+    return body;
+  }
+
+  const ESPECIFICACOES = [
+    {
+      id: 'INT00', nome: 'Consulta de Asset - VE', sistema: 'Customer Asset Information', base: 'asset',
+      etapa: 'Entradas recebidas pelo VE antes de iniciar a jornada', metodo: 'GET', escrita: false,
+      requer: ['assetDocumentNumber'], esperado: [200, 206],
+      montar: ctx => ({
+        url: ctx.base.asset + '/customers/' + enc(ctx.params.assetDocumentNumber)
+          + '/assets?typeId=documentNumber&fields=' + enc('status=Ativo,Suspenso;productCode=INTERNET_BASICA,ACESSO;consumer=VE'),
+        headers: headersBase(ctx, {
+          'X-Vivo-Origin': 'VE', 'X-Vivo-Referer': 'coop.vivo.com.br', 'X-Vivo-System': 'B2B',
+          'X-Vivo-TraceId': 'TID_VE_MULE000048_' + new Date().toISOString(),
+        }),
+      }),
+      avaliar: (r, ctx) => {
+        delete ctx.saidas.entradasAsset;
+        const valido = r.json !== null && typeof r.json === 'object';
+        const checks = [check('Resposta Asset em JSON', valido)];
+        const entradas = {};
+        const indice = Number(ctx.params.assetIndice || 0);
+        const itens = r.json && Array.isArray(r.json.content) ? r.json.content : [];
+        const asset = Number.isInteger(indice) && indice >= 0 ? itens[indice] : null;
+        checks.push(check('Asset selecionado', !!asset, 'Indice ' + indice + ' de ' + itens.length + ' item(ns)'));
+        if (asset) {
+          const caracteristica = (lista, nome) => (Array.isArray(lista) ? lista : []).find(item => item && item.name === nome)?.value;
+          const cliente = asset.relatedParty?.[0]?.partyOrPartyRole;
+          const endereco = asset.place?.[0]?.place;
+          const acesso = itens.find(item => item && caracteristica(item.productCharacteristic, 'productFamily') === 'Acesso');
+          const comprovados = {
+            designador: caracteristica(asset.productCharacteristic, 'idDesignador'), productStatus: asset.status,
+            wo_productId: asset.id, wo_customerId: cliente?.id, wo_customerName: cliente?.name,
+            wo_documentNumber: caracteristica(cliente?.partyCharacteristic, 'documentNumber'),
+            wfmPostcode: endereco?.postcode, wo_streetNr: endereco?.streetNr, wo_streetName: endereco?.streetName,
+            wo_stateOrProvince: endereco?.stateOrProvince, wo_city: endereco?.city, wo_neighborhood: endereco?.locality,
+            wo_acessoId: acesso?.id, wo_acessoDesignador: caracteristica(acesso?.productCharacteristic, 'idDesignador'),
+          };
+          Object.entries(comprovados).forEach(([nome, valor]) => {
+            if (valor !== undefined && valor !== null && ['string', 'number', 'boolean'].includes(typeof valor)) entradas[nome] = String(valor);
+          });
+        }
+        if (ctx.params.assetMapeamento && ctx.params.assetMapeamento.trim()) {
+          const mapa = JSON.parse(ctx.params.assetMapeamento);
+          if (!mapa || typeof mapa !== 'object' || Array.isArray(mapa)) throw new Error('Mapeamento deve ser um objeto JSON de destino para caminho.');
+          Object.entries(mapa).forEach(([destino, caminho]) => {
+            if (!/^(designador|productStatus|wo_[A-Za-z0-9_]+|wfm[A-Za-z0-9_]+)$/.test(destino)
+              || typeof caminho !== 'string' || !caminho.trim()) throw new Error('Destino ou caminho de Asset invalido.');
+            const partes = caminho.replace(/\[(\d+)\]/g, '.$1').split('.');
+            if (partes.some(parte => !parte || ['__proto__', 'prototype', 'constructor'].includes(parte))) throw new Error('Caminho de Asset invalido.');
+            const valor = partes.reduce((atual, chave) => atual && typeof atual === 'object' && Object.hasOwn(atual, chave) ? atual[chave] : undefined, r.json);
+            const encontrado = valor !== null && valor !== undefined && ['string', 'number', 'boolean'].includes(typeof valor);
+            checks.push(check(destino, encontrado, caminho));
+            if (encontrado) entradas[destino] = String(valor);
+          });
+        }
+        if (valido && checks.every(item => item.ok)) ctx.saidas.entradasAsset = entradas;
+        return { checks, resumo: 'Asset consultado; ' + Object.keys(entradas).length + ' entrada(s) mapeada(s)' };
+      },
+    },
+    {
+      id: 'INT01', nome: 'Consulta Massiva/Manutenção', sistema: 'Customer Problem Management', base: 'cpm',
+      etapa: 'Node_ConsultaMassiva', metodo: 'GET', timeoutMs: 20000, escrita: false, requer: ['designador'],
+      esperado: [200],
+      montar: ctx => ({
+        url: ctx.base.cpm + '/incidents?serviceDesignator=' + enc(ctx.params.designador),
+        headers: comCorrelacao(ctx, headersBase(ctx)),
+      }),
+      avaliar: (r) => {
+        const lista = r.json && Array.isArray(r.json.incidents) ? r.json.incidents : null;
+        const abertas = (lista || []).filter(i => String(i && i.status).toUpperCase() !== 'CLOSED');
+        return {
+          checks: [check('Corpo com lista "incidents"', lista, lista ? lista.length + ' incidente(s)' : 'campo ausente')],
+          resumo: abertas.length ? 'Massiva aberta: ' + (abertas[0].incidentId || 's/ id') : 'Sem massiva aberta',
+        };
+      },
+    },
+    {
+      id: 'INT03', nome: 'Consulta BD aberto', sistema: 'Trouble Ticket Management', base: 'tt',
+      etapa: 'Node_ConsultaBD', metodo: 'GET', timeoutMs: 10000, escrita: false, requer: ['designador'],
+      esperado: [200, 206, 404],
+      montar: ctx => ({
+        url: (ctx.params.url_tt && ctx.base.tt !== (AMBIENTES[ctx.ambiente] || AMBIENTES.preprod).tt
+          ? ctx.base.tt : (ctx.base.ttConsulta || ctx.base.tt))
+          + '/troubleTicket?' + new URLSearchParams({ ticketType: 'Case', sys_class_name: 'sn_sprb_mgmt_case',
+            active: 'true', correlation_display: ctx.params.designador }).toString(),
+        headers: comCorrelacao(ctx, headersBase(ctx, { iss: ISS_SERVICENOW, 'X-Vivo-Transaction-Id': tid('INT003') })),
+      }),
+      avaliar: (r) => {
+        if (r.http === 404) {
+          const semRegistro = String(r.json && r.json.code) === '60';
+          return {
+            checks: [check('404 com code 60 (No Record found) = sem BD aberto', semRegistro, semRegistro ? '' : 'outro 404: o motor trata como falha')],
+            resumo: semRegistro ? 'Sem BD aberto' : 'HTTP 404',
+          };
+        }
+        const lista = Array.isArray(r.json) ? r.json : [];
+        const ativo = lista.find(t => t && typeof t === 'object' && !Array.isArray(t)
+          && !['closed', 'cancelled', 'canceled', 'resolved'].includes(String(t.status).toLowerCase()));
+        return {
+          checks: [check('Consulta de tickets concluída', true, lista.length + ' ticket(s)' + (r.http === 206 ? ' nesta página (HTTP 206)' : ''))],
+          resumo: ativo ? 'BD ativo: ' + ativo.id : 'Sem BD aberto',
+        };
+      },
+    },
+    {
+      id: 'INT06', nome: 'Solicita diagnóstico', sistema: 'HPSD · GTW Redes (TMF653)', base: 'hpsd',
+      etapa: 'Node_SolicitaDiagnostico', metodo: 'POST', timeoutMs: 15000, escrita: false, requer: ['designador'],
+      esperado: [200, 201, 202],
+      nota: 'Validar no Kafka o tópico ' + HPSD_TOPIC,
+      notaLonga: 'O retorno do diagnóstico chega pelo Kafka e não é testado nesta página. Depois de uma solicitação aceita, valide a entrega da mensagem no tópico ' + HPSD_TOPIC + '. O contrato exige testSpecification.id (pendência P06): vazio, o gateway tende a responder 400, e 401 indica que o token OAM não foi aceito. Se o Chrome abrir o seletor de certificado, escolha Cancelar: o gateway não exige certificado de cliente.',
+      montar: ctx => ({
+        url: ctx.base.hpsd + '/serviceTest',
+        headers: headersBase(ctx, { 'Content-Type': 'application/json', 'X-Vivo-Transaction-Id': uuid(), 'X-Vivo-Correlation-Id': uuid() }),
+        body: {
+          name: 'Diagnostic-FTTH-Automatic',
+          mode: 'ONDEMAND',
+          relatedParty: [
+            { role: 'AccessDesignator', id: ctx.params.designador },
+            { role: 'SistemaOrigem', id: 'ServiceNow', '@referredType': 'Organization' },
+            { role: 'ExternalId', id: ctx.params.processInstanceId || ('qa-' + Date.now()) },
+          ],
+          relatedService: { id: ctx.params.hpsdRelatedServiceId || ctx.params.designador, name: 'Internet', '@referredType': 'Service' },
+          testSpecification: { id: 'spec-ftth-gpon-basico', '@referredType': 'ServiceTestSpecification' },
+          characteristic: [{ name: 'executionMode', value: 'AUTOMATIC' }],
+        },
+      }),
+      avaliar: (r, ctx) => {
+        const id = r.json && r.json.id;
+        if (id) ctx.saidas.serviceTestId = String(id);
+        const corpoValido = r.json !== null && typeof r.json === 'object' && !Array.isArray(r.json);
+        return { checks: [
+          check('Resposta de aceite em JSON', corpoValido, corpoValido ? 'Diagnóstico final deve ser validado no Kafka' : 'esperado um objeto JSON'),
+          check('ID do serviceTest (opcional na resposta)', true, id ? String(id) : 'Não informado pelo serviço; não impede o aceite'),
+        ], resumo: id ? 'Solicitação aceita · serviceTestId ' + id : 'Solicitação aceita · validar resultado no Kafka' };
+      },
+    },
+    {
+      id: 'INT11', nome: 'Consulta horários', sistema: 'WFM Journey', base: 'wfm',
+      etapa: 'Node_ConsultaSlots', metodo: 'POST', timeoutMs: 10000, escrita: false, requer: ['wfmBaseUrl'],
+      esperado: [200, 204],
+      montar: ctx => {
+        const p = ctx.params;
+        const periodo = periodoConsultaWfm();
+        const inicio = p.wfmSlotInicio || periodo.inicio;
+        const fim = p.wfmSlotFim || periodo.fim;
+        if (![inicio, fim].every(valor => /T.*(?:Z|[+-]\d{2}:\d{2})$/.test(valor) && Number.isFinite(Date.parse(valor))) || Date.parse(fim) <= Date.parse(inicio)) {
+          throw new Error('Informe início e fim com fuso horário e fim posterior ao início.');
+        }
+        const dono = p.wfmNetworkOwner || 'VIVO1';
+        const end = { country: 'BR', postcode: p.wfmPostcode || '', cnl: p.wfmCnl || '', networkOwner: dono };
+        if (dono === 'VIVO1') {
+          end.telephonicArea = p.wfmTelephonicArea || '';
+          end.centralOffice = p.wfmCentralOffice || '';
+          end.microArea = p.wfmMicroArea || '';
+        }
+        end.placePhysicalResourceAssoc = { resourceSpecificationCharacteristic: [{ name: 'mediaType', value: p.wfmMediaType || 'GPON' }] };
+        end.geographicSite = { '@type': 'Cabinet', id: p.wfmGeographicSiteId || '' };
+        return {
+          url: ctx.base.wfm + '/searchTimeSlot',
+          headers: comCorrelacao(ctx, headersBase(ctx, Object.assign({ 'Content-Type': 'application/json',
+            'X-Vivo-Transaction-Id': tid('INT005') }, WFM_HEADERS))),
+          body: {
+            relatedEntity: p.wfmAttendantId ? [{ role: 'Ouvidoria', id: p.wfmAttendantId, '@type': 'Attendant' }] : [],
+            relatedParty: { name: 'TT_B', role: 'acronym' },
+            relatedPlace: { geographicAddress: end },
+            requestedTimeSlot: [{ validFor: { startDateTime: inicio, endDateTime: fim } }],
+          },
+        };
+      },
+      avaliar: (r, ctx) => {
+        if (r.http === 204) return { checks: [check('204 = sem horário (aceito pelo fluxo)', true)], resumo: 'Sem horários' };
+        const slots = (r.json && Array.isArray(r.json.availableTimeSlot) ? r.json.availableTimeSlot : [])
+          .filter(s => s && s.validFor && s.validFor.startDateTime)
+          .sort((a, b) => String(a.validFor.startDateTime).localeCompare(String(b.validFor.startDateTime)));
+        if (slots.length) {
+          const s = slots[0];
+          ctx.saidas.slot = { inicio: s.validFor.startDateTime, fim: s.validFor.endDateTime || '',
+            timeslot: String(s.validFor.timeslot || s.id || ''), resourceId: String(s.resourceId || ''),
+            resourceName: s.resourceName ? String(s.resourceName) : null };
+        }
+        return { checks: [check('Corpo com "availableTimeSlot"', r.json && Array.isArray(r.json.availableTimeSlot), slots.length + ' horário(s)')],
+          resumo: slots.length + ' horário(s)' };
+      },
+    },
+    {
+      id: 'INT14', nome: 'Cria WO e agendamento', sistema: 'WFM Journey', base: 'wfm',
+      etapa: 'Node_CriaWO', metodo: 'POST', timeoutMs: 10000, escrita: true, requer: ['wfmBaseUrl'],
+      depende: ctx => {
+        if (ctx.params.wfmCorpoInt14) {
+          const j = lerJsonInformado(ctx.params.wfmCorpoInt14);
+          return j.erro ? 'o corpo informado da INT14 não é um JSON válido (' + j.erro + ')' : null;
+        }
+        try { return horarioParaInt14(ctx) ? null : 'precisa de um horário da INT11, ativar o horário simulado ou informar o corpo completo da INT14'; }
+        catch (erro) { return erro.message; }
+      },
+      esperado: [200],
+      montar: ctx => {
+        const p = ctx.params;
+        let body;
+        if (p.wfmCorpoInt14) {
+          body = lerJsonInformado(p.wfmCorpoInt14).valor;
+        } else {
+          const s = horarioParaInt14(ctx);
+          // Estrutura do curl do time WFM e do PreDataMapping v2.2; campos sem origem usam PADROES_INT14.
+          const woId = 'VE' + uuid(), itemId = woId + ':1';
+          const caracteristica = (name, value) => ({ '@type': 'Characteristic', name, value });
+          const v = nome => p[nome] || PADROES_INT14[nome] || null;
+          const produto = (id, name, extra) => Object.assign({ '@type': 'ProductEntity', id, name, action: 'Ativo', status: 'Ativo' }, extra);
+          body = {
+            WorkOrder_Create: {
+              '@type': 'WorkOrder', sourceSystem: 'SERVICENOWB2BMASSIVO', id: woId,
+              relatedParty: [
+                { '@type': 'CustomerValue', category: v('wo_customerCategory'), documentNumber: p.wo_documentNumber || null, id: p.wo_customerId || null, name: p.wo_customerName || null,
+                  contactMedium: [{ '@type': 'ContactMediumValue', name: v('wo_contactName'), characteristic: [{ '@type': 'ContactMediumValueCharacteristic', emailAddress: v('wo_emailAddress'),
+                    mobileNumber: v('wo_mobileNumber'), phoneNumber: v('wo_phoneNumber'), workNumber: v('wo_workNumber') }] }] },
+                { '@type': 'CustomerOrderValue', dateOfSale: v('wo_dateOfSale'), id: v('wo_orderId'), orderProtocol: v('wo_orderProtocol'),
+                  characteristic: [caracteristica('Detail', v('wo_orderDetail'))] },
+                { '@type': 'WorkOrderPendency', context: 'TRIAGEM' },
+              ],
+              workOrderItem: [{
+                '@type': 'WorkOrderItem', id: itemId,
+                place: { '@type': 'GeographicAddress', cnl: p.wfmCnl || null, cnlAcronym: v('wo_cnlAcronym'), city: p.wo_city || null,
+                  neighborhood: p.wo_neighborhood || null, postcode: p.wfmPostcode || null, stateOrProvince: siglaUf(p.wo_stateOrProvince),
+                  streetCode: v('wo_streetCode'), streetName: p.wo_streetName || null, streetNr: p.wo_streetNr || null,
+                  networkOwner: p.wfmNetworkOwner || 'VIVO1', accessTechnology: p.wfmMediaType || 'GPON',
+                  centralOffice: p.wfmCentralOffice || '', telephonicArea: p.wfmTelephonicArea || '',
+                  geographicLocation: { '@type': 'GeographicLocation', bbox: [v('wo_longitude'), v('wo_latitude')] },
+                  geographicSite: { '@type': 'Cabinet', id: v('wfmGeographicSiteId') },
+                  geographicSubAddress: { '@type': 'GeographicSubAddress', name: v('wo_complement') } },
+                relatedEntity: [
+                  produto(p.wo_productId || null, 'Banda Larga', { characteristic: [caracteristica('Code', v('wo_productCode')),
+                    caracteristica('Designator', p.designador), caracteristica('Technology', p.wfmMediaType || 'GPON')] }),
+                  ...(p.wo_acessoId || p.wo_acessoDesignador
+                    ? [produto(p.wo_acessoId || null, 'ACESSO', { characteristic: [caracteristica('Designator', p.wo_acessoDesignador || null)] })] : []),
+                  produto('Banda Larga-VEL', v('wo_velocidade')),
+                  produto('Banda Larga-IPFIXO', v('wo_ipFixo')),
+                  produto('Roteador', v('wo_roteador')),
+                ],
+                specification: { acronym: 'TT_B', type: 'TROUBLETICKET', specificationDescription: [
+                  { name: 'PRODUTO', value: 'Banda' }, { name: 'TIPO', value: 'Defeito' },
+                  { name: 'DETALHE', value: v('wo_detail') }, { name: 'SEQUENCIA', value: '1/1' }] },
+              }],
+            },
+            Appointment_Create: {
+              description: 'Agendamento da atividade', category: 'CORPORATE', canBeAntecipated: p.wo_canBeAntecipated !== false,
+              externalId: itemId,
+              scheduleDate: new Date(s.inicio).toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' }),
+              relatedParty: [
+                { '@type': 'Attendant', id: 'Cliente via Vivo Empresa', role: '' },
+                { '@type': 'TimeSlot', id: s.timeslot, resourceId: s.resourceId, resourceName: s.resourceName,
+                  validFor: { startDateTime: s.inicio, endDateTime: s.fim } },
+              ],
+              note: [{ id: 'CRM_NOTES', text: s.simulado ? 'TESTE QA: horario simulado, sem consulta de disponibilidade na INT11' : 'Agendamento realizado pelo cliente na jornada Fenix - Abertura de BD (VE)' },
+                { id: 'ADDRESS_REFERENCE', text: v('wo_addressReference') }],
+            },
+          };
+        }
+        ctx.saidas.woIdEnviado = body && body.WorkOrder_Create ? body.WorkOrder_Create.id : null;
+        return {
+          url: ctx.base.wfm + '/workOrder/appointment',
+          headers: comCorrelacao(ctx, headersBase(ctx, Object.assign({ 'Content-Type': 'application/json',
+            'X-Vivo-Transaction-Id': tid('INT007') }, WFM_HEADERS))),
+          body,
+        };
+      },
+      avaliar: (r, ctx) => {
+        const b = r.json || {};
+        const wo = b.idWorkOrder ? String(b.idWorkOrder) : null;
+        const item = b.idWorkOrderItem ? String(b.idWorkOrderItem) : null;
+        if (wo) ctx.saidas.woNumero = wo;
+        if (item) ctx.saidas.woItemId = item;
+        if (b.idWork) ctx.saidas.woIdWork = String(b.idWork);
+        return { checks: [
+          check('idWorkOrder', wo, wo || 'ausente'),
+          check('idWorkOrderItem', item, item || 'ausente'),
+          check('idWorkOrder igual ao WorkOrder_Create.id enviado', !wo || !ctx.saidas.woIdEnviado || wo === ctx.saidas.woIdEnviado,
+            wo ? 'enviado ' + (ctx.saidas.woIdEnviado || 'n/d') : 'sem retorno'),
+        ], resumo: wo && item ? 'WO ' + wo : 'WO não confirmada' };
+      },
+    },
+    {
+      id: 'INT18', nome: 'Abre BD', sistema: 'Trouble Ticket Management', base: 'tt',
+      etapa: 'Node_CriaBD', metodo: 'POST', timeoutMs: 20000, escrita: true, requer: ['designador'],
+      depende: ctx => !ctx.saidas.slot ? 'precisa de um horário da INT11 ou confirmado manualmente'
+        : (!ctx.saidas.woNumero ? 'precisa de uma WO confirmada pela INT14 antes de abrir o BD' : null),
+      esperado: [200, 201],
+      montar: ctx => {
+        const p = parametrosBd(ctx);
+        const presente = valor => valor !== undefined && valor !== null && String(valor).trim() !== '';
+        if (!presente(p.bd_description) || !presente(p.bd_severity)) throw new Error('Descrição e severidade do BD são obrigatórias no mapping.');
+        const entidades = [
+          ['Product', 'ServiceTest', 'ProductInventory', p.bd_productInventoryId],
+          ['Service', 'ServiceTest', 'testSpecification', 'spec-ftth-gpon-basico'],
+          ['Service', 'Service', 'relatedServiceSpecification', p.bd_relatedServiceSpecificationId],
+          ['Service', 'Service', 'relatedService', p.bd_relatedServiceId],
+          ['Service', 'Service', 'mode', 'Proactive'],
+        ].filter(([, , , id]) => presente(id)).map(([tipo, entidadeTipo, nome, id]) => ({ '@type': tipo, entity: { '@type': entidadeTipo, name: nome, id: String(id) } }));
+        const partes = presente(p.bd_customerId) ? [{
+          '@type': 'Customer', role: 'Digital', partyOrPartyRole: {
+            '@type': 'Customer', id: String(p.bd_customerId), '@referredType': 'CustomerContact',
+            ...(presente(p.bd_customerName) ? { name: String(p.bd_customerName) } : {}),
+            characteristic: [['EmailContactMedium', p.bd_email], ['PhoneContactMedium', p.bd_phone], ['idCustomer', p.bd_serviceNowCustomerId]]
+              .filter(([, valor]) => presente(valor)).map(([name, value]) => ({ name, value: String(value) })),
+          },
+        }] : [];
+        return {
+          // Exceção temporária (QA-BPMN-11): mesma URL da Consulta BD enquanto o MS não responde.
+          url: (ctx.params.url_tt && ctx.base.tt !== (AMBIENTES[ctx.ambiente] || AMBIENTES.preprod).tt
+            ? ctx.base.tt : (ctx.base.ttConsulta || ctx.base.tt)) + '/troubleTicket',
+          headers: comCorrelacao(ctx, headersBase(ctx, { 'Content-Type': 'application/json', 'X-Vivo-Transaction-Id': tid('INT009') })),
+          body: {
+            '@type': 'TroubleTicket', ticketType: 'Case', description: String(p.bd_description), severity: String(p.bd_severity),
+            ...(presente(p.bd_name) ? { name: String(p.bd_name) } : {}),
+            ...(presente(p.bd_requestedResolutionDate) ? { requestedResolutionDate: String(p.bd_requestedResolutionDate) } : {}),
+            ...(presente(p.bd_expectedResolutionDate) ? { expectedResolutionDate: String(p.bd_expectedResolutionDate) } : {}),
+            channel: { '@type': 'ServiceProblemCase', ...(presente(p.bd_channel) ? { name: String(p.bd_channel) } : {}) },
+            relatedEntity: entidades, relatedParty: partes,
+            troubleTicketCharacteristic: CARACTERISTICAS_BD.map(name => ({ name, value: presente(p['bd_' + name]) ? String(p['bd_' + name]) : '' })),
+          },
+        };
+      },
+      avaliar: (r, ctx) => {
+        const b = r.json || {};
+        const numero = b.externalIdentifier && b.externalIdentifier.id;
+        if (b.id) ctx.saidas.bdCriado = true;
+        return { checks: [check('Resposta traz o id do BD', b.id, b.id ? String(b.id) : 'ausente'),
+          check('Número do BD (externalIdentifier.id)', numero, numero || 'ausente')], resumo: numero ? 'BD ' + numero : (b.id ? 'BD ' + b.id : 'Sem BD') };
+      },
+    },
+    {
+      id: 'INT16', nome: 'Cancela WO', sistema: 'WFM Journey', base: 'wfm',
+      etapa: 'Node_CancelaWO', metodo: 'DELETE', timeoutMs: 10000, escrita: true, requer: ['wfmBaseUrl', 'wfmCancelReason', 'wfmCancelContext'],
+      depende: ctx => ctx.saidas.woNumero ? null : 'precisa da WO criada no INT14',
+      esperado: [200, 202, 204],
+      montar: ctx => {
+        const id = String(ctx.saidas.woNumero || '').trim();
+        const reason = String(ctx.params.wfmCancelReason ?? 'PROBLEMAS SISTEMICOS').trim();
+        const context = String(ctx.params.wfmCancelContext ?? 'SISTEMICO').trim();
+        if (!id || /^\{.*\}$/.test(id)) throw new Error('Informe um idWorkOrder real e confirmado para cancelar.');
+        if (!reason || !context) throw new Error('reason e context são obrigatórios no cancelamento.');
+        return {
+          url: ctx.base.wfm + '/workOrder/' + enc(id) + '?reason=' + enc(reason) + '&context=' + enc(context),
+          headers: comCorrelacao(ctx, headersBase(ctx, { 'X-Vivo-Transaction-Id': tid('INT008'), ...WFM_HEADERS })),
+        };
+      },
+      avaliar: () => ({ checks: [], resumo: 'WO cancelada' }),
+    },
+  ];
+
+  // ===== Execução =====
+  const ajustesIntegracao = {};
+  const CAMINHOS_REQUEST = { INT00: '/customers/', INT01: '/incidents', INT03: '/troubleTicket', INT06: '/serviceTest', INT11: '/searchTimeSlot', INT14: '/workOrder/appointment', INT18: '/troubleTicket', INT16: '/workOrder/' };
+  function ajusteDe(id) {
+    return ajustesIntegracao[id] || (ajustesIntegracao[id] = { params: {}, request: {} });
+  }
+  function corpoManualCompleto(spec) {
+    const body = ajusteDe(spec.id).request.body;
+    return ['INT14', 'INT18'].includes(spec.id) && typeof body === 'string' && !!body.trim();
+  }
+  function contextoDaIntegracao(spec, ctx) {
+    const ajuste = ajusteDe(spec.id);
+    const local = Object.assign({}, ctx, { params: Object.assign({}, ctx.params, ctx.saidas.entradasAsset || {}, ajuste.params) });
+    if (spec.id === 'INT00') {
+      if (local.params.assetDocumentNumber === undefined) local.params.assetDocumentNumber = '78392757000165';
+      if (local.params.assetMapeamento === undefined) local.params.assetMapeamento = '{}';
+      if (local.params.assetIndice === undefined) local.params.assetIndice = '0';
+    }
+    if (spec.id === 'INT14') {
+      local.params = Object.assign(padroesHorarioSimulado(), local.params);
+      if (ajuste.corpoInt14Gerado && local.params.wfmCorpoInt14) {
+        const body = JSON.parse(local.params.wfmCorpoInt14);
+        const fontes = Object.assign({}, ctx.params, ctx.saidas.entradasAsset || {});
+        Object.entries(fontes).forEach(([nome, valor]) => {
+          if ((nome.startsWith('wo_') || nome.startsWith('wfm') || nome === 'designador') && nome !== 'wfmCorpoInt14'
+            && !Object.hasOwn(ajuste.params, nome) && valor !== '' && valor !== null && valor !== undefined) {
+            // Campo sem lugar no corpo gerado (ex.: estrutura apagada na edição) não deve parar a execução.
+            try { atualizarCampoCorpoInt14(body, nome, valor); } catch (erro) { /* mantém o corpo como está */ }
+          }
+        });
+        if (ctx.saidas.slot) {
+          const slot = ctx.saidas.slot;
+          Object.entries({ wfmSimuladoInicio: slot.inicio, wfmSimuladoFim: slot.fim, wfmSimuladoPeriodo: slot.timeslot,
+            wfmSimuladoRecursoId: slot.resourceId, wfmSimuladoRecursoNome: slot.resourceName }).forEach(([nome, valor]) => {
+            if (!Object.hasOwn(ajuste.params, nome) && valor !== undefined) atualizarCampoCorpoInt14(body, nome, valor);
+          });
+        }
+        ajuste.params.wfmCorpoInt14 = local.params.wfmCorpoInt14 = JSON.stringify(body, null, 2);
+      }
+    }
+    if (spec.id === 'INT18') local.params = parametrosBd(local);
+    if (spec.id === 'INT16') {
+      if (local.params.wfmCancelReason === undefined) local.params.wfmCancelReason = 'PROBLEMAS SISTEMICOS';
+      if (local.params.wfmCancelContext === undefined) local.params.wfmCancelContext = 'SISTEMICO';
+    }
+    if (ajuste.params.woNumero) local.saidas = Object.assign({}, ctx.saidas, { woNumero: ajuste.params.woNumero });
+    return local;
+  }
+  function montarRequest(spec, ctx) {
+    const ajuste = ajusteDe(spec.id).request;
+    let montagem;
+    try { montagem = spec.montar(ctx); }
+    catch (erro) {
+      if (ajuste.body === undefined) throw erro;
+      montagem = { url: ajuste.url || ctx.base[spec.base] + CAMINHOS_REQUEST[spec.id], headers: headersBase(ctx, { 'Content-Type': 'application/json' }) };
+    }
+    const headers = ajuste.headers === undefined ? montagem.headers : JSON.parse(ajuste.headers);
+    if (!headers || typeof headers !== 'object' || Array.isArray(headers) || Object.values(headers).some(valor => typeof valor !== 'string')) throw new Error('Headers devem ser um objeto JSON com valores de texto.');
+    if (spec.id === 'INT03') {
+      Object.entries(montagem.headers).forEach(([nome, valor]) => {
+        if (!Object.keys(headers).some(chave => chave.toLowerCase() === nome.toLowerCase())) headers[nome] = valor;
+      });
+      Object.keys(headers).filter(nome => nome.toLowerCase() === 'iss').forEach(nome => delete headers[nome]);
+      headers.iss = ISS_SERVICENOW;
+    }
+    Object.keys(headers).filter(nome => /^authorization$/i.test(nome)).forEach(nome => delete headers[nome]);
+    if (ctx.token) headers.Authorization = 'Bearer ' + ctx.token;
+    const body = ajuste.body === undefined ? montagem.body : (ajuste.body.trim() ? JSON.parse(ajuste.body) : undefined);
+    const method = ajuste.method || spec.metodo;
+    if (spec.id === 'INT16') {
+      const header = nome => Object.entries(headers).find(([chave]) => chave.toLowerCase() === nome)?.[1];
+      if (method !== 'DELETE') throw new Error('INT16 deve usar DELETE conforme o mapping.');
+      if (body !== undefined) throw new Error('INT16 não envia corpo. Limpe o corpo do request.');
+      if (!header('authorization')?.startsWith('Bearer ') || !header('authorization').slice(7).trim()
+        || header('flow') !== 'B2B_MASSIVO' || header('requestsystem') !== 'MVE'
+        || !header('x-vivo-transaction-id')?.startsWith('TID_ELJY_FTAT933INT008_')) {
+        throw new Error('Headers INT16 exigem Bearer, flow=B2B_MASSIVO, requestSystem=MVE e transação INT008.');
+      }
+    }
+    if (['GET', 'HEAD'].includes(method) && body !== undefined) throw new Error('GET e HEAD não aceitam corpo. Limpe o corpo ou altere o método.');
+    const url = ajuste.url === undefined ? montagem.url : ajuste.url;
+    if (!/^https?:$/.test(new URL(url).protocol)) throw new Error('Informe uma URL HTTP ou HTTPS.');
+    if (spec.id === 'INT16') {
+      const destino = new URL(url);
+      const identificador = destino.pathname.match(/\/workOrder\/([^/]+)$/)?.[1];
+      const id = identificador ? decodeURIComponent(identificador).trim() : '';
+      if (!id || /^\{.*\}$/.test(id) || !destino.searchParams.get('reason')?.trim() || !destino.searchParams.get('context')?.trim()) {
+        throw new Error('URL INT16 exige /workOrder/{idWorkOrder} real e reason/context preenchidos.');
+      }
+    }
+    const timeoutMs = ajuste.timeoutMs === undefined ? timeoutPadrao(spec) : Number(ajuste.timeoutMs);
+    if (!Number.isFinite(timeoutMs) || timeoutMs < 1 || timeoutMs > LIMITE_TIMEOUT_MS) throw new Error('Timeout deve estar entre 1 e 30000 ms (máximo de 30 segundos).');
+    return { url, method, headers, body, bodyTexto: body === undefined ? undefined : JSON.stringify(body), timeoutMs };
+  }
+  const timeoutPadrao = spec => (spec.metodo === 'GET' && spec.timeoutMs) || LIMITE_TIMEOUT_MS;
+  async function enviar(req, timeoutMs, signal) {
+    const inicio = performance.now();
+    const ctrl = new AbortController();
+    const interromper = () => ctrl.abort();
+    if (signal) {
+      signal.addEventListener('abort', interromper, { once: true });
+      if (signal.aborted) interromper();
+    }
+    const timer = timeoutMs > 0 ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
+    try {
+      const local = location.protocol === 'http:' && ['127.0.0.1', 'localhost'].includes(location.hostname) && location.port === '8765';
+      const r = await fetch(local ? '/qa-proxy' : req.url, local ? {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctrl.signal,
+        body: JSON.stringify({ url: req.url, method: req.method, headers: req.headers, body: req.bodyTexto, timeoutMs }),
+      } : { method: req.method, headers: req.headers, body: req.bodyTexto, signal: ctrl.signal });
+      if (local && r.headers.get('x-qa-proxy-error') === 'true') {
+        const falha = await r.json();
+        return { erro: falha.erro, ms: Math.round(performance.now() - inicio) };
+      }
+      const headers = {};
+      r.headers.forEach((v, k) => { headers[k] = v; });
+      return { http: r.status, texto: await r.text(), headers, ms: Math.round(performance.now() - inicio) };
+    } catch (e) {
+      const ms = Math.round(performance.now() - inicio);
+      if (signal && signal.aborted) return { erro: 'Interrompido pelo usuário', interrompido: true, ms };
+      if (e.name === 'AbortError') return { erro: 'Sem resposta em ' + (timeoutMs / 1000) + ' s (timeout configurado nesta página)', ms };
+      // O navegador não diferencia CORS negado de host inacessível.
+      const dicaCertificado = /\.telefonica\.com\.br$/.test(new URL(req.url).hostname)
+        ? ' Se o navegador abriu um seletor de certificado, escolha Cancelar (o gateway não exige certificado de cliente) e execute de novo.' : '';
+      return { erro: (navegadorLiberado
+        ? 'Sem resposta do serviço: o endereço não resolve no DNS, o host está fora da rede ou a VPN está desconectada. Copie o cURL abaixo para testar pelo terminal.'
+        : 'O navegador não obteve resposta: o gateway não libera CORS para esta página, o host está fora da rede ou a VPN está desconectada. Use "Liberar navegador" no bloco do token, ou copie o cURL abaixo para testar pelo terminal.') + dicaCertificado, ms, bloqueado: true };
+    } finally { clearTimeout(timer); if (signal) signal.removeEventListener('abort', interromper); }
+  }
+
+  function lerJwt(token) {
+    try {
+      const parte = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(decodeURIComponent(atob(parte).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+    } catch (e) { return null; }
+  }
+
+  function novoContexto(ambiente, params, token) {
+    const base = Object.assign({}, AMBIENTES[ambiente] || AMBIENTES.preprod);
+    ['cpm', 'tt', 'hpsd', 'motor'].forEach(k => { if (params['url_' + k]) base[k] = params['url_' + k].replace(/\/+$/, ''); });
+    // A URL base não leva o recurso: o caminho /troubleTicket é acrescentado pela integração.
+    base.tt = base.tt.replace(/(\/troubleTicket)+$/i, '');
+    base.wfm = (params.wfmBaseUrl || base.wfm || '').replace(/\/+$/, '');
+    if (!params.correlationId) params.correlationId = 'CID_VE_FTAT933_QA_' + Date.now();
+    return { ambiente, base, params, token, saidas: {} };
+  }
+
+  function redigir(headers, revelar) {
+    const h = Object.assign({}, headers);
+    if (h.Authorization && !revelar) h.Authorization = 'Bearer ' + h.Authorization.slice(7, 17) + '…';
+    return h;
+  }
+
+  async function executar(spec, ctx) {
+    ctx = contextoDaIntegracao(spec, ctx);
+    const base = { id: spec.id, inicio: new Date().toISOString() };
+    const falta = spec.requer.filter(k => !ctx.params[k]);
+    if (falta.length) return Object.assign(base, { estado: 'pulado', motivo: 'Preencha ' + falta.join(', ') });
+    if (spec.base !== 'wfm' && !ctx.base[spec.base]) return Object.assign(base, { estado: 'pulado', motivo: 'URL base não configurada' });
+    const dep = !corpoManualCompleto(spec) && spec.depende && spec.depende(ctx);
+    if (dep) return Object.assign(base, { estado: 'pulado', motivo: 'Dependência: ' + dep });
+    if (!ctx.token) return Object.assign(base, { estado: 'pulado', motivo: 'Informe um token' });
+
+    let req;
+    try { req = montarRequest(spec, ctx); }
+    catch (erro) { return Object.assign(base, { estado: 'pulado', motivo: 'Request inválido: ' + erro.message }); }
+    if (spec.id === 'INT14' && req.body && req.body.WorkOrder_Create) ctx.saidas.woIdEnviado = req.body.WorkOrder_Create.id;
+    let r = await enviar(req, req.timeoutMs, ctx.signal);
+    // O gateway de consulta às vezes trava uma conexão; repetir um GET não cria registro.
+    const repetir = r.erro && !r.interrompido && !r.bloqueado && req.method === 'GET' && !spec.escrita;
+    if (repetir) {
+      base.tentativas = 'Respondeu na 2ª tentativa; a 1ª falhou em ' + r.ms + ' ms: ' + r.erro;
+      r = await enviar(req, req.timeoutMs, ctx.signal);
+    }
+    const res = Object.assign(base, { request: req, ms: r.ms });
+    if (r.interrompido) return Object.assign(res, { estado: 'pulado', motivo: r.erro, checks: [] });
+    if (r.erro) return Object.assign(res, { estado: 'falha', disponivel: false, saudavel: false, contrato: false, motivo: (repetir ? 'Falhou nas 2 tentativas: ' : '') + r.erro, bloqueado: !!r.bloqueado, checks: [] });
+
+    res.http = r.http;
+    res.respostaTexto = r.texto && r.texto.length > MAX_RESPOSTA ? r.texto.slice(0, MAX_RESPOSTA) + '\n… (truncado)' : (r.texto || '');
+    try { res.json = r.texto ? JSON.parse(r.texto) : null; } catch (e) { res.json = null; }
+    res.respostaHeaders = r.headers;
+
+    const statusOk = spec.esperado.includes(r.http);
+    const checks = [check('HTTP esperado (' + spec.esperado.join('/') + ')', statusOk, 'recebido ' + r.http)];
+    let avaliacao = { checks: [], resumo: '' };
+    if (statusOk) { try { avaliacao = spec.avaliar(res, ctx) || avaliacao; } catch (e) { avaliacao = { checks: [check('Leitura da resposta', false, e.message)], resumo: '' }; } }
+    res.checks = checks.concat(avaliacao.checks);
+    res.resumo = avaliacao.resumo || (r.http === 401 || r.http === 403 ? 'Token recusado' : 'HTTP ' + r.http);
+    res.disponivel = true;
+    res.saudavel = r.http < 500 && r.ms <= LIMITE_LENTO_MS;
+    res.contrato = statusOk && (avaliacao.contratoOk !== undefined ? avaliacao.contratoOk : avaliacao.checks.every(c => c.ok));
+    res.estado = r.http >= 500 ? 'falha' : (res.contrato ? (res.saudavel ? 'ok' : 'lento') : 'alerta');
+    if (!res.contrato && (r.http === 401 || r.http === 403)) res.motivo = 'Token recusado pelo serviço (HTTP ' + r.http + ')';
+    else if (!statusOk) res.motivo = 'HTTP ' + r.http + ' fora do contrato';
+    else if (!res.contrato) res.motivo = 'Resposta fora do contrato';
+    else if (!res.saudavel) res.motivo = 'Respondeu em ' + r.ms + ' ms (limite ' + LIMITE_LENTO_MS + ' ms)';
+    if (res.tentativas) res.motivo = res.motivo ? res.motivo + ' · ' + res.tentativas : res.tentativas;
+    return res;
+  }
+
+  async function executarTodos(ctx, o) {
+    const resultados = [];
+    for (const spec of ESPECIFICACOES) {
+      if (ctx.signal && ctx.signal.aborted) break;
+      if (o.ids && !o.ids.includes(spec.id)) continue;
+      const metodoPersonalizado = ajusteDe(spec.id).request.method;
+      if ((spec.escrita || (metodoPersonalizado && metodoPersonalizado !== spec.metodo && !['GET', 'HEAD'].includes(metodoPersonalizado))) && !o.incluirEscrita) {
+        const r = { id: spec.id, estado: 'pulado', motivo: 'Operação de escrita desligada' };
+        resultados.push(r); o.aoAtualizar(spec, r); continue;
+      }
+      o.aoAtualizar(spec, { id: spec.id, estado: 'executando' });
+      const avisoLentidao = setTimeout(() => o.aoAtualizar(spec, { id: spec.id, estado: 'executando', demorando: true }), LIMITE_LENTO_MS);
+      let r;
+      try { r = await executar(spec, ctx); }
+      catch (erro) { r = { id: spec.id, estado: 'falha', disponivel: false, motivo: 'Erro ao montar a chamada na página: ' + erro.message, checks: [] }; }
+      finally { clearTimeout(avisoLentidao); }
+      resultados.push(r); o.aoAtualizar(spec, r);
+      if (spec.id === 'INT11' && !ctx.saidas.slot && !o.ids) {
+        // Sem horário do WFM, segue com o horário manual (padrão: amanhã 12h-14h) para testar as integrações seguintes.
+        const preenchidos = Object.fromEntries(Object.entries(Object.assign({}, ctx.params, ajusteDe('INT14').params))
+          .filter(([, valor]) => valor !== '' && valor !== null && valor !== undefined));
+        try { ctx.saidas.slot = confirmarHorarioManual(preenchidos); }
+        catch (erro) { break; }
+        r.motivo = (r.motivo ? r.motivo + ' · ' : '') + 'seguindo com o horário manual ' + ctx.saidas.slot.inicio + ' (' + ctx.saidas.slot.timeslot + ')';
+        o.aoAtualizar(spec, r);
+      }
+    }
+    return resultados;
+  }
+
+  function resumo(resultados) {
+    const c = { ok: 0, lento: 0, alerta: 0, falha: 0, pulado: 0 };
+    resultados.forEach(r => { if (c[r.estado] !== undefined) c[r.estado]++; });
+    c.total = resultados.length;
+    c.executados = c.total - c.pulado;
+    return c;
+  }
+
+  function curl(req, revelar) {
+    const h = redigir(req.headers, revelar);
+    const partes = ['curl -sS -X ' + req.method + " '" + req.url + "'"];
+    Object.entries(h).forEach(([k, v]) => partes.push("  -H '" + k + ': ' + String(v).replace(/'/g, "'\\''") + "'"));
+    if (req.bodyTexto) partes.push("  --data '" + req.bodyTexto.replace(/'/g, "'\\''") + "'");
+    return partes.join(' \\\n');
+  }
+
+  function relatorio(ctx, resultados) {
+    return {
+      ferramenta: 'Fenix VE · mapa das integrações', jornada: 'fenix-ve-abertura-bd (FTAT-933)',
+      geradoEm: new Date().toISOString(), ambiente: ctx.ambiente,
+      parametros: Object.fromEntries(Object.entries(ctx.params).filter(([k]) => !/token/i.test(k))),
+      resumo: resumo(resultados),
+      resultados: resultados.map(r => ({ id: r.id, estado: r.estado, http: r.http, ms: r.ms, motivo: r.motivo, resumo: r.resumo,
+        disponivel: r.disponivel, saudavel: r.saudavel, contrato: r.contrato, checks: r.checks,
+        request: r.request ? { method: r.request.method, url: r.request.url, headers: redigir(r.request.headers, false), body: r.request.body } : undefined,
+        resposta: r.respostaTexto })),
+    };
+  }
+
+  // ===== Formulário (parâmetros persistidos sem o token) =====
+  const CHAVE = 'fenix-ve-qa:parametros';
+  const SEGREDO = /token/i;
+
+  function lerFormulario(form) {
+    const dados = {};
+    form.querySelectorAll('[name]').forEach(el => { dados[el.name] = el.type === 'checkbox' ? el.checked : el.value.trim(); });
+    return dados;
+  }
+  function salvarFormulario(form) {
+    const dados = lerFormulario(form);
+    Object.keys(dados).forEach(k => { if (SEGREDO.test(k)) delete dados[k]; });
+    try { localStorage.setItem(CHAVE, JSON.stringify(dados)); } catch (e) { /* armazenamento indisponível */ }
+  }
+  function restaurarFormulario(form) {
+    let dados = {};
+    try { dados = JSON.parse(localStorage.getItem(CHAVE) || '{}'); } catch (e) { /* ignora */ }
+    form.querySelectorAll('[name]').forEach(el => {
+      if (SEGREDO.test(el.name) || !(el.name in dados)) return;
+      // Sempre começa marcada: o valor salvo em sessões antigas era desmarcado.
+      if (el.name === 'incluirEscrita') return;
+      if (['wfmSlotInicio', 'wfmSlotFim'].includes(el.name) && !String(dados[el.name] || '').trim()) return;
+      if (el.type === 'checkbox') el.checked = !!dados[el.name]; else el.value = dados[el.name];
+    });
+  }
+
+  const CAMPOS = {
+    ambiente: [
+      { name: 'ambiente', label: 'Ambiente', tipo: 'select', opcoes: [['preprod', 'Preprod'], ['dev', 'Dev']] },
+    ],
+    token: [
+      { name: 'tokenManual', label: 'Token (Bearer)', tipo: 'textarea', placeholder: 'eyJhbGciOi…', rotuloOculto: true },
+    ],
+    jornada: [
+      { name: 'designador', label: 'Designador', valor: 'SPO-SF703229-069', placeholder: 'SPO-SF703229-069', obrigatorio: true },
+      { name: 'correlationId', label: 'Correlation ID', placeholder: 'gerado a cada execução' },
+      { name: 'hpsdTestSpecificationId', label: 'HPSD testSpecification.id', valor: 'spec-ftth-gpon-basico', placeholder: 'spec-ftth-gpon-basico' },
+      { name: 'hpsdRelatedServiceId', label: 'HPSD relatedService.id', placeholder: 'padrão: designador' },
+      { name: 'processInstanceId', label: 'ExternalId do INT06 (processInstanceId)', placeholder: 'padrão: qa-<timestamp>' },
+      { name: 'incluirEscrita', label: 'Incluir chamadas que criam registros (INT14, INT18, INT16)', tipo: 'checkbox', marcado: true },
+    ],
+    wfm: [
+      { name: 'wfmSlotInicio', label: 'Início da consulta (ISO com fuso)', valor: periodoConsultaWfm().inicio, placeholder: 'hoje às 00:00 em São Paulo' },
+      { name: 'wfmSlotFim', label: 'Fim da consulta (ISO com fuso)', valor: periodoConsultaWfm().fim, placeholder: 'hoje + 7 dias às 00:00 em São Paulo' },
+      { name: 'wfmNetworkOwner', label: 'Dono da rede', tipo: 'select', opcoes: [['VIVO1', 'VIVO1'], ['VIVO2', 'VIVO2']] },
+      { name: 'wfmMediaType', label: 'Mídia', valor: 'GPON' },
+      { name: 'wfmCnl', label: 'CNL' },
+      { name: 'wfmPostcode', label: 'CEP (postcode)' },
+      { name: 'wfmTelephonicArea', label: 'Área telefônica (VIVO1)' },
+      { name: 'wfmCentralOffice', label: 'Estação (VIVO1)' },
+      { name: 'wfmMicroArea', label: 'Microárea (VIVO1)' },
+      { name: 'wfmGeographicSiteId', label: 'Armário (geographicSite.id)', placeholder: 'INT14: padrão ' + PADROES_INT14.wfmGeographicSiteId, pendente: true },
+      { name: 'wfmAttendantId', label: 'Atendente (Attendant.id)' },
+      { name: 'wfmCancelReason', label: 'Motivo do cancelamento (INT16 reason)', valor: 'PROBLEMAS SISTEMICOS', obrigatorio: true },
+      { name: 'wfmCancelContext', label: 'Contexto do cancelamento (INT16 context)', valor: 'SISTEMICO', obrigatorio: true },
+      { name: 'wfmCorpoInt14', label: 'Corpo da INT14 do caso de teste (JSON, opcional)', tipo: 'textarea',
+        placeholder: '{ "WorkOrder_Create": { … }, "Appointment_Create": { … } }' },
+    ],
+    int14: [
+      ...[
+        ['wfmSimuladoInicio', 'Início do horário (ISO com fuso)'], ['wfmSimuladoFim', 'Fim do horário (ISO com fuso)'],
+        ['wfmSimuladoPeriodo', 'TimeSlot.id (período)'], ['wfmSimuladoRecursoId', 'TimeSlot.resourceId'], ['wfmSimuladoRecursoNome', 'TimeSlot.resourceName'],
+      ].map(([name, label]) => ({ name, label })),
+      ...[
+        ['wo_customerId', 'ID do cliente'], ['wo_customerName', 'Nome do cliente'], ['wo_documentNumber', 'Documento do cliente'], ['wo_customerCategory', 'Categoria do cliente'],
+        ['wo_contactName', 'Nome do contato'], ['wo_emailAddress', 'E-mail do contato'], ['wo_mobileNumber', 'Celular do contato'], ['wo_phoneNumber', 'Telefone do contato'], ['wo_workNumber', 'Telefone comercial'],
+        ['wo_productId', 'ID do produto'], ['wo_orderId', 'ID do pedido'], ['wo_orderProtocol', 'Protocolo do pedido'], ['wo_dateOfSale', 'Data da venda'], ['wo_orderDetail', 'Detalhe do pedido'],
+        ['wo_cnlAcronym', 'Sigla CNL'], ['wo_city', 'Cidade'], ['wo_neighborhood', 'Bairro'], ['wo_stateOrProvince', 'UF'], ['wo_streetCode', 'Código do logradouro'],
+        ['wo_streetName', 'Logradouro'], ['wo_streetNr', 'Número do endereço'], ['wo_complement', 'Complemento'], ['wo_longitude', 'Longitude'], ['wo_latitude', 'Latitude'],
+        ['wo_detail', 'Detalhe do defeito (DETALHE)'], ['wo_addressReference', 'Referência do endereço'],
+        ['wo_productCode', 'Código do produto (Code)'], ['wo_acessoId', 'ID do produto ACESSO'], ['wo_acessoDesignador', 'Designador do ACESSO'],
+        ['wo_velocidade', 'Velocidade (produto)'], ['wo_ipFixo', 'IP Fixo (produto)'], ['wo_roteador', 'Roteador (produto)'],
+      ].map(([name, label]) => (PADROES_INT14[name]
+        ? { name, label, placeholder: 'padrão: ' + PADROES_INT14[name], pendente: true } : { name, label })),
+      { name: 'wo_canBeAntecipated', label: 'Permitir antecipar agendamento', tipo: 'checkbox', marcado: true },
+    ],
+    int18: [
+      ...[
+        ['description', 'Descrição do BD'], ['severity', 'Severidade do BD'], ['name', 'Título do BD'], ['channel', 'Canal'],
+        ['requestedResolutionDate', 'Início solicitado (ISO com fuso)'], ['expectedResolutionDate', 'Fim previsto (ISO com fuso)'],
+        ['customerId', 'ID do cliente Salesforce (confirmar origem)'], ['customerName', 'Nome do cliente'],
+        ['email', 'E-mail do contato'], ['phone', 'Telefone do contato'], ['serviceNowCustomerId', 'ID do cliente ServiceNow'],
+        ['productInventoryId', 'ID ProductInventory (confirmar origem)'], ['relatedServiceSpecificationId', 'ID relatedServiceSpecification'], ['relatedServiceId', 'ID relatedService'],
+      ].map(([nome, label]) => ({ name: 'bd_' + nome, label })),
+      ...CARACTERISTICAS_BD.map(nome => ({ name: 'bd_' + nome, label: nome + ' (BD)' })),
+    ],
+    asset: [
+      { name: 'assetDocumentNumber', label: 'Documento do cliente (Asset)', valor: '78392757000165', obrigatorio: true },
+      { name: 'assetIndice', label: 'Indice do Asset em content (primeiro = 0)', tipo: 'number', valor: '0' },
+      { name: 'assetMapeamento', label: 'Mapa de entradas (JSON: destino para caminho no retorno)', tipo: 'textarea', valor: '{}',
+        placeholder: '{"designador":"content[0].logicalResource.id"}' },
+    ],
+    avancado: [
+      { name: 'url_cpm', label: 'URL Customer Problem Management' },
+      { name: 'url_tt', label: 'URL Trouble Ticket' },
+      { name: 'url_hpsd', label: 'URL HPSD' },
+      { name: 'wfmBaseUrl', label: 'URL base do WFM', placeholder: 'ainda não definida' },
+    ],
+  };
+
+  let seq = 0;
+  function campo(def) {
+    const id = 'f-' + def.name + '-' + (++seq);
+    const wrap = document.createElement('div');
+    wrap.className = 'campo campo-' + (def.tipo || 'text');
+    let el;
+    if (def.tipo === 'select') {
+      el = document.createElement('select');
+      def.opcoes.forEach(([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; el.appendChild(o); });
+    } else if (def.tipo === 'textarea') {
+      el = document.createElement('textarea'); el.rows = 4; el.spellcheck = false;
+    } else {
+      el = document.createElement('input'); el.type = def.tipo || 'text'; el.spellcheck = false;
+    }
+    el.id = id; el.name = def.name;
+    if (def.placeholder) el.placeholder = def.placeholder;
+    if (def.valor) el.value = def.valor;
+    if (def.marcado) { el.checked = true; el.autocomplete = 'off'; }
+    if (def.obrigatorio) el.required = true;
+    const lab = document.createElement('label');
+    lab.htmlFor = id; lab.textContent = def.label;
+    if (def.rotuloOculto) lab.className = 'visualmente-oculto';
+    if (def.tipo === 'checkbox') wrap.append(el, lab); else wrap.append(lab, el);
+    if (def.pendente) {
+      const nota = document.createElement('small');
+      nota.className = 'campo-pendente';
+      nota.textContent = '⚠ Valor padrão da página (curl do WFM): origem não identificada na jornada — pendência para ajustar.';
+      wrap.appendChild(nota);
+    }
+    return wrap;
+  }
+  const renderCampos = (container, grupo) => CAMPOS[grupo].forEach(def => container.appendChild(campo(def)));
+
+  // ===== Interface =====
+  const ICONES = {
+    entrada: '<path d="M12 4v16M5 13l7 7 7-7"/>',
+    ok: '<path d="M5 12.5l4.2 4.2L19 7"/>',
+    falha: '<path d="M7 7l10 10M17 7L7 17"/>',
+    alerta: '<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.5v.01"/>',
+    lento: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    pulado: '<path d="M6 6l7 6-7 6M15 6v12"/>',
+    executando: '<path d="M12 3a9 9 0 1 0 9 9"/>',
+    play: '<path d="M7 5l12 7-12 7z"/>',
+    stop: '<rect x="6" y="6" width="12" height="12" rx="1"/>',
+    copiar: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
+    baixar: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  };
+  function icone(nome, t) {
+    t = t || 16;
+    return '<svg class="ico ico-' + nome + '" width="' + t + '" height="' + t + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+      + 'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONES[nome] || '') + '</svg>';
+  }
+  const ROTULOS = { ok: 'Operacional', lento: 'Lento', alerta: 'Fora do contrato', falha: 'Indisponível', pulado: 'Não executado', executando: 'Executando' };
+
+  function baixarArquivo(nome, texto, tipo) {
+    const blob = new Blob([texto], { type: tipo });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = nome; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  function bloco(titulo, conteudo, acoes) {
+    const s = document.createElement('section');
+    s.className = 'det-bloco';
+    const h = document.createElement('header');
+    const t = document.createElement('h4'); t.textContent = titulo;
+    h.appendChild(t);
+    (acoes || []).forEach(a => h.appendChild(a));
+    s.append(h, conteudo);
+    return s;
+  }
+  function pre(texto) {
+    const p = document.createElement('pre');
+    p.className = 'det-pre'; p.textContent = texto;
+    return p;
+  }
+  function botaoCopiar(rotulo, obterTexto) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'det-acao';
+    b.innerHTML = icone('copiar', 14);
+    const s = document.createElement('span'); s.textContent = rotulo; b.appendChild(s);
+    b.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(obterTexto()); s.textContent = 'Copiado'; }
+      catch (e) { s.textContent = 'Não copiou'; }
+      setTimeout(() => { s.textContent = rotulo; }, 1600);
+    });
+    return b;
+  }
+  function formatarCorpo(r) {
+    if (r.json !== undefined && r.json !== null) return JSON.stringify(r.json, null, 2);
+    return r.respostaTexto || '(corpo vazio)';
+  }
+
+  // Textos vindos das APIs entram sempre por textContent.
+  function detalhe(spec, r) {
+    const raiz = document.createElement('div');
+    raiz.className = 'det';
+    if (r.motivo) {
+      const m = document.createElement('p');
+      m.className = 'det-motivo det-' + r.estado; m.textContent = r.motivo;
+      raiz.appendChild(m);
+    }
+    if (r.checks && r.checks.length) {
+      const ul = document.createElement('ul');
+      ul.className = 'det-checks';
+      r.checks.forEach(c => {
+        const li = document.createElement('li');
+        li.className = c.ok ? 'ok' : 'nok';
+        li.innerHTML = icone(c.ok ? 'ok' : 'falha', 14);
+        const n = document.createElement('span'); n.textContent = c.nome;
+        const d = document.createElement('span'); d.className = 'det-check-detalhe'; d.textContent = c.detalhe;
+        li.append(n, d);
+        ul.appendChild(li);
+      });
+      raiz.appendChild(bloco('Verificações', ul));
+    }
+    if (r.request) {
+      const req = r.request;
+      const linhas = [req.method + ' ' + req.url, ''];
+      Object.entries(redigir(req.headers, false)).forEach(([k, v]) => linhas.push(k + ': ' + v));
+      if (req.body !== undefined) linhas.push('', JSON.stringify(req.body, null, 2));
+      raiz.appendChild(bloco('Requisição · ' + spec.etapa, pre(linhas.join('\n')), [
+        botaoCopiar('cURL', () => curl(req, false)),
+        botaoCopiar('cURL com token', () => curl(req, true)),
+      ]));
+    }
+    if (r.http !== undefined) {
+      const linhas = ['HTTP ' + r.http + ' · ' + r.ms + ' ms', ''];
+      Object.entries(r.respostaHeaders || {}).filter(([k]) => /content-type|x-|date|server/i.test(k)).forEach(([k, v]) => linhas.push(k + ': ' + v));
+      raiz.appendChild(bloco('Resposta', pre(linhas.join('\n') + '\n\n' + formatarCorpo(r)), [botaoCopiar('Copiar corpo', () => formatarCorpo(r))]));
+    }
+    return raiz;
+  }
+
+  const $ = s => document.querySelector(s);
+  const divisorPainel = $('#divisor-painel');
+  const palco = document.querySelector('.palco');
+  let larguraPainel = 560;
+  function ajustarPainel(valor, salvar = false) {
+    const maximo = Math.max(320, palco.clientWidth - 288);
+    larguraPainel = Math.min(maximo, Math.max(320, valor));
+    palco.style.setProperty('--largura-painel', larguraPainel + 'px');
+    divisorPainel.setAttribute('aria-valuemin', '320');
+    divisorPainel.setAttribute('aria-valuemax', String(maximo));
+    divisorPainel.setAttribute('aria-valuenow', String(Math.round(larguraPainel)));
+    if (salvar) { try { localStorage.setItem('fenix-ve-qa:largura-painel', String(larguraPainel)); } catch {} }
+  }
+  try {
+    const salva = Number(localStorage.getItem('fenix-ve-qa:largura-painel'));
+    if (Number.isFinite(salva) && salva >= 320) larguraPainel = salva;
+  } catch {}
+  ajustarPainel(larguraPainel);
+  divisorPainel.addEventListener('pointerdown', evento => {
+    if (evento.button !== 0) return;
+    divisorPainel.setPointerCapture(evento.pointerId);
+    document.body.classList.add('redimensionando');
+    evento.preventDefault();
+  });
+  divisorPainel.addEventListener('pointermove', evento => {
+    if (!divisorPainel.hasPointerCapture(evento.pointerId)) return;
+    ajustarPainel(palco.getBoundingClientRect().right - evento.clientX, true);
+  });
+  const encerrarRedimensionamento = () => document.body.classList.remove('redimensionando');
+  divisorPainel.addEventListener('lostpointercapture', encerrarRedimensionamento);
+  divisorPainel.addEventListener('pointerup', evento => {
+    if (divisorPainel.hasPointerCapture(evento.pointerId)) divisorPainel.releasePointerCapture(evento.pointerId);
+  });
+  divisorPainel.addEventListener('keydown', evento => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(evento.key)) return;
+    evento.preventDefault();
+    ajustarPainel(evento.key === 'Home' ? 320 : evento.key === 'End' ? palco.clientWidth : larguraPainel + (evento.key === 'ArrowLeft' ? 32 : -32), true);
+  });
+  window.addEventListener('resize', () => ajustarPainel(larguraPainel));
+  document.querySelectorAll('[data-ico]').forEach(e => { e.outerHTML = icone(e.dataset.ico, 14); });
+  const form = $('#cfg');
+  renderCampos($('#g-token'), 'token');
+  renderCampos($('#g-amb'), 'ambiente');
+  renderCampos($('#g-jornada'), 'jornada');
+  renderCampos($('#g-wfm'), 'wfm');
+  $('#g-execucao').appendChild(form.querySelector('[name="incluirEscrita"]').closest('.campo'));
+  renderCampos($('#g-avancado'), 'avancado');
+  restaurarFormulario(form);
+  if (!form.elements.designador.value.trim()) form.elements.designador.value = 'SPO-SF703229-069';
+  if (!form.elements.correlationId.value.trim()) form.elements.correlationId.value = 'CID_VE_FTAT933_QA_' + Date.now();
+  if (!form.elements.hpsdTestSpecificationId.value.trim()) form.elements.hpsdTestSpecificationId.value = 'spec-ftth-gpon-basico';
+  if (!form.elements.wfmCancelReason.value.trim()) form.elements.wfmCancelReason.value = 'PROBLEMAS SISTEMICOS';
+  if (!form.elements.wfmCancelContext.value.trim()) form.elements.wfmCancelContext.value = 'SISTEMICO';
+  if (form.elements.wfmNetworkOwner.value === 'VIVO1') {
+    Object.entries({ wfmCnl: '11000', wfmTelephonicArea: 'CB', wfmCentralOffice: 'VM', wfmMicroArea: 'SP' }).forEach(([nome, valor]) => {
+      if (!form.elements[nome].value.trim()) form.elements[nome].value = valor;
+    });
+  }
+
+  // URLs do Avançado: vêm com o padrão do ambiente; ao trocar de ambiente, só as não personalizadas mudam.
+  let ambienteAnterior = form.elements.ambiente.value;
+  function atualizarStatusUrls() {
+    const pronto = ['url_cpm', 'url_tt', 'url_hpsd', 'wfmBaseUrl'].every(nome => {
+      try { return ['http:', 'https:'].includes(new URL(form.elements[nome].value.trim()).protocol); }
+      catch (erro) { return false; }
+    });
+    $('#abrir-urls').dataset.estado = pronto ? 'pronto' : 'pendente';
+    $('#abrir-urls').title = pronto ? 'URL e ambiente configurados' : 'Configurar URL e Ambiente: existem URLs ausentes ou inválidas';
+  }
+  function preencherUrls(anterior) {
+    const novo = AMBIENTES[form.elements.ambiente.value] || AMBIENTES.preprod;
+    const velho = anterior && AMBIENTES[anterior];
+    Object.entries({ cpm: 'url_cpm', tt: 'url_tt', hpsd: 'url_hpsd', wfm: 'wfmBaseUrl' }).forEach(([k, campo]) => {
+      const el = form.elements[campo];
+      el.placeholder = novo[k] || 'ainda não definida';
+      if (!el.value || (velho && el.value === velho[k])) el.value = novo[k];
+    });
+    atualizarStatusUrls();
+  }
+  preencherUrls(null);
+  $('#painel-urls').addEventListener('input', atualizarStatusUrls);
+  form.elements.ambiente.addEventListener('change', () => { preencherUrls(ambienteAnterior); ambienteAnterior = form.elements.ambiente.value; });
+  form.addEventListener('change', () => salvarFormulario(form));
+
+  // Token: só em memória.
+  const token = { valor: '', expiraEm: 0, claims: null };
+  const statusToken = $('#token-status');
+  function atualizarStatusToken() {
+    let texto = 'Sem token', classe = 'vazio';
+    if (token.valor) {
+      const restante = token.expiraEm ? Math.round((token.expiraEm - Date.now()) / 1000) : null;
+      if (restante !== null && restante <= 0) { texto = 'Token expirado'; classe = 'expirado'; }
+      else {
+        const quem = token.claims && (token.claims.sub || token.claims.OAM_NOME || token.claims.client_id);
+        const tempo = restante === null ? 'validade desconhecida' : 'expira em ' + (restante >= 60 ? Math.floor(restante / 60) + ' min' : restante + ' s');
+        texto = 'Token' + (quem ? ' · ' + quem : '') + ' · ' + tempo; classe = 'valido';
+      }
+    }
+    statusToken.textContent = texto; statusToken.dataset.estado = classe;
+    $('#token-resumo').textContent = texto; $('#token-resumo').dataset.estado = classe;
+    $('#limpar-token').disabled = !token.valor;
+    $('#abrir-token').dataset.estado = token.valor && token.expiraEm > Date.now() ? 'pronto' : 'pendente';
+    $('#abrir-token').title = texto;
+  }
+  setInterval(atualizarStatusToken, 1000);
+  const erroTok = $('#erro-token');
+  function usarToken() {
+    erroTok.textContent = '';
+    const t = form.elements.tokenManual.value.replace(/^\s*Bearer\s+/i, '').replace(/\s+/g, '');
+    if (!t) { erroTok.textContent = 'Cole um token no campo.'; return false; }
+    token.valor = t; token.claims = lerJwt(t);
+    token.expiraEm = token.claims && token.claims.exp ? token.claims.exp * 1000 : 0;
+    if (!token.claims) erroTok.textContent = 'Não foi possível ler o token (JWT incompleto ou com caracteres extras). Copie o token inteiro de novo.';
+    atualizarStatusToken();
+    return !!token.claims;
+  }
+  $('#usar').addEventListener('click', () => {
+    if (usarToken()) $('#painel-token').close();
+    else form.elements.tokenManual.focus();
+  });
+  $('#limpar-token').addEventListener('click', () => {
+    form.elements.tokenManual.value = ''; erroTok.textContent = '';
+    Object.assign(token, { valor: '', expiraEm: 0, claims: null }); atualizarStatusToken();
+    form.elements.tokenManual.focus();
+  });
+  [['painel-token', 'abrir-token', 'tokenManual'], ['painel-urls', 'abrir-urls', 'ambiente']].forEach(([id, botaoId, campoInicial]) => {
+    const painel = $('#' + id), botao = $('#' + botaoId);
+    botao.addEventListener('click', () => {
+      painel.showModal(); botao.setAttribute('aria-expanded', 'true');
+      form.elements[campoInicial].focus();
+    });
+    painel.querySelectorAll('[data-fechar-painel]').forEach(botaoFechar => botaoFechar.addEventListener('click', () => painel.close()));
+    painel.addEventListener('close', () => botao.setAttribute('aria-expanded', 'false'));
+    painel.addEventListener('keydown', evento => {
+      if (evento.key === 'Escape') { evento.preventDefault(); painel.close(); }
+    });
+    painel.addEventListener('click', evento => {
+      const limites = painel.getBoundingClientRect();
+      if (evento.target === painel && (evento.clientX < limites.left || evento.clientX > limites.right || evento.clientY < limites.top || evento.clientY > limites.bottom)) painel.close();
+    });
+  });
+
+
+  const FASES = [['Impedimentos', ['INT01', 'INT03']], ['Diagnóstico', ['INT06']],
+    ['Agendamento', ['INT11', 'INT14']], ['Abertura', ['INT18']], ['Desfazer', ['INT16']]];
+  const porId = Object.fromEntries(ESPECIFICACOES.map(s => [s.id, s]));
+  const resultados = {};
+  const estacoes = {};
+  function atualizarUrlsIntegracoes() {
+    const dados = lerFormulario(form);
+    ESPECIFICACOES.forEach(spec => {
+      const destino = $('#lado [data-url-integracao="' + spec.id + '"]');
+      if (!destino) return;
+      const contexto = novoContexto(dados.ambiente || 'preprod', Object.assign({}, dados), '');
+      Object.assign(contexto.saidas, saidas);
+      const local = contextoDaIntegracao(spec, contexto);
+      if (!local.saidas.woNumero) local.saidas.woNumero = '{woNumero}';
+      let url = ajusteDe(spec.id).request.url;
+      if (url === undefined) {
+        try { url = spec.montar(local).url; }
+        catch (erro) { url = local.base[spec.base] + CAMINHOS_REQUEST[spec.id]; }
+      }
+      destino.textContent = url || 'URL não configurada';
+      destino.title = destino.textContent;
+    });
+  }
+  const saidas = {};
+  let atual = 'INT01';
+  let ultimoContexto = null;
+
+  const PARAMETROS_INTEGRACAO = {
+    INT00: ['assetDocumentNumber', 'assetIndice', 'assetMapeamento'],
+    INT01: ['designador', 'correlationId'],
+    INT03: ['designador', 'correlationId'],
+    INT06: ['designador', 'hpsdTestSpecificationId', 'hpsdRelatedServiceId', 'processInstanceId'],
+    INT11: ['correlationId', 'wfmNetworkOwner', 'wfmMediaType', 'wfmCnl', 'wfmPostcode', 'wfmTelephonicArea', 'wfmCentralOffice', 'wfmMicroArea', 'wfmGeographicSiteId', 'wfmAttendantId', 'wfmSlotInicio', 'wfmSlotFim'],
+    INT14: ['designador', 'correlationId', 'wfmNetworkOwner', 'wfmMediaType', 'wfmCnl', 'wfmPostcode', 'wfmTelephonicArea', 'wfmCentralOffice', 'wfmGeographicSiteId', ...CAMPOS.int14.map(campo => campo.name), 'wfmCorpoInt14'],
+    INT18: ['designador', 'correlationId', 'hpsdTestSpecificationId', ...CAMPOS.int18.map(campo => campo.name)],
+    INT16: ['correlationId', 'woNumero', 'wfmCancelReason', 'wfmCancelContext'],
+  };
+  function editorRequest(spec) {
+    const ajuste = ajusteDe(spec.id);
+    const editor = document.createElement('section'); editor.className = 'editor-request';
+    const titulo = document.createElement('h4'); titulo.textContent = 'Parâmetros de entrada';
+    const parametros = document.createElement('div'); parametros.className = 'grupo';
+    const dados = lerFormulario(form);
+    if (spec.id === 'INT14' && !saidas.slot && ajuste.params.wfmCorpoInt14 === undefined && !dados.wfmCorpoInt14 && ajuste.request.body === undefined) {
+      const contextoExemplo = novoContexto(dados.ambiente || 'preprod', dados, '');
+      contextoExemplo.params = Object.assign({}, dados, saidas.entradasAsset || {}, ajuste.params, { wfmUsarHorarioSimulado: true, wfmCorpoInt14: '' });
+      contextoExemplo.saidas = {};
+      ajuste.params.wfmCorpoInt14 = JSON.stringify(spec.montar(contextoExemplo).body, null, 2);
+      ajuste.corpoInt14Gerado = true;
+    }
+    if (spec.id === 'INT14') {
+      try {
+        const body = JSON.parse(ajuste.params.wfmCorpoInt14 || dados.wfmCorpoInt14 || 'null');
+        const horario = body?.Appointment_Create?.relatedParty?.find(item => item['@type'] === 'TimeSlot');
+        const valores = horario ? {
+          wfmSimuladoInicio: horario.validFor?.startDateTime || '', wfmSimuladoFim: horario.validFor?.endDateTime || '',
+          wfmSimuladoPeriodo: horario.id || '', wfmSimuladoRecursoId: horario.resourceId || '', wfmSimuladoRecursoNome: horario.resourceName || '',
+        } : saidas.slot ? {
+          wfmSimuladoInicio: saidas.slot.inicio, wfmSimuladoFim: saidas.slot.fim, wfmSimuladoPeriodo: saidas.slot.timeslot,
+          wfmSimuladoRecursoId: saidas.slot.resourceId, wfmSimuladoRecursoNome: saidas.slot.resourceName || '',
+        } : padroesHorarioSimulado();
+        Object.assign(dados, valores);
+      } catch {}
+    }
+    const definicoes = CAMPOS.jornada.concat(CAMPOS.wfm, CAMPOS.asset, CAMPOS.int14, CAMPOS.int18, [{ name: 'woNumero', label: 'ID da WO', placeholder: 'retornado pela INT14' }]);
+    if (spec.id === 'INT18') {
+      const contexto = novoContexto(dados.ambiente || 'preprod', dados, token.valor);
+      contexto.params = Object.assign({}, dados, saidas.entradasAsset || {}, ajuste.params);
+      contexto.saidas = saidas;
+      Object.assign(dados, parametrosBd(contexto));
+    }
+    if (spec.id === 'INT14') {
+      const contexto = novoContexto(dados.ambiente || 'preprod', lerFormulario(form), token.valor);
+      Object.assign(contexto.saidas, saidas);
+      const local = contextoDaIntegracao(spec, contexto);
+      if (local.params.wfmCorpoInt14) {
+        try { Object.assign(dados, atualizarCampoCorpoInt14(JSON.parse(local.params.wfmCorpoInt14))); } catch {}
+      } else if (saidas.slot) {
+        Object.assign(dados, { wfmSimuladoInicio: saidas.slot.inicio, wfmSimuladoFim: saidas.slot.fim,
+          wfmSimuladoPeriodo: saidas.slot.timeslot, wfmSimuladoRecursoId: saidas.slot.resourceId, wfmSimuladoRecursoNome: saidas.slot.resourceName || '' });
+      }
+    }
+    const previa = document.createElement('div');
+    const avancado = document.createElement('details');
+    const sumario = document.createElement('summary'); sumario.textContent = 'Editar request HTTP';
+    const camposHttp = document.createElement('div'); camposHttp.className = 'grupo';
+    avancado.append(sumario, camposHttp);
+    const status = document.createElement('p'); status.className = 'dica'; status.setAttribute('role', 'status');
+    const erro = document.createElement('p'); erro.className = 'msg-erro'; erro.setAttribute('role', 'alert');
+    const entradasHttp = {};
+    let requestAtual = null;
+    function atualizarPrevia() {
+      const valores = lerFormulario(form);
+      const contexto = novoContexto(valores.ambiente || 'preprod', valores, token.valor);
+      Object.assign(contexto.saidas, saidas);
+      const local = contextoDaIntegracao(spec, contexto);
+      try {
+        const dependencia = !corpoManualCompleto(spec) && spec.depende && spec.depende(local);
+        if (dependencia) throw new Error(dependencia);
+        requestAtual = montarRequest(spec, local);
+        const headers = Object.fromEntries(Object.entries(requestAtual.headers).filter(([nome]) => !/^authorization$/i.test(nome)));
+        previa.replaceChildren(bloco('Prévia do request', pre(requestAtual.method + ' ' + requestAtual.url + (requestAtual.bodyTexto ? '\n\n' + JSON.stringify(requestAtual.body, null, 2) : ''))));
+        if (spec.id === 'INT14' && requestAtual.body?.Appointment_Create?.note?.some(nota => String(nota.text).includes('horario simulado'))) {
+          const aviso = document.createElement('p'); aviso.className = 'nota-lado';
+          aviso.textContent = 'Horário simulado: a disponibilidade e o recurso não foram confirmados pela INT11. Executar esta integração cria uma WO real.';
+          previa.prepend(aviso);
+        }
+        erro.textContent = '';
+        const padroes = { method: requestAtual.method, url: requestAtual.url, timeoutMs: requestAtual.timeoutMs, headers: JSON.stringify(headers, null, 2), body: requestAtual.body === undefined ? '' : JSON.stringify(requestAtual.body, null, 2) };
+        Object.entries(entradasHttp).forEach(([chave, entrada]) => {
+          if (document.activeElement !== entrada) entrada.value = ajuste.request[chave] === undefined ? padroes[chave] : ajuste.request[chave];
+        });
+      } catch (falha) {
+        requestAtual = null; previa.replaceChildren();
+        const dependencia = spec.depende && spec.depende(local);
+        erro.textContent = dependencia && !Object.keys(ajuste.request).length ? 'Aguardando dependência: ' + dependencia : 'Request inválido: ' + falha.message;
+      }
+      status.textContent = Object.keys(ajuste.params).length || Object.keys(ajuste.request).length ? 'Ajustes desta integração aplicados nesta aba' : 'Request padrão da jornada';
+      atualizarUrlsIntegracoes();
+    }
+    PARAMETROS_INTEGRACAO[spec.id].forEach(nome => {
+      const definicao = definicoes.find(item => item.name === nome);
+      const grupo = campo(Object.assign({}, definicao, { obrigatorio: spec.requer.includes(nome) }));
+      const entrada = grupo.querySelector('[name]');
+      entrada.value = ajuste.params[nome] === undefined ? ((spec.id === 'INT14' ? dados[nome] ?? (saidas.entradasAsset || {})[nome] : (saidas.entradasAsset || {})[nome] ?? dados[nome]) ?? definicao.valor ?? (nome === 'woNumero' ? saidas.woNumero || '' : '')) : ajuste.params[nome];
+      if (entrada.type === 'checkbox') entrada.checked = ajuste.params[nome] === undefined ? dados[nome] === true : ajuste.params[nome] === true;
+      entrada.dataset.parametro = nome;
+      entrada.addEventListener('input', () => {
+        if (spec.id === 'INT14' && !['wfmCorpoInt14', 'correlationId'].includes(nome)) {
+          const texto = ajuste.params.wfmCorpoInt14 ?? dados.wfmCorpoInt14;
+          if (texto && texto.trim()) {
+            try {
+              const corpo = atualizarCampoCorpoInt14(JSON.parse(texto), nome, entrada.type === 'checkbox' ? entrada.checked : entrada.value.trim());
+              ajuste.params.wfmCorpoInt14 = JSON.stringify(corpo, null, 2);
+              const campoCorpo = parametros.querySelector('[data-parametro="wfmCorpoInt14"]');
+              if (campoCorpo) campoCorpo.value = ajuste.params.wfmCorpoInt14;
+              if (ajuste.request.body !== undefined) ajuste.request.body = ajuste.params.wfmCorpoInt14;
+            } catch (falha) { erro.textContent = falha.message; return; }
+          }
+        }
+        ajuste.params[nome] = entrada.type === 'checkbox' ? entrada.checked : entrada.value.trim();
+        if (spec.id === 'INT14' && nome === 'wfmCorpoInt14') {
+          ajuste.corpoInt14Gerado = false;
+          delete ajuste.request.body;
+        }
+        if (['designador', 'correlationId', 'hpsdTestSpecificationId', 'hpsdRelatedServiceId'].includes(nome) || (spec.id === 'INT11' && nome.startsWith('wfm'))) {
+          form.elements[nome].value = entrada.value.trim();
+          salvarFormulario(form);
+        }
+        atualizarPrevia();
+      });
+      parametros.appendChild(grupo);
+    });
+    const camposRequest = [
+      { name: 'method', label: 'Método', tipo: 'select', opcoes: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'].map(metodo => [metodo, metodo]) },
+      { name: 'url', label: 'URL completa e parâmetros de consulta' },
+      { name: 'timeoutMs', label: 'Timeout (ms, máximo 30000)', tipo: 'number' },
+      { name: 'headers', label: 'Headers (JSON)', tipo: 'textarea' },
+      { name: 'body', label: 'Corpo do request (JSON)', tipo: 'textarea' },
+    ];
+    camposRequest.forEach(definicao => {
+      const grupo = campo(definicao), entrada = grupo.querySelector('[name]');
+      entrada.dataset.request = definicao.name;
+      if (definicao.name === 'body') entrada.classList.add('request-body');
+      entradasHttp[definicao.name] = entrada;
+      const base = novoContexto(dados.ambiente || 'preprod', Object.assign({}, dados), '').base;
+      const padrao = definicao.name === 'method' ? spec.metodo : (definicao.name === 'timeoutMs' ? timeoutPadrao(spec) : (definicao.name === 'url' ? base[spec.base] + CAMINHOS_REQUEST[spec.id] : (definicao.name === 'headers' ? '{"Content-Type":"application/json"}' : '')));
+      entrada.value = ajuste.request[definicao.name] === undefined ? padrao : ajuste.request[definicao.name];
+      entrada.addEventListener('input', () => { ajuste.request[definicao.name] = entrada.value; atualizarPrevia(); });
+      camposHttp.appendChild(grupo);
+    });
+    const acoes = document.createElement('div'); acoes.className = 'editor-acoes';
+    const restaurar = document.createElement('button'); restaurar.type = 'button'; restaurar.className = 'det-acao'; restaurar.textContent = 'Restaurar padrão';
+    restaurar.addEventListener('click', () => { delete ajustesIntegracao[spec.id]; selecionar(spec.id); });
+    if (spec.id === 'INT11') {
+      const cenario = document.createElement('button'); cenario.type = 'button'; cenario.className = 'det-acao'; cenario.textContent = 'Aplicar cenário Postman';
+      cenario.title = 'VIVO1, GPON, CNL 11000, área CB, estação VM, microárea SP; amanhã às 00:00 até amanhã + 7 dias';
+      cenario.addEventListener('click', () => {
+        const periodo = periodoConsultaWfm();
+        Object.assign(ajuste.params, {
+          wfmNetworkOwner: 'VIVO1', wfmMediaType: 'GPON', wfmCnl: '11000',
+          wfmTelephonicArea: 'CB', wfmCentralOffice: 'VM', wfmMicroArea: 'SP',
+          wfmPostcode: '', wfmGeographicSiteId: '', wfmAttendantId: '',
+          wfmSlotInicio: dataConsultaWfm(new Date(Date.parse(periodo.inicio) + 24 * 60 * 60 * 1000)),
+          wfmSlotFim: dataConsultaWfm(new Date(Date.parse(periodo.fim) + 24 * 60 * 60 * 1000))
+        });
+        Object.entries(ajuste.params).forEach(([nome, valor]) => {
+          if (nome.startsWith('wfm') && form.elements[nome]) form.elements[nome].value = valor;
+        });
+        salvarFormulario(form);
+        delete ajuste.request.body;
+        selecionar(spec.id);
+      });
+      acoes.append(cenario);
+    }
+    acoes.append(status, restaurar);
+    editor.append(titulo, parametros, avancado, erro, previa, acoes);
+    atualizarPrevia();
+    return editor;
+  }
+
+  [['Consulta de Asset - VE', ['INT00']], ...FASES].forEach(([titulo, ids]) => {
+    const f = document.createElement('section');
+    f.className = 'fase'; f.style.setProperty('--n', ids.length);
+    const h = document.createElement('h2'); h.textContent = titulo;
+    const e = document.createElement('div'); e.className = 'estacoes';
+    ids.forEach(id => {
+      const spec = porId[id];
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'estacao'; b.dataset.estado = 'pendente';
+      b.innerHTML = '<span class="ponto">' + icone(id === 'INT00' ? 'entrada' : 'pulado', id === 'INT00' ? 20 : 14) + '</span><span class="rot"><b></b><strong></strong><span class="info"></span></span>';
+      b.querySelector('b').textContent = spec.id;
+      b.querySelector('strong').textContent = spec.nome;
+      b.querySelector('.info').textContent = id === 'INT00' ? '' : spec.sistema;
+      if (spec.escrita) b.querySelector('.rot').insertAdjacentHTML('beforeend', '<em>cria registro real</em>');
+      if (spec.nota) { const n = document.createElement('small'); n.className = 'nota'; n.textContent = spec.nota; b.querySelector('.rot').appendChild(n); }
+      b.addEventListener('click', () => selecionar(id));
+      e.appendChild(b);
+      estacoes[id] = b;
+    });
+    if (ids.includes('INT00')) f.append(e);
+    else f.append(h, e);
+    (ids.includes('INT00') ? $('#asset-integracao') : $('#trilho')).appendChild(f);
+  });
+  atualizarUrlsIntegracoes();
+  $('#painel-urls').addEventListener('input', atualizarUrlsIntegracoes);
+  form.elements.ambiente.addEventListener('change', atualizarUrlsIntegracoes);
+
+  function selecionar(id) {
+    atual = id;
+    Object.entries(estacoes).forEach(([k, b]) => b.setAttribute('aria-current', String(k === id)));
+    const spec = porId[id], r = resultados[id];
+    const lado = $('#lado');
+    lado.innerHTML = '<div class="linha-topo"><span class="selo"></span><button class="btn" type="button" id="rodar-um">' + icone('play', 12) + 'Executar só esta</button></div><h3></h3><p class="sub"></p>';
+    const selo = lado.querySelector('.selo');
+    const est = r ? (r.demorando ? 'lento' : r.estado) : 'pendente';
+    selo.dataset.estado = est;
+    selo.innerHTML = icone(est === 'pendente' ? 'pulado' : est, 13);
+    selo.append(r && r.demorando ? 'Atenção · aguardando resposta há mais de 10 s' : (ROTULOS[est] || 'Ainda não executado'));
+    lado.querySelector('h3').textContent = spec.id + ' · ' + spec.nome;
+    lado.querySelector('.sub').textContent = spec.sistema + ' · ' + spec.metodo + ' · ' + spec.etapa;
+    const endereco = document.createElement('dl'); endereco.className = 'url-integracao';
+    const rotuloUrl = document.createElement('dt'); rotuloUrl.textContent = 'URL da integração';
+    const valorUrl = document.createElement('dd'); valorUrl.dataset.urlIntegracao = id;
+    endereco.append(rotuloUrl, valorUrl); lado.appendChild(endereco);
+    if (spec.notaLonga) { const n = document.createElement('p'); n.className = 'nota-lado'; n.textContent = spec.notaLonga; lado.appendChild(n); }
+    lado.querySelector('#rodar-um').addEventListener('click', () => rodar([id]));
+    lado.querySelector('#rodar-um').disabled = !!execucaoAtual;
+    lado.appendChild(editorRequest(spec));
+    if (id === 'INT11' && r && r.estado !== 'executando' && !saidas.slot) {
+      const manual = document.createElement('section'); manual.className = 'editor-request';
+      const titulo = document.createElement('h4'); titulo.textContent = 'Horário manual para continuar o teste';
+      const aviso = document.createElement('p'); aviso.className = 'nota-lado';
+      aviso.textContent = 'Disponibilidade não confirmada pela INT11. O recurso sugerido é um exemplo WFM; criar a WO continua sendo uma operação real.';
+      const entradas = {};
+      const padroes = padroesHorarioSimulado();
+      const campos = document.createElement('div'); campos.className = 'grupo';
+      CAMPOS.int14.filter(def => Object.hasOwn(padroes, def.name)).forEach(def => {
+        const grupo = campo({ ...def, valor: padroes[def.name] });
+        entradas[def.name] = grupo.querySelector('[name]');
+        campos.append(grupo);
+      });
+      const erro = document.createElement('p'); erro.className = 'msg-erro'; erro.setAttribute('role', 'alert');
+      const confirmar = document.createElement('button'); confirmar.type = 'button'; confirmar.className = 'btn';
+      confirmar.textContent = 'Confirmar horário manual e preparar INT14';
+      confirmar.disabled = !!execucaoAtual;
+      confirmar.addEventListener('click', () => {
+        try {
+          saidas.slot = confirmarHorarioManual(Object.fromEntries(Object.entries(entradas).map(([nome, campo]) => [nome, campo.value.trim()])));
+          const ajuste = ajusteDe('INT14');
+          if (ajuste.corpoInt14Gerado) {
+            delete ajuste.params.wfmCorpoInt14;
+            delete ajuste.request.body;
+            delete ajuste.corpoInt14Gerado;
+          }
+          selecionar('INT14');
+        } catch (falha) { erro.textContent = falha.message; }
+      });
+      manual.append(titulo, aviso, campos, erro, confirmar); lado.append(manual);
+    }
+    if (saidas.slot?.simulado && ['INT11', 'INT14', 'INT18'].includes(id)) {
+      const aviso = document.createElement('p'); aviso.className = 'nota-lado';
+      aviso.textContent = 'Horário manual selecionado: ' + saidas.slot.inicio + ' até ' + saidas.slot.fim + '. A INT11 não confirmou disponibilidade.';
+      lado.append(aviso);
+    }
+    if (r && r.estado !== 'executando') lado.appendChild(detalhe(spec, r));
+    else { const p = document.createElement('p'); p.className = 'vazio'; p.textContent = r ? 'Executando…' : 'Percorra a jornada ou execute esta estação.'; lado.appendChild(p); }
+  }
+
+  function pintar(spec, r) {
+    resultados[spec.id] = r;
+    const b = estacoes[spec.id];
+    b.dataset.estado = r.demorando ? 'lento' : r.estado;
+    b.querySelector('.ponto').innerHTML = icone(spec.id === 'INT00' ? 'entrada' : r.estado, spec.id === 'INT00' ? 20 : 14);
+    b.querySelector('.info').textContent = r.http ? 'HTTP ' + r.http + ' · ' + r.ms + ' ms'
+      : (r.estado === 'executando' ? (r.demorando ? 'Mais de 10 s · aguardando resposta' : 'executando…') : (r.bloqueado ? 'sem resposta no navegador' : (r.motivo || spec.sistema)));
+    if (r.estado === 'executando' || spec.id === atual) selecionar(spec.id);
+    const c = resumo(Object.values(resultados).filter(x => x.estado !== 'executando'));
+    $('#placar').innerHTML = '<b>' + c.ok + '</b>/' + c.executados + ' operacionais';
+  }
+
+  function avisar() {
+    const bloqueados = Object.values(resultados).filter(r => r.bloqueado).map(r => r.id);
+    const aviso = $('#aviso');
+    aviso.hidden = !bloqueados.length;
+    aviso.replaceChildren();
+    if (!bloqueados.length) return;
+    if (navegadorLiberado) {
+      aviso.append(bloqueados.join(', ') + ': sem resposta mesmo com o navegador liberado. A causa é rede: endereço que não resolve no DNS, host fora da rede ou VPN desconectada.');
+      return;
+    }
+    aviso.append(bloqueados.join(', ') + ': o navegador não obteve resposta. Em geral é o gateway sem CORS liberado para páginas (ou VPN/rede).');
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = 'Como liberar';
+    b.addEventListener('click', () => abrirLiberar(true));
+    aviso.appendChild(b);
+    abrirLiberar(true);
+  }
+
+  let execucaoAtual = null;
+  async function rodar(ids) {
+    if (execucaoAtual) return;
+    if (!token.valor && form.elements.tokenManual.value.trim() && !usarToken()) return;
+    const botao = $('#rodar-tudo'); botao.disabled = true;
+    execucaoAtual = new AbortController();
+    $('#parar-jornada').disabled = false;
+    try {
+      const d = lerFormulario(form);
+      salvarFormulario(form);
+      const ctx = novoContexto(d.ambiente || 'preprod', d, token.valor);
+      ctx.signal = execucaoAtual.signal;
+      Object.assign(ctx.saidas, saidas);
+      ultimoContexto = ctx;
+      await executarTodos(ctx, { incluirEscrita: !!d.incluirEscrita, ids, aoAtualizar: pintar });
+      Object.assign(saidas, ctx.saidas);
+      $('#exportar').disabled = false;
+    } finally {
+      execucaoAtual = null;
+      botao.disabled = false;
+      $('#parar-jornada').disabled = true;
+      selecionar(atual);
+    }
+    avisar();
+    const problema = ESPECIFICACOES.find(s => resultados[s.id] && ['falha', 'alerta'].includes(resultados[s.id].estado));
+    if (problema && !ids) selecionar(problema.id);
+  }
+
+  $('#rodar-tudo').addEventListener('click', () => rodar(null));
+  $('#parar-jornada').addEventListener('click', () => {
+    if (execucaoAtual) execucaoAtual.abort();
+    $('#parar-jornada').disabled = true;
+  });
+  $('#exportar').addEventListener('click', () => {
+    if (!ultimoContexto) return;
+    baixarArquivo('mapa-fenix-ve-' + ultimoContexto.ambiente + '-' + Date.now() + '.json',
+      JSON.stringify(relatorio(ultimoContexto, Object.values(resultados)), null, 2), 'application/json');
+  });
+  document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') rodar(null); });
+  form.elements.ambiente.addEventListener('change', () => { Object.keys(saidas).forEach(k => delete saidas[k]); });
+
+  // ===== Liberar navegador: atalho que reabre esta página num Chrome/Edge com CORS desligado =====
+  const plataforma = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || navigator.userAgent;
+  const SO_DETECTADO = /mac/i.test(plataforma) ? 'mac' : (/win/i.test(plataforma) ? 'win' : null);
+  const NAV_DETECTADO = /\bEdg\//.test(navigator.userAgent) ? 'edge' : 'chrome';
+  const urlPagina = location.href.split('#')[0];
+  const shAspas = s => "'" + s.replace(/'/g, "'\\''") + "'";
+  const asAspas = s => '"' + s.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
+  // Caminhos completos: não depende do navegador estar no PATH. O primeiro de cada lista é o usado no comando copiado.
+  const NAVEGADORES = {
+    chrome: { nome: 'Chrome', perfil: 'chrome-qa-fenix', appMac: 'Google Chrome.app',
+      win: ['%ProgramFiles%\\Google\\Chrome\\Application\\chrome.exe', '%ProgramFiles(x86)%\\Google\\Chrome\\Application\\chrome.exe',
+        '%LocalAppData%\\Google\\Chrome\\Application\\chrome.exe'] },
+    edge: { nome: 'Edge', perfil: 'edge-qa-fenix', appMac: 'Microsoft Edge.app',
+      win: ['%ProgramFiles(x86)%\\Microsoft\\Edge\\Application\\msedge.exe', '%ProgramFiles%\\Microsoft\\Edge\\Application\\msedge.exe',
+        '%LocalAppData%\\Microsoft\\Edge\\Application\\msedge.exe'] },
+  };
+  const SISTEMAS = {
+    mac: {
+      nome: 'macOS', ext: 'applescript', tipo: 'text/plain',
+      passos: n => ['Clique em "Baixar atalho".', 'Abra o arquivo baixado: ele abre no Editor de Scripts.',
+        'Clique em ▶ (Executar). O ' + n.nome + ' liberado abre já nesta página.'],
+      dica: n => 'Ou copie o comando abaixo e cole no Terminal. Se o ' + n.nome + ' não estiver em /Applications, use o atalho: ele procura também em ~/Applications.',
+      comando: n => 'open -na ' + shAspas('/Applications/' + n.appMac) + ' --args --user-data-dir="$HOME/' + n.perfil + '" --disable-web-security ' + shAspas(urlPagina),
+      atalho: n => {
+        const sh = 'A=' + shAspas('/Applications/' + n.appMac) + '; [ -d "$A" ] || A="$HOME/Applications/' + n.appMac + '"; '
+          + 'open -na "$A" --args --user-data-dir="$HOME/' + n.perfil + '" --disable-web-security ';
+        return '-- Abre a página de QA do Fenix VE no ' + n.nome + ' separado (perfil próprio) com a checagem de CORS desligada.\n'
+          + 'set pagina to ' + asAspas(urlPagina) + '\n'
+          + 'do shell script ' + asAspas(sh) + ' & quoted form of pagina\n';
+      },
+    },
+    win: {
+      nome: 'Windows', ext: 'bat', tipo: 'application/octet-stream',
+      passos: n => ['Clique em "Baixar atalho". Se o navegador avisar que o arquivo pode ser perigoso, escolha "Manter".',
+        'Abra o arquivo baixado. Se aparecer "O Windows protegeu o computador", clique em "Mais informações" e "Executar assim mesmo".',
+        'O ' + n.nome + ' liberado abre já nesta página.'],
+      dica: n => 'Ou aperte Win+R, cole o comando abaixo e tecle Enter. Se o ' + n.nome + ' estiver instalado em outra pasta, use o atalho: ele procura nos locais de instalação comuns.',
+      comando: n => '"' + n.win[0] + '" --user-data-dir="%TEMP%\\' + n.perfil + '" --disable-web-security "' + urlPagina + '"',
+      atalho: n => ['@echo off',
+        'rem Abre a pagina de QA do Fenix VE no ' + n.nome + ' separado (perfil proprio) com a checagem de CORS desligada.',
+        'set "NAV=' + n.win[0] + '"',
+        ...n.win.slice(1).map(p => 'if not exist "%NAV%" set "NAV=' + p + '"'),
+        'if not exist "%NAV%" (echo ' + n.nome + ' nao encontrado nos locais padrao de instalacao. & pause & exit /b 1)',
+        // Em .bat, % literal precisa ser dobrado (a URL tem %20 etc.).
+        'start "" "%NAV%" --user-data-dir="%TEMP%\\' + n.perfil + '" --disable-web-security "' + urlPagina.replace(/%/g, '%%') + '"',
+        ''].join('\r\n'),
+    },
+  };
+  let soAtual = SO_DETECTADO || 'mac';
+  let navAtual = NAV_DETECTADO;
+  function marcarAbas(seletor, chave, atual, detectado, nomes, sufixo) {
+    document.querySelectorAll(seletor).forEach(b => {
+      b.setAttribute('aria-selected', String(b.dataset[chave] === atual));
+      b.textContent = nomes[b.dataset[chave]].nome;
+      if (b.dataset[chave] === detectado) { const s = document.createElement('small'); s.textContent = ' · ' + sufixo; b.appendChild(s); }
+    });
+  }
+  function mostrarLancador() {
+    const s = SISTEMAS[soAtual], n = NAVEGADORES[navAtual];
+    marcarAbas('.abas button[data-so]', 'so', soAtual, SO_DETECTADO, SISTEMAS, 'este computador');
+    marcarAbas('.abas button[data-nav]', 'nav', navAtual, NAV_DETECTADO, NAVEGADORES, 'este navegador');
+    $('#passos').replaceChildren(...s.passos(n).map(t => { const li = document.createElement('li'); li.textContent = t; return li; }));
+    $('#baixar-atalho').innerHTML = icone('baixar', 14);
+    $('#baixar-atalho').append('Baixar atalho do ' + n.nome + ' para ' + s.nome);
+    $('#dica-comando').textContent = s.dica(n);
+    $('#comando').textContent = s.comando(n);
+  }
+  function abrirLiberar(a) {
+    const painel = $('#liberar');
+    if (a && !painel.open) painel.showModal();
+    if (!a && painel.open) painel.close();
+    $('#abrir-liberar').setAttribute('aria-expanded', String(painel.open));
+  }
+  async function verificarNavegador() {
+    if (location.protocol === 'http:' && ['127.0.0.1', 'localhost'].includes(location.hostname) && location.port === '8765') {
+      navegadorLiberado = true;
+      const botao = $('#abrir-liberar');
+      botao.dataset.estado = 'liberado';
+      botao.innerHTML = icone('ok', 14);
+      botao.append('Servidor local');
+      botao.title = 'Requisições encaminhadas pelo servidor local de QA.';
+      botao.disabled = true;
+      return;
+    }
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 5000);
+    // O OAM não responde com CORS: só um navegador com a checagem desligada consegue ler essa resposta.
+    try { await fetch('https://authhml.vivo.com.br/oauth2/rest/token', { cache: 'no-store', signal: ctrl.signal }); navegadorLiberado = true; }
+    catch (e) { navegadorLiberado = false; }
+    clearTimeout(timer);
+    const b = $('#abrir-liberar');
+    b.dataset.estado = navegadorLiberado ? 'liberado' : 'bloqueado';
+    b.innerHTML = icone(navegadorLiberado ? 'ok' : 'alerta', 14);
+    b.append(navegadorLiberado ? 'Navegador liberado' : 'Liberar navegador');
+    b.title = navegadorLiberado ? 'A checagem de CORS está desligada nesta janela.'
+      : 'O navegador bloqueia chamadas aos gateways sem CORS. Clique para ver como liberar.';
+  }
+  document.querySelectorAll('.abas button[data-so]').forEach(b => b.addEventListener('click', () => { soAtual = b.dataset.so; mostrarLancador(); }));
+  document.querySelectorAll('.abas button[data-nav]').forEach(b => b.addEventListener('click', () => { navAtual = b.dataset.nav; mostrarLancador(); }));
+  $('#abrir-liberar').addEventListener('click', () => abrirLiberar(!$('#liberar').open));
+  $('#fechar-liberar').addEventListener('click', () => abrirLiberar(false));
+  $('#liberar').addEventListener('close', () => $('#abrir-liberar').setAttribute('aria-expanded', 'false'));
+  $('#liberar').addEventListener('keydown', evento => {
+    if (evento.key === 'Escape') { evento.preventDefault(); abrirLiberar(false); }
+  });
+  $('#liberar').addEventListener('click', evento => {
+    const limites = $('#liberar').getBoundingClientRect();
+    if (evento.target === $('#liberar') && (evento.clientX < limites.left || evento.clientX > limites.right || evento.clientY < limites.top || evento.clientY > limites.bottom)) abrirLiberar(false);
+  });
+  $('#baixar-atalho').addEventListener('click', () => {
+    const s = SISTEMAS[soAtual], n = NAVEGADORES[navAtual];
+    baixarArquivo('abrir-' + navAtual + '-qa-fenix.' + s.ext, s.atalho(n), s.tipo);
+  });
+  $('#copiar-comando').addEventListener('click', async () => {
+    const b = $('#copiar-comando');
+    try { await navigator.clipboard.writeText(SISTEMAS[soAtual].comando(NAVEGADORES[navAtual])); b.textContent = 'Copiado'; }
+    catch (e) { b.textContent = 'Não copiou: selecione o texto abaixo'; }
+    setTimeout(() => { b.textContent = 'Copiar comando'; }, 1800);
+  });
+  mostrarLancador();
+  verificarNavegador();
+
+  atualizarStatusToken();
+  selecionar('INT00');
+})();
+</script>
+</body>
+</html>

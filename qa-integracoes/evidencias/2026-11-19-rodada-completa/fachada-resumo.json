@@ -1,0 +1,216 @@
+{
+  "asset": {
+    "http": 200,
+    "itens": 2
+  },
+  "resumo": [
+    {
+      "run": "E02",
+      "cenarios": "E-02",
+      "passou": true,
+      "caminho": [
+        {
+          "etapa": "start_sem_designador",
+          "http": 400,
+          "atividade": "Variáveis de entrada obrigatórias não informadas: [designador]"
+        }
+      ]
+    },
+    {
+      "run": "R1",
+      "tentativa": 1,
+      "cenarios": "E-01,B-01,T-06,T-01",
+      "instancia": "3c93dfd3-e470-11f1-8248-06dfec022e82",
+      "passou": false,
+      "timeoutMassiva": true,
+      "caminho": [
+        {
+          "etapa": "start",
+          "http": 201,
+          "atividade": "Node_Inicio"
+        },
+        {
+          "etapa": "continuar",
+          "http": 200,
+          "atividade": "Node_FalhaConsulta",
+          "esperado": "Node_Reinicie"
+        },
+        {
+          "etapa": "encerrar_teste",
+          "http": 200,
+          "atividade": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "run": "R1",
+      "tentativa": 2,
+      "cenarios": "E-01,B-01,T-06,T-01",
+      "instancia": "49b86f88-e470-11f1-8248-06dfec022e82",
+      "passou": true,
+      "timeoutMassiva": false,
+      "caminho": [
+        {
+          "etapa": "start",
+          "http": 201,
+          "atividade": "Node_Inicio"
+        },
+        {
+          "etapa": "continuar",
+          "http": 200,
+          "atividade": "Node_Reinicie",
+          "esperado": "Node_Reinicie"
+        },
+        {
+          "etapa": "ja_reiniciei",
+          "http": 200,
+          "atividade": "Node_VoltouReinicio",
+          "esperado": "Node_VoltouReinicio"
+        },
+        {
+          "etapa": "voltou_sim",
+          "http": 200,
+          "atividade": "Node_InternetVoltou",
+          "esperado": "Node_InternetVoltou"
+        },
+        {
+          "etapa": "encerrar",
+          "http": 200,
+          "atividade": "COMPLETED",
+          "esperado": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "run": "R2",
+      "tentativa": 1,
+      "cenarios": "T-02,T-05",
+      "instancia": "4c4b4f44-e470-11f1-8248-06dfec022e82",
+      "passou": true,
+      "timeoutMassiva": false,
+      "caminho": [
+        {
+          "etapa": "start",
+          "http": 201,
+          "atividade": "Node_Inicio"
+        },
+        {
+          "etapa": "continuar",
+          "http": 200,
+          "atividade": "Node_Reinicie",
+          "esperado": "Node_Reinicie"
+        },
+        {
+          "etapa": "ja_reiniciei",
+          "http": 200,
+          "atividade": "Node_VoltouReinicio",
+          "esperado": "Node_VoltouReinicio"
+        },
+        {
+          "etapa": "voltou_nao",
+          "http": 200,
+          "atividade": "Node_TesteConexao",
+          "esperado": "Node_TesteConexao"
+        },
+        {
+          "etapa": "ir_inicio",
+          "http": 200,
+          "atividade": "COMPLETED",
+          "esperado": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "run": "R3",
+      "tentativa": 1,
+      "cenarios": "T-03,T-04",
+      "instancia": "50e79493-e470-11f1-8248-06dfec022e82",
+      "passou": false,
+      "timeoutMassiva": false,
+      "caminho": [
+        {
+          "etapa": "start",
+          "http": 201,
+          "atividade": "Node_Inicio"
+        },
+        {
+          "etapa": "continuar",
+          "http": 200,
+          "atividade": "Node_Reinicie",
+          "esperado": "Node_Reinicie"
+        },
+        {
+          "etapa": "nao_consigo",
+          "http": 200,
+          "atividade": "Node_TesteConexao",
+          "esperado": "Node_TesteConexao"
+        },
+        {
+          "etapa": "continuar_diagnostico",
+          "http": 200,
+          "atividade": "Node_FalhaConsulta",
+          "esperado": "Node_AguardaDiagnostico"
+        },
+        {
+          "etapa": "encerrar_teste",
+          "http": 200,
+          "atividade": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "run": "R4",
+      "tentativa": 1,
+      "cenarios": "B-05,B-09",
+      "instancia": "54f63f00-e470-11f1-8248-06dfec022e82",
+      "passou": true,
+      "timeoutMassiva": false,
+      "caminho": [
+        {
+          "etapa": "start",
+          "http": 201,
+          "atividade": "Node_Inicio"
+        },
+        {
+          "etapa": "continuar",
+          "http": 200,
+          "atividade": "Node_StatusAtraso",
+          "esperado": "Node_StatusAtraso"
+        },
+        {
+          "etapa": "encerrar",
+          "http": 200,
+          "atividade": "COMPLETED",
+          "esperado": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "run": "R5",
+      "tentativa": 1,
+      "cenarios": "B-06,B-07",
+      "instancia": "56e4c852-e470-11f1-8248-06dfec022e82",
+      "passou": true,
+      "timeoutMassiva": false,
+      "caminho": [
+        {
+          "etapa": "start",
+          "http": 201,
+          "atividade": "Node_Inicio"
+        },
+        {
+          "etapa": "continuar",
+          "http": 200,
+          "atividade": "Node_StatusVisita",
+          "esperado": "Node_StatusVisita"
+        },
+        {
+          "etapa": "encerrar",
+          "http": 200,
+          "atividade": "COMPLETED",
+          "esperado": "COMPLETED"
+        }
+      ]
+    }
+  ]
+}

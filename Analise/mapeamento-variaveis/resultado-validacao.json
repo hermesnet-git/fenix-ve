@@ -1,0 +1,69 @@
+{
+  "output": "Analise/mapeamento-variaveis/fenix-ve-mapa-variaveis.xlsx",
+  "generatedAt": "2026-11-19T21:51:14.691Z",
+  "catalog": 178,
+  "comparison": 105,
+  "startCandidates": 64,
+  "mappingRows": 878,
+  "payloads": 19,
+  "occurrences": 292,
+  "contracts": 90,
+  "documentSections": 1438,
+  "sheets": [
+    {
+      "name": "01_Mapa_variaveis",
+      "rows": 178
+    },
+    {
+      "name": "02_Comparacao_atual",
+      "rows": 105
+    },
+    {
+      "name": "03_Entradas_inicio",
+      "rows": 64
+    },
+    {
+      "name": "04_Campos_datamapping",
+      "rows": 878
+    },
+    {
+      "name": "05_Payloads_exemplos",
+      "rows": 19
+    },
+    {
+      "name": "06_BPMN_leituras_escritas",
+      "rows": 292
+    },
+    {
+      "name": "07_Regras_pendencias",
+      "rows": 25
+    },
+    {
+      "name": "08_Contratos_OpenAPI",
+      "rows": 90
+    },
+    {
+      "name": "09_Historias_DFT_PDF",
+      "rows": 1438
+    },
+    {
+      "name": "10_Fontes_cobertura",
+      "rows": 35
+    },
+    {
+      "name": "11_Leia_me",
+      "rows": 10
+    },
+    {
+      "name": "12_Asset_origem_caminhos",
+      "rows": 15
+    }
+  ],
+  "statusCounts": {
+    "PARCIAL": 39,
+    "CONFLITO": 3,
+    "IDENTIFICADA": 68,
+    "NAO IDENTIFICADA": 68
+  },
+  "validation": "PASS: roundtrip XLSX, segunda aba, cobertura fontes, unicidade de evidencias, links locais, ausencia formulas e limites Excel"
+}

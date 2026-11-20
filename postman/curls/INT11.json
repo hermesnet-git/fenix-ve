@@ -1,0 +1,450 @@
+[
+    {
+        "id": "03050a5efb3a0b103672f4045eefdc81",
+        "href": "/api/sn_ind_tsm_sdwan/ticket/troubleTicket/03050a5efb3a0b103672f4045eefdc81",
+        "creationDate": "2026-08-21 15:32:34",
+        "lastUpdate": "2026-11-17 20:56:10",
+        "description": "TESTE",
+        "severity": "3 - Moderate",
+        "ticketType": "Case",
+        "name": "Queda de Conexão",
+        "status": "Awaiting Info",
+        "channel": {
+            "name": "email"
+        },
+        "relatedParty": [
+            {
+                "id": "dc8e8ae81b2e0e54a85f63923b4bcb46",
+                "name": "ENGETECH CONSULTORIA ENGENHARIA E GESTAO DE OBRAS LTDA",
+                "@referredType": "customer"
+            },
+            {
+                "id": "321eb8dc3b0336105bc74237f4e45aa1",
+                "name": "",
+                "@referredType": "customer_contact"
+            },
+            {
+                "id": "e414d7f5fb603ad0f80afe316eefdc32",
+                "name": "COE Triagem",
+                "@referredType": "assignment_group"
+            },
+            {
+                "id": "",
+                "name": "",
+                "@referredType": "assigned_to"
+            }
+        ],
+        "relatedEntity": [
+            {
+                "id": "",
+                "href": "",
+                "name": "",
+                "role": "This is the product associated with the case",
+                "@type": "relatedEntity",
+                "@referredType": "product"
+            },
+            {
+                "id": "",
+                "href": "",
+                "name": "",
+                "role": "This is the asset associated with the case",
+                "@type": "relatedEntity",
+                "@referredType": "asset"
+            },
+            {
+                "id": "SPC0001123",
+                "href": "",
+                "name": "number",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "Triagem",
+                "href": "",
+                "name": "stage",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "Aguardando Informação",
+                "href": "",
+                "name": "state",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "href": "",
+                "name": "ets",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "href": "",
+                "name": "sla_due",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "0",
+                "href": "",
+                "name": "ponr",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "21/08/2026 12:32",
+                "href": "",
+                "name": "dataAbertura",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "",
+                "href": "",
+                "name": "dataFechamento",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "",
+                "href": "",
+                "name": "idMassiva",
+                "role": "This is the idMassiva associated with the case.",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "",
+                "href": "",
+                "name": "dataPrevisaoMassiva",
+                "role": "This is the dataPrevisaoMassiva associated with the case.",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "",
+                "href": "",
+                "name": "caseNumber",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "reativo",
+                "href": "",
+                "name": "tipoBD",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            }
+        ],
+        "note": {},
+        "@type": "TroubleTicket"
+    },
+    {
+        "id": "8f42928dfbf207103672f4045eefdc4b",
+        "href": "/api/sn_ind_tsm_sdwan/ticket/troubleTicket/8f42928dfbf207103672f4045eefdc4b",
+        "creationDate": "2026-08-17 19:18:05",
+        "lastUpdate": "2026-08-17 19:24:44",
+        "description": "TESTE",
+        "severity": "3 - Moderate",
+        "ticketType": "Case",
+        "name": "Queda de Conexão",
+        "channel": {
+            "name": "email"
+        },
+        "relatedParty": [
+            {
+                "id": "dc8e8ae81b2e0e54a85f63923b4bcb46",
+                "name": "ENGETECH CONSULTORIA ENGENHARIA E GESTAO DE OBRAS LTDA",
+                "@referredType": "customer"
+            },
+            {
+                "id": "321eb8dc3b0336105bc74237f4e45aa1",
+                "name": "",
+                "@referredType": "customer_contact"
+            },
+            {
+                "id": "e414d7f5fb603ad0f80afe316eefdc32",
+                "name": "COE Triagem",
+                "@referredType": "assignment_group"
+            },
+            {
+                "id": "",
+                "name": "",
+                "@referredType": "assigned_to"
+            }
+        ],
+        "relatedEntity": [
+            {
+                "id": "",
+                "href": "",
+                "name": "",
+                "role": "This is the product associated with the case",
+                "@type": "relatedEntity",
+                "@referredType": "product"
+            },
+            {
+                "id": "",
+                "href": "",
+                "name": "",
+                "role": "This is the asset associated with the case",
+                "@type": "relatedEntity",
+                "@referredType": "asset"
+            },
+            {
+                "id": "SPC0001121",
+                "href": "",
+                "name": "number",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "Triagem",
+                "href": "",
+                "name": "stage",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "Em Andamento",
+                "href": "",
+                "name": "state",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "href": "",
+                "name": "ets",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "href": "",
+                "name": "sla_due",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "0",
+                "href": "",
+                "name": "ponr",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "17/08/2026 16:18",
+                "href": "",
+                "name": "dataAbertura",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "",
+                "href": "",
+                "name": "dataFechamento",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "",
+                "href": "",
+                "name": "idMassiva",
+                "role": "This is the idMassiva associated with the case.",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "",
+                "href": "",
+                "name": "dataPrevisaoMassiva",
+                "role": "This is the dataPrevisaoMassiva associated with the case.",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "",
+                "href": "",
+                "name": "caseNumber",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "reativo",
+                "href": "",
+                "name": "tipoBD",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            }
+        ],
+        "note": {},
+        "@type": "TroubleTicket"
+    },
+    {
+        "id": "e5ff36e9fbfac3103672f4045eefdcd2",
+        "href": "/api/sn_ind_tsm_sdwan/ticket/troubleTicket/e5ff36e9fbfac3103672f4045eefdcd2",
+        "creationDate": "2026-08-19 11:54:33",
+        "lastUpdate": "2026-08-19 13:14:18",
+        "description": "TESTE",
+        "severity": "3 - Moderate",
+        "ticketType": "Case",
+        "name": "Queda de Conexão",
+        "channel": {
+            "name": "email"
+        },
+        "relatedParty": [
+            {
+                "id": "dc8e8ae81b2e0e54a85f63923b4bcb46",
+                "name": "ENGETECH CONSULTORIA ENGENHARIA E GESTAO DE OBRAS LTDA",
+                "@referredType": "customer"
+            },
+            {
+                "id": "321eb8dc3b0336105bc74237f4e45aa1",
+                "name": "",
+                "@referredType": "customer_contact"
+            },
+            {
+                "id": "aa12b7b53ba8f6105bc74237f4e45a25",
+                "name": "COE Regional",
+                "@referredType": "assignment_group"
+            },
+            {
+                "id": "",
+                "name": "",
+                "@referredType": "assigned_to"
+            }
+        ],
+        "relatedEntity": [
+            {
+                "id": "",
+                "href": "",
+                "name": "",
+                "role": "This is the product associated with the case",
+                "@type": "relatedEntity",
+                "@referredType": "product"
+            },
+            {
+                "id": "",
+                "href": "",
+                "name": "",
+                "role": "This is the asset associated with the case",
+                "@type": "relatedEntity",
+                "@referredType": "asset"
+            },
+            {
+                "id": "SPC0001122",
+                "href": "",
+                "name": "number",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "Visita Tecnica",
+                "href": "",
+                "name": "stage",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "Aguardando Reagendamento",
+                "href": "",
+                "name": "state",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "href": "",
+                "name": "ets",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "href": "",
+                "name": "sla_due",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "0",
+                "href": "",
+                "name": "ponr",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "19/08/2026 08:54",
+                "href": "",
+                "name": "dataAbertura",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "",
+                "href": "",
+                "name": "dataFechamento",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "",
+                "href": "",
+                "name": "idMassiva",
+                "role": "This is the idMassiva associated with the case.",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "",
+                "href": "",
+                "name": "dataPrevisaoMassiva",
+                "role": "This is the dataPrevisaoMassiva associated with the case.",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "",
+                "href": "",
+                "name": "caseNumber",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            },
+            {
+                "id": "reativo",
+                "href": "",
+                "name": "tipoBD",
+                "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                "@type": "bdQuery",
+                "@referredType": "ServiceProblemCase"
+            }
+        ],
+        "note": {},
+        "@type": "TroubleTicket"
+    }
+]

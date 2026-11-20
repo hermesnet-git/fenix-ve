@@ -1,0 +1,23 @@
+{
+  "cenario": "T-04",
+  "etapa": "encerrar_falha_diagnostico",
+  "quando": "2026-11-19T22:51:50.663Z",
+  "http": 200,
+  "observacoes": {},
+  "resposta": {
+    "processInstanceId": "b5c7f51e-e46b-11f1-8248-06dfec022e82",
+    "previousActivityId": "Node_FalhaConsulta",
+    "activityId": null,
+    "activityType": null,
+    "executionId": null,
+    "taskId": null,
+    "status": "COMPLETED",
+    "activeProcessInstanceId": null,
+    "variables": {},
+    "matchedTransition": {
+      "kind": "guarded",
+      "label": null,
+      "eventName": null
+    }
+  }
+}

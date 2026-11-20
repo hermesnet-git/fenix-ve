@@ -1,0 +1,1786 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Trouble Ticket Management",
+    "description": "Microservice that exposes TMF621 capabilities for the orchestration, consultation and lifecycle management of trouble tickets.",
+    "contact": {
+      "name": "Telefonica Vivo",
+      "email": "vivo@telefonica.com"
+    },
+    "version": "1.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://spmg-dev.redecorp.azr/troubleTicketManagement/v1",
+      "description": "DEV"
+    },
+    {
+      "url": "https://spmg-esteira1.redecorp.azr/troubleTicketManagement/v1",
+      "description": "ESTEIRA 1"
+    },
+    {
+      "url": "https://spmg-esteira2.redecorp.azr/troubleTicketManagement/v1",
+      "description": "ESTEIRA 2"
+    },
+    {
+      "url": "https://spmg-preprod.redecorp.azr/troubleTicketManagement/v1",
+      "description": "PREPROD"
+    },
+    {
+      "url": "https://spmg-prodlike.redecorp.azr/troubleTicketManagement/v1",
+      "description": "PRODLIKE"
+    },
+    {
+      "url": "https://spmg.redecorp.azr/troubleTicketManagement/v1",
+      "description": "PROD"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "troubleTicket",
+      "description": "Operations for TroubleTicket Resource"
+    }
+  ],
+  "paths": {
+    "/troubleTicket": {
+      "get": {
+        "operationId": "listTroubleTickets",
+        "x-vivo-operation-type": "Collection",
+        "description": "List or find Trouble Ticket resources.",
+        "summary": "List or find Trouble Tickets",
+        "tags": [
+          "troubleTicket"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/XVivoTransactionId"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ListTroubleTicketsOk"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "501": {
+            "$ref": "#/components/responses/NotImplemented"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "createTroubleTicket",
+        "x-vivo-operation-type": "Collection",
+        "description": "Creates a new Trouble Ticket entity based on the data provided in the request body.",
+        "summary": "Create a Trouble Ticket",
+        "tags": [
+          "troubleTicket"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/XVivoTransactionId"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CreateTroubleTicket"
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/CreateTroubleTicketCreated"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "501": {
+            "$ref": "#/components/responses/NotImplemented"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/troubleTicket/{id}": {
+      "patch": {
+        "operationId": "patchTroubleTicket",
+        "x-vivo-operation-type": "Managed",
+        "description": "Partially updates an existing Trouble Ticket with the data provided in the request body.",
+        "summary": "Update a Trouble Ticket",
+        "tags": [
+          "troubleTicket"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier of the Trouble Ticket to update.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/XVivoTransactionId"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/PatchTroubleTicket"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/PatchTroubleTicketUpdated"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "parameters": {
+      "XVivoTransactionId": {
+        "name": "X-Vivo-Transaction-Id",
+        "in": "header",
+        "description": "Transaction identifier used for request tracing.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "example": "TID_ELJY_FTAT933INT009_YYYY-MM-DDTHH24:MI:SS.FFFZ"
+      },
+      "Filter": {
+        "name": "filter",
+        "in": "query",
+        "description": "Search criteria concatenated as field:value pairs separated by semicolons. Each pair is equivalent to an AND condition.",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "200-ByDesignatorStatusAndType": {
+            "summary": "Filter",
+            "value": "designatorId:SPO-SF703229-069;status:Active;ticketType:Case"
+          }
+        }
+      },
+      "Offset": {
+        "name": "offset",
+        "in": "query",
+        "description": "Index of the first resource to be returned.",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
+        },
+        "example": 0
+      },
+      "Limit": {
+        "name": "limit",
+        "in": "query",
+        "description": "Number of resources to be returned.",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
+        },
+        "example": 0
+      }
+    },
+    "headers": {
+      "Location": {
+        "description": "URI of the newly created Trouble Ticket resource.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "requestBodies": {
+      "CreateTroubleTicket": {
+        "description": "Trouble Ticket data required to create a new entity.",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CreateTroubleTicketRequest"
+            },
+            "examples": {
+              "201-Created": {
+                "summary": "Trouble ticket creation payload",
+                "value": {
+                  "@type": "ServiceProblemCase",
+                  "ticketType": "Case",
+                  "description": "TESTE",
+                  "severity": "3",
+                  "requestedResolutionDate": "YYYY-MM-DDThh:mm:ss.SZ",
+                  "expectedResolutionDate": "YYYY-MM-DDThh:mm:ss.SZ",
+                  "name": "Queda de Conexão",
+                  "channel": {
+                    "name": "Alert"
+                  },
+                  "relatedEntity": [
+                    {
+                      "@type": "Product",
+                      "entity": {
+                        "@type": "ServiceTest",
+                        "name": "ProductInventory",
+                        "id": "47d86eb587bd8310c14b40040cbb35d6"
+                      }
+                    },
+                    {
+                      "@type": "Product",
+                      "entity": {
+                        "@type": "ProductInventory",
+                        "name": "testSpecification",
+                        "id": "cf3e865a87d0321454bd42230cbb35cf"
+                      }
+                    },
+                    {
+                      "@type": "Service",
+                      "entity": {
+                        "@type": "Service",
+                        "name": "relatedServiceSpecification",
+                        "id": "8bee3a141b7e6d101409dd70f54bcb9f"
+                      }
+                    },
+                    {
+                      "@type": "Service",
+                      "entity": {
+                        "@type": "Service",
+                        "name": "relatedService",
+                        "id": "b4c85c2633f66610caeaba4a7e5c7b0a"
+                      }
+                    },
+                    {
+                      "@type": "Service",
+                      "entity": {
+                        "@type": "Service",
+                        "name": "mode",
+                        "id": "Proactive"
+                      }
+                    },
+                    {
+                      "@type": "Service",
+                      "entity": {
+                        "@type": "Service",
+                        "name": "relatedEntity",
+                        "id": "0001"
+                      }
+                    }
+                  ],
+                  "relatedParty": [
+                    {
+                      "@type": "Customer",
+                      "role": "Fênix",
+                      "partyOrPartyRole": {
+                        "@type": "Customer",
+                        "id": "{some_tmf629_externalId}",
+                        "name": "Cliente Teste",
+                        "@referredType": "CustomerContact",
+                        "characteristic": [
+                          {
+                            "name": "EmailContactMedium",
+                            "value": "contato@email.com"
+                          },
+                          {
+                            "name": "PhoneContactMedium",
+                            "value": "11900000000"
+                          },
+                          {
+                            "name": "idCustomer",
+                            "value": "{{som_tmf629_id_account}}"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "troubleTicketCharacteristic": [
+                    {
+                      "name": "estadoDescricao",
+                      "value": "São Paulo"
+                    },
+                    {
+                      "name": "city",
+                      "value": "São Paulo"
+                    },
+                    {
+                      "name": "endBairro",
+                      "value": "Campo Belo"
+                    },
+                    {
+                      "name": "postcode",
+                      "value": "04605003"
+                    },
+                    {
+                      "name": "telephonicArea",
+                      "value": "CB"
+                    },
+                    {
+                      "name": "streetName",
+                      "value": "Rua Constantino de Sousa"
+                    },
+                    {
+                      "name": "streetNr",
+                      "value": "1437"
+                    },
+                    {
+                      "name": "complement",
+                      "value": ""
+                    },
+                    {
+                      "name": "reclamanteNome",
+                      "value": "CONTATO TERÇA II"
+                    },
+                    {
+                      "name": "documentNumber",
+                      "value": "27212650000157"
+                    },
+                    {
+                      "name": "clienteClassificacao",
+                      "value": "Varejo"
+                    },
+                    {
+                      "name": "contatoLocal",
+                      "value": "CFB"
+                    },
+                    {
+                      "name": "telefoneContatoLocal1",
+                      "value": "11997899090"
+                    },
+                    {
+                      "name": "telefoneContatoLocal2",
+                      "value": "11997988989"
+                    },
+                    {
+                      "name": "motivo",
+                      "value": "Reparos banda larga - Fixa Básica"
+                    },
+                    {
+                      "name": "submotivo",
+                      "value": "Teste Lucas"
+                    },
+                    {
+                      "name": "SLA",
+                      "value": ""
+                    },
+                    {
+                      "name": "tipoDescricao",
+                      "value": "Internet Básica"
+                    },
+                    {
+                      "name": "tipoOferta",
+                      "value": "VIVO Fibra 500 Mega Empresas"
+                    },
+                    {
+                      "name": "designadorAcesso",
+                      "value": "SPO-SF703229-069"
+                    },
+                    {
+                      "name": "velocidade",
+                      "value": "500Mbps"
+                    },
+                    {
+                      "name": "servicoCpccNome",
+                      "value": "Óptico GPON"
+                    },
+                    {
+                      "name": "WorkOrder",
+                      "value": "SFTWO40439651"
+                    },
+                    {
+                      "name": "WorkOrderItem",
+                      "value": "SFTWO40439651:SFTWOI40439651"
+                    },
+                    {
+                      "name": "etapa",
+                      "value": "TRIAGEM"
+                    },
+                    {
+                      "name": "telefoneTitular1",
+                      "value": "11999999999"
+                    },
+                    {
+                      "name": "telefoneTitular2",
+                      "value": "11999999999"
+                    },
+                    {
+                      "name": "telefoneReclamante1",
+                      "value": "11999999999"
+                    },
+                    {
+                      "name": "telefoneReclamante2",
+                      "value": "11999999999"
+                    },
+                    {
+                      "name": "horarioFuncionamento",
+                      "value": "08:30 - 16:30"
+                    },
+                    {
+                      "name": "preferenciaContato",
+                      "value": "Manhã (8h - 10h)"
+                    },
+                    {
+                      "name": "palitagemFinal",
+                      "value": "Bilhete emitido"
+                    },
+                    {
+                      "name": "previsaoAtendimento",
+                      "value": "12/01/2026 13:30-15:30"
+                    },
+                    {
+                      "name": "caseOrigin",
+                      "value": "Email"
+                    },
+                    {
+                      "name": "payloadDiagnostico",
+                      "value": "{\"eventId\":\"132378c9-5103-49c1-9915-14cf8ca829ef\",\"eventTime\":\"2026-02-05T15:28:14.215Z\",\"eventType\":\"ServiceTestCreateEvent\",\"event\":{\"serviceTest\":{\"id\":\"7ecd76df-a35e-4b6e-b795-5ede0f6a3586\",\"state\":\"completed\",\"href\":\"https://mycsp.com:8080/tmf-api/serviceTestManagement/v4/serviceTest/3112\",\"description\":\"Diagnóstico FTTH GPON\",\"endDateTime\":1770305294208,\"mode\":\"ONDEMAND\",\"startDateTime\":\"2026-01-12T13:30:00.000-03:00\",\"relatedParty\":[{\"@referredType\":\"Organization\",\"id\":\"NRI-SF686153-052\",\"role\":\"AccessDesignator\"},{\"@referredType\":\"Organization\",\"id\":\"Diagnostic-Center-UI\",\"role\":\"SistemaOrigem\"}],\"relatedService\":{\"name\":\"Internet\",\"@referredType\":\"Service\",\"id\":\"NRI-SF686153-052\"},\"characteristic\":[{\"name\":\"executionMode\",\"value\":\"AUTOMATIC\"},{\"name\":\"RESULTADO_DIAGNOSTICO\",\"valueType\":\"string\",\"value\":\"ID01 - Resultado XXX\"},{\"name\":\"ID_TESTE_GERADOR_RESULTADO\",\"valueType\":\"string\",\"value\":\"resultado_final.id_teste\"},{\"name\":\"ABRE_BD\",\"valueType\":\"string\",\"value\":\"<resultado_final.abre_bd>\"},{\"name\":\"FILA_BD\",\"valueType\":\"string\",\"value\":\"<resultado_final.fila_bd>\"},{\"name\":\"MENSAGEM_TECNICO\",\"valueType\":\"string\",\"value\":\"<resultado_final.mensagem_tecnico>\"}],\"testMeasure\":[{\"ruleViolation\":[],\"metricName\":\"IdResult\",\"metricDescription\":\"VLD_BRID_OLT-Validação da Bridge na OLT\",\"unitOfMeasure\":null,\"value\":{\"valueType\":\"Object\",\"name\":\"VLD_BRID_OLT-RESULTADO\",\"value\":{\"id_teste\":\"VLD_BRID_OLT\",\"resultado_diagnostico\":\"ID06\",\"desc_resultado_diagnostico\":\"string\",\"descricao_teste\":\"string\",\"elemento_de_rede\":\"string\",\"id_diagnostico\":\"string\",\"desc_diagnostico\":\"string\",\"abre_bd\":\"string\",\"fila_bd\":\"string\",\"mensagem_tecnico\":\"string\",\"log_teste\":{\"idResult\":1,\"networkCommandResults\":[{\"extraParameters\":{\"additionalProp1\":\"string\",\"additionalProp2\":\"string\",\"additionalProp3\":\"string\"},\"log\":\"string\",\"idProcedureDescription\":0,\"procedureDescription\":\"string\",\"result\":\"string\",\"status\":0,\"step\":0}]}}}},{\"ruleViolation\":[],\"metricName\":\"IdResult\",\"metricDescription\":\"VLD_POT_OLT-Validação de Potência Óptica da OLT/ONT\",\"unitOfMeasure\":null,\"value\":{\"valueType\":\"Object\",\"name\":\"VLD_POT_OLT-RESULTADO\",\"value\":{\"id_teste\":\"VLD_POT_OLT\",\"resultado_diagnostico\":\"ID06\",\"desc_resultado_diagnostico\":\"string\",\"descricao_teste\":\"string\",\"elemento_de_rede\":\"string\",\"id_diagnostico\":\"string\",\"desc_diagnostico\":\"string\",\"abre_bd\":\"string\",\"fila_bd\":\"string\",\"mensagem_tecnico\":\"string\",\"log_teste\":{\"idResult\":1,\"networkCommandResults\":[{\"extraParameters\":{\"additionalProp1\":\"string\",\"additionalProp2\":\"string\",\"additionalProp3\":\"string\"},\"log\":\"string\",\"idProcedureDescription\":0,\"procedureDescription\":\"string\",\"result\":\"string\",\"status\":0,\"step\":0}]}}}},{\"ruleViolation\":[{\"conformanceComparatorExact\":\"true\",\"appliedConsequence\":[{\"name\":\"Repair\",\"appliedAction\":\"RECONFIGURE\",\"description\":null},{\"name\":\"Repair:IDRESULT_1:0\",\"appliedAction\":\"SET:next_test_step=VLD_SYNC_OLT\",\"description\":null},{\"name\":\"Repair:IDRESULT_1:1\",\"appliedAction\":\"SET:diagnostic_result_id=ID06\",\"description\":null},{\"name\":\"Repair:IDRESULT_1:2\",\"appliedAction\":\"SET:operator_message=Circuito Recriado - potência normalizada\",\"description\":null},{\"name\":\"Repair:IDRESULT_2:0\",\"appliedAction\":\"SET:diagnostic_result_id=ID02\",\"description\":null},{\"name\":\"Repair:IDRESULT_2:1\",\"appliedAction\":\"SET:open_tt=true\",\"description\":null},{\"name\":\"Repair:IDRESULT_2:2\",\"appliedAction\":\"SET:tt_queue=ACESSO_N2\",\"description\":null},{\"name\":\"Repair:IDRESULT_2:3\",\"appliedAction\":\"SET:operator_message=Potência óptica fora dos padrões após reset. Verificar atenuação da fibra, conectores e splitter.\",\"description\":null},{\"name\":\"Repair:IDRESULT_2:4\",\"appliedAction\":\"SET:end_test_sequence=true\",\"description\":null}],\"conformanceComparatorLower\":null,\"conformanceComparatorUpper\":null,\"name\":\"POT_OLT_NOK\",\"conformanceTargetUpper\":null,\"description\":\"Tentar reset da ONT\",\"thresholdRuleSeverity\":\"major\",\"conformanceTargetLower\":null,\"conformanceTargetExact\":\"2\"}],\"metricName\":\"IdResult\",\"metricDescription\":\"VLD_POT_OLT-Validação de Potência Óptica da OLT/ONT\",\"unitOfMeasure\":null,\"value\":{\"valueType\":\"Object\",\"name\":\"VLD_POT_OLT-RESULTADO\",\"value\":{\"id_teste\":\"VLD_POT_OLT\",\"resultado_diagnostico\":\"ID06\",\"desc_resultado_diagnostico\":\"string\",\"descricao_teste\":\"string\",\"elemento_de_rede\":\"string\",\"id_diagnostico\":\"string\",\"desc_diagnostico\":\"string\",\"abre_bd\":\"string\",\"fila_bd\":\"string\",\"mensagem_tecnico\":\"string\",\"log_teste\":{\"idResult\":2,\"networkCommandResults\":[{\"extraParameters\":{\"additionalProp1\":\"string\",\"additionalProp2\":\"string\",\"additionalProp3\":\"string\"},\"log\":\"string\",\"idProcedureDescription\":0,\"procedureDescription\":\"string\",\"result\":\"string\",\"status\":0,\"step\":0}]}}}},{\"ruleViolation\":[],\"metricName\":\"IdResult\",\"metricDescription\":\"VLD_SYNC_OLT-Validação de sincronismo/estado da ONT/OLT\",\"unitOfMeasure\":null,\"value\":{\"valueType\":\"Object\",\"name\":\"VLD_SYNC_OLT-RESULTADO\",\"value\":{\"id_teste\":\"VLD_SYNC_OLT\",\"resultado_diagnostico\":\"ID06\",\"desc_resultado_diagnostico\":\"string\",\"descricao_teste\":\"string\",\"elemento_de_rede\":\"string\",\"id_diagnostico\":\"string\",\"desc_diagnostico\":\"string\",\"abre_bd\":\"string\",\"fila_bd\":\"string\",\"mensagem_tecnico\":\"string\",\"log_teste\":{\"idResult\":1,\"networkCommandResults\":[{\"extraParameters\":{\"additionalProp1\":\"string\",\"additionalProp2\":\"string\",\"additionalProp3\":\"string\"},\"log\":\"string\",\"idProcedureDescription\":0,\"procedureDescription\":\"string\",\"result\":\"string\",\"status\":0,\"step\":0}]}}}},{\"ruleViolation\":[],\"metricName\":\"IdResult\",\"metricDescription\":\"VLD_INVENTARIO_OLT-Comparação de Informações do Service Inventory do HPSD com os Inventários de Recursos\",\"unitOfMeasure\":null,\"value\":{\"valueType\":\"Object\",\"name\":\"VLD_INVENTARIO_OLT-RESULTADO_TESTE\",\"value\":{\"id_teste\":\"VLD_INVENTARIO_OLT\",\"resultado_diagnostico\":\"ID06\",\"desc_resultado_diagnostico\":\"string\",\"descricao_teste\":\"string\",\"elemento_de_rede\":\"string\",\"id_diagnostico\":\"string\",\"desc_diagnostico\":\"string\",\"abre_bd\":\"string\",\"fila_bd\":\"string\",\"mensagem_tecnico\":\"string\",\"log_teste\":{\"idResult\":1,\"networkCommandResults\":[{\"extraParameters\":{\"additionalProp1\":\"string\",\"additionalProp2\":\"string\",\"additionalProp3\":\"string\"},\"log\":\"string\",\"idProcedureDescription\":0,\"procedureDescription\":\"string\",\"result\":\"string\",\"status\":0,\"step\":0}]}}}}],\"@type\":\"VivoServiceTest\",\"@schemaLocation\":\"https://mycsp.com:8080/tmf-api/schema/Service/ServiceTest.schema.json\",\"@baseType\":\"ServiceTest\"}}}"
+                    },
+                    {
+                      "name": "idAppointment",
+                      "value": "134567890"
+                    },
+                    {
+                      "name": "vivoNetProtocol",
+                      "value": "INC001234567"
+                    },
+                    {
+                      "name": "assetId",
+                      "value": "aAXbc000000OhBtGAK"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "PatchTroubleTicket": {
+        "description": "Fields to update on the Trouble Ticket. Only supplied fields are changed.",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PatchTroubleTicketRequest"
+            },
+            "examples": {
+              "200-CancelBD": {
+                "summary": "Cancel a Trouble Ticket",
+                "value": {
+                  "@type": "ServiceProblemCase",
+                  "ticketType": "Case",
+                  "status": "cancelled",
+                  "troubleTicketCharacteristic": [
+                    {
+                      "name": "vivoNetProtocolCancel",
+                      "value": "123456789"
+                    }
+                  ],
+                  "note": [
+                    {
+                      "text": "Cancelado por problema resolvido || Protocolo 123456789",
+                      "@type": "comments"
+                    }
+                  ]
+                }
+              },
+              "200-RescheduleBD": {
+                "summary": "Reschedule a Trouble Ticket",
+                "value": {
+                  "@type": "ServiceProblemCase",
+                  "ticketType": "Case",
+                  "requestedResolutionDate": "2026-04-29T10:00:00.000-03:00",
+                  "expectedResolutionDate": "2026-04-29T12:00:00.000-03:00",
+                  "note": [
+                    {
+                      "text": "Reagendado para 10/10/26 entre 10h30 e 12h30 || Protocolo 123456789",
+                      "@type": "comments"
+                    }
+                  ],
+                  "status": "rescheduled",
+                  "troubleTicketCharacteristic": [
+                    {
+                      "name": "vivoNetProtocolRescheduled",
+                      "value": "123456789"
+                    },
+                    {
+                      "name": "previsaoAtendimento",
+                      "value": "29/04/2026 10:00-12:00"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "ListTroubleTicketsOk": {
+        "description": "Trouble Tickets found successfully.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/TroubleTicketList"
+            },
+            "examples": {
+              "200-Found": {
+                "summary": "Trouble Tickets found",
+                "value": [
+                  {
+                    "id": "28561503fb860b503672f4045eefdcf8",
+                    "href": "/api/sn_ind_tsm_sdwan/ticket/troubleTicket/28561503fb860b503672f4045eefdcf8",
+                    "creationDate": "2026-07-17 13:16:47",
+                    "lastUpdate": "2026-07-17 16:37:23",
+                    "description": null,
+                    "severity": "3 - Moderate",
+                    "ticketType": "Case",
+                    "name": "Sem Navegação",
+                    "status": "Closed",
+                    "channel": {
+                      "name": "phone"
+                    },
+                    "relatedParty": [
+                      {
+                        "partyOrPartyRole": {
+                          "id": "4cf99f82fb4687103672f4045eefdce7",
+                          "name": "TESTE FTTH PREPROD MASSIVA",
+                          "@referredType": "customer"
+                        }
+                      },
+                      {
+                        "partyOrPartyRole": {
+                          "id": "62f6721afb0e83103672f4045eefdc6b",
+                          "name": "CONTATO TERÇA",
+                          "@referredType": "customer_contact"
+                        }
+                      },
+                      {
+                        "partyOrPartyRole": {
+                          "id": "aa12b7b53ba8f6105bc74237f4e45a25",
+                          "name": "COE Regional",
+                          "@referredType": "assignment_group"
+                        }
+                      },
+                      {
+                        "partyOrPartyRole": {
+                          "id": "",
+                          "name": "",
+                          "@referredType": "assigned_to"
+                        }
+                      }
+                    ],
+                    "relatedEntity": [
+                      {
+                        "role": "This is the product associated with the case",
+                        "entity": {
+                          "id": "",
+                          "href": "",
+                          "name": "",
+                          "@type": "relatedEntity",
+                          "@referredType": "product"
+                        }
+                      },
+                      {
+                        "role": "This is the asset associated with the case",
+                        "entity": {
+                          "id": "",
+                          "href": "",
+                          "name": "",
+                          "@type": "relatedEntity",
+                          "@referredType": "asset"
+                        }
+                      },
+                      {
+                        "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                        "entity": {
+                          "id": "SPC0001126",
+                          "href": "",
+                          "name": "number",
+                          "@type": "bdQuery",
+                          "@referredType": "ServiceProblemCase"
+                        }
+                      }
+                    ],
+                    "note": [],
+                    "@type": "TroubleTicket"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorTemplate"
+            },
+            "examples": {
+              "400-InvalidFilterFormat": {
+                "summary": "Invalid filter format",
+                "value": {
+                  "_errorCode": 4000,
+                  "_message": "Validation Error",
+                  "_details": "Error while validating input data.",
+                  "_timestamp": "2026-07-17T13:16:47.286Z",
+                  "_traceId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                  "_errors": [
+                    {
+                      "_code": 10,
+                      "_field": "filter",
+                      "_message": "Must follow this pattern: field:value;field:value"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorTemplate"
+            },
+            "examples": {
+              "401-InvalidToken": {
+                "summary": "Invalid or missing access token",
+                "value": {
+                  "_errorCode": 4010,
+                  "_message": "Unauthorized",
+                  "_details": "Invalid or missing authentication token.",
+                  "_timestamp": "2026-07-17T13:16:47.286Z",
+                  "_traceId": "3fa85f64-5717-4562-b3fc-2c963f66afa7"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorTemplate"
+            },
+            "examples": {
+              "403-InsufficientPermission": {
+                "summary": "User without permission to access this resource",
+                "value": {
+                  "_errorCode": 4030,
+                  "_message": "Forbidden",
+                  "_details": "The user does not have permission to access this resource.",
+                  "_timestamp": "2026-07-17T13:16:47.286Z",
+                  "_traceId": "3fa85f64-5717-4562-b3fc-2c963f66afa8"
+                }
+              }
+            }
+          }
+        }
+      },
+      "MethodNotAllowed": {
+        "description": "Method Not Allowed",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorTemplate"
+            },
+            "examples": {
+              "405-MethodNotAllowed": {
+                "summary": "HTTP method not allowed for this resource",
+                "value": {
+                  "_errorCode": 4050,
+                  "_message": "Method Not Allowed",
+                  "_details": "The HTTP method used is not supported for this resource.",
+                  "_timestamp": "2026-07-17T13:16:47.286Z",
+                  "_traceId": "3fa85f64-5717-4562-b3fc-2c963f66afb0"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorTemplate"
+            },
+            "examples": {
+              "500-InternalServerError": {
+                "summary": "Internal server error",
+                "value": {
+                  "_errorCode": 5000,
+                  "_message": "Internal Server Error",
+                  "_details": "An internal server error occurred while performing this action. Contact the Administrator.",
+                  "_timestamp": "2026-07-17T13:16:47.286Z",
+                  "_traceId": "3fa85f64-5717-4562-b3fc-2c963f66afa9"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotImplemented": {
+        "description": "Not Implemented Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorTemplate"
+            },
+            "examples": {
+              "501-OperationNotAvailable": {
+                "summary": "Operation not available",
+                "value": {
+                  "_errorCode": 5010,
+                  "_message": "Operation not available",
+                  "_details": "We cannot perform this action because this operation is not available.",
+                  "_timestamp": "2026-07-17T13:16:47.286Z",
+                  "_traceId": "3fa85f64-5717-4562-b3fc-2c963f66afaa"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ServiceUnavailable": {
+        "description": "Service Unavailable Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorTemplate"
+            },
+            "examples": {
+              "503-ServiceNotAvailable": {
+                "summary": "Server is not available at the moment",
+                "value": {
+                  "_errorCode": 5030,
+                  "_message": "Server is not available at the moment",
+                  "_details": "The servers cannot handle this operation due to performance or maintenance issues.",
+                  "_timestamp": "2026-07-17T13:16:47.286Z",
+                  "_traceId": "3fa85f64-5717-4562-b3fc-2c963f66afab"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UnsupportedMediaType": {
+        "description": "Unsupported Media Type"
+      },
+      "NotFound": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorTemplate"
+            },
+            "examples": {
+              "404-TroubleTicketNotFound": {
+                "summary": "Trouble ticket not found",
+                "value": {
+                  "_errorCode": 4040,
+                  "_message": "Not Found Error",
+                  "_details": "Resource not found.",
+                  "_timestamp": "2026-07-17T13:16:47.286Z",
+                  "_traceId": "3fa85f64-5717-4562-b3fc-2c963f66afac",
+                  "_errors": [
+                    {
+                      "_code": 13,
+                      "_field": "id",
+                      "_message": "Trouble ticket not found"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorTemplate"
+            },
+            "examples": {
+              "409-UpdateConflict": {
+                "summary": "Update conflict",
+                "value": {
+                  "_errorCode": 4090,
+                  "_message": "Update Conflict Error",
+                  "_details": "Could not update the trouble ticket.",
+                  "_timestamp": "2026-07-17T13:16:47.286Z",
+                  "_traceId": "3fa85f64-5717-4562-b3fc-2c963f66afad"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Gone": {
+        "description": "Resource deleted",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorTemplate"
+            },
+            "examples": {
+              "410-TroubleTicketDeleted": {
+                "summary": "Trouble ticket already deleted",
+                "value": {
+                  "_errorCode": 4100,
+                  "_message": "Resource Deleted",
+                  "_details": "This resource has already been deleted.",
+                  "_timestamp": "2026-07-17T13:16:47.286Z",
+                  "_traceId": "3fa85f64-5717-4562-b3fc-2c963f66afae"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UnprocessableEntity": {
+        "description": "Unprocessable Entity",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorTemplate"
+            },
+            "examples": {
+              "422-BusinessRuleViolation": {
+                "summary": "Business rule validation error",
+                "value": {
+                  "_errorCode": 4220,
+                  "_message": "Validation Error",
+                  "_details": "Error while validating business rule.",
+                  "_timestamp": "2026-07-17T13:16:47.286Z",
+                  "_traceId": "3fa85f64-5717-4562-b3fc-2c963f66afaf"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CreateTroubleTicketCreated": {
+        "description": "Trouble Ticket created successfully.",
+        "headers": {
+          "Location": {
+            "$ref": "#/components/headers/Location"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/TroubleTicket"
+            },
+            "examples": {
+              "201-Created": {
+                "summary": "Trouble ticket created",
+                "value": {
+                  "@type": "TroubleTicket",
+                  "id": "de184581871ecb10f2bc0d860cbb354e",
+                  "href": "/api/sn_ind_tsm_sdwan/ticket/troubleTicket/de184581871ecb10f2bc0d860cbb354e",
+                  "creationDate": "2026-07-23 17:22:29",
+                  "lastUpdate": "2026-07-23 17:22:44",
+                  "description": "TESTE",
+                  "severity": "3 - Moderate",
+                  "ticketType": "Case",
+                  "name": "Queda de Conexão",
+                  "status": "New",
+                  "channel": {
+                    "name": "email"
+                  },
+                  "relatedParty": [
+                    {
+                      "partyOrPartyRole": {
+                        "id": "0a9a14731ba768908bef67853a4bcb8b",
+                        "name": "SANTANDER",
+                        "@referredType": "customer"
+                      }
+                    },
+                    {
+                      "partyOrPartyRole": {
+                        "id": "725ad9151bffb0508bef67853a4bcb51",
+                        "name": "Cileno Aparecido Santos Nogueira",
+                        "@referredType": "customer_contact"
+                      }
+                    },
+                    {
+                      "partyOrPartyRole": {
+                        "id": "2bf1f4ee87bcc310c14b40040cbb3569",
+                        "name": "Aberto TI",
+                        "@referredType": "assignment_group"
+                      }
+                    },
+                    {
+                      "partyOrPartyRole": {
+                        "id": "",
+                        "name": "",
+                        "@referredType": "assigned_to"
+                      }
+                    }
+                  ],
+                  "note": [
+                    {
+                      "text": "Teste Comentário 2",
+                      "date": "28/08/2026 11:51:51",
+                      "author": "felipe Liska Madeira",
+                      "@type": "comments"
+                    },
+                    {
+                      "text": "Teste Comentário",
+                      "date": "27/08/2026 15:14:20",
+                      "author": "felipe Liska Madeira",
+                      "@type": "comments"
+                    }
+                  ],
+                  "externalIdentifier": {
+                    "@type": "ExternalIdentifier",
+                    "id": "SPC0001432"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "PatchTroubleTicketUpdated": {
+        "description": "Trouble Ticket updated successfully.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/TroubleTicket"
+            },
+            "examples": {
+              "UpdatedTroubleTicket": {
+                "summary": "Updated Trouble Ticket",
+                "value": {
+                  "id": "f163ed98870bcf1006a684c60cbb35c8",
+                  "href": "/api/sn_ind_tsm_sdwan/ticket/troubleTicket/f163ed98870bcf1006a684c60cbb35c8",
+                  "creationDate": "2026-08-27 18:13:26",
+                  "lastUpdate": "2026-08-27 18:15:01",
+                  "description": "TESTE",
+                  "severity": "3 - Moderate",
+                  "ticketType": "Case",
+                  "name": "Queda de Conexão",
+                  "channel": {
+                    "name": "email"
+                  },
+                  "relatedParty": [
+                    {
+                      "partyOrPartyRole": {
+                        "id": "dc8e8ae81b2e0e54a85f63923b4bcb46",
+                        "name": "ENGETECH CONSULTORIA ENGENHARIA E GESTAO DE OBRAS LTDA",
+                        "@referredType": "customer"
+                      }
+                    },
+                    {
+                      "partyOrPartyRole": {
+                        "id": "321eb8dc3b0336105bc74237f4e45aa1",
+                        "name": "",
+                        "@referredType": "customer_contact"
+                      }
+                    },
+                    {
+                      "partyOrPartyRole": {
+                        "id": "e414d7f5fb603ad0f80afe316eefdc32",
+                        "name": "COE Triagem",
+                        "@referredType": "assignment_group"
+                      }
+                    },
+                    {
+                      "partyOrPartyRole": {
+                        "id": "",
+                        "name": "",
+                        "@referredType": "assigned_to"
+                      }
+                    }
+                  ],
+                  "relatedEntity": [
+                    {
+                      "role": "This is the product associated with the case",
+                      "entity": {
+                        "id": "",
+                        "href": "",
+                        "name": "",
+                        "@type": "relatedEntity",
+                        "@referredType": "product"
+                      }
+                    },
+                    {
+                      "role": "This is the asset associated with the case",
+                      "entity": {
+                        "id": "",
+                        "href": "",
+                        "name": "",
+                        "@type": "relatedEntity",
+                        "@referredType": "asset"
+                      }
+                    },
+                    {
+                      "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                      "entity": {
+                        "id": "SPC0001455",
+                        "href": "",
+                        "name": "number",
+                        "@type": "bdQuery",
+                        "@referredType": "ServiceProblemCase"
+                      }
+                    },
+                    {
+                      "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                      "entity": {
+                        "id": "Triagem",
+                        "href": "",
+                        "name": "stage",
+                        "@type": "bdQuery",
+                        "@referredType": "ServiceProblemCase"
+                      }
+                    },
+                    {
+                      "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                      "entity": {
+                        "id": "Em Espera",
+                        "href": "",
+                        "name": "state",
+                        "@type": "bdQuery",
+                        "@referredType": "ServiceProblemCase"
+                      }
+                    },
+                    {
+                      "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                      "entity": {
+                        "id": "12/01/2026 13:30-15:30",
+                        "href": "",
+                        "name": "ets",
+                        "@type": "bdQuery",
+                        "@referredType": "ServiceProblemCase"
+                      }
+                    },
+                    {
+                      "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                      "entity": {
+                        "id": "1",
+                        "href": "",
+                        "name": "sla_due",
+                        "@type": "bdQuery",
+                        "@referredType": "ServiceProblemCase"
+                      }
+                    },
+                    {
+                      "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                      "entity": {
+                        "id": "0",
+                        "href": "",
+                        "name": "ponr",
+                        "@type": "bdQuery",
+                        "@referredType": "ServiceProblemCase"
+                      }
+                    },
+                    {
+                      "role": "This is one of the ServiceProblemCase characteristics associated with the case",
+                      "entity": {
+                        "id": "27/08/2026 15:13",
+                        "href": "",
+                        "name": "dataAbertura",
+                        "@type": "bdQuery",
+                        "@referredType": "ServiceProblemCase"
+                      }
+                    },
+                    {
+                      "role": "This is the idMassiva associated with the case.",
+                      "entity": {
+                        "id": "",
+                        "href": "",
+                        "name": "idMassiva",
+                        "@type": "bdQuery",
+                        "@referredType": "ServiceProblemCase"
+                      }
+                    },
+                    {
+                      "role": "This is the dataPrevisaoMassiva associated with the case.",
+                      "entity": {
+                        "id": "",
+                        "href": "",
+                        "name": "dataPrevisaoMassiva",
+                        "@type": "bdQuery",
+                        "@referredType": "ServiceProblemCase"
+                      }
+                    }
+                  ],
+                  "note": [
+                    {
+                      "text": "Teste Comentário 2",
+                      "date": "28/08/2026 11:51:51",
+                      "author": "felipe Liska Madeira",
+                      "@type": "comments"
+                    },
+                    {
+                      "text": "Teste Comentário",
+                      "date": "27/08/2026 15:14:20",
+                      "author": "felipe Liska Madeira",
+                      "@type": "comments"
+                    }
+                  ],
+                  "@type": "TroubleTicket"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "TroubleTicket": {
+        "description": "Trouble Ticket resource following the TMF621 representation.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Unique identifier of the trouble ticket.",
+            "type": "string",
+            "example": "4a3aa3eb87948b10c14b40040cbb3559"
+          },
+          "href": {
+            "description": "Reference URL for accessing the ticket.",
+            "type": "string",
+            "example": "/api/sn_ind_tsm_sdwan/ticket/troubleTicket/4a3aa3eb87948b10c14b40040cbb3559"
+          },
+          "creationDate": {
+            "description": "Ticket creation date and time.",
+            "type": "string",
+            "example": "2026-04-23 13:30:03"
+          },
+          "description": {
+            "description": "Description of the reported problem.",
+            "type": "string",
+            "nullable": true,
+            "example": "TESTE"
+          },
+          "lastUpdate": {
+            "description": "Date and time of the last update.",
+            "type": "string",
+            "example": "2026-07-17 16:37:23"
+          },
+          "name": {
+            "description": "Ticket name or title.",
+            "type": "string",
+            "example": "Queda de Conexão"
+          },
+          "severity": {
+            "description": "Impact level of the problem.",
+            "type": "string",
+            "example": "3 - Moderate"
+          },
+          "ticketType": {
+            "description": "Ticket type.",
+            "type": "string",
+            "example": "Case"
+          },
+          "@type": {
+            "description": "Specific resource type.",
+            "type": "string",
+            "example": "TroubleTicket"
+          },
+          "status": {
+            "description": "Current ticket status.",
+            "type": "string",
+            "example": "Closed"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/Channel"
+          },
+          "note": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Note"
+            }
+          },
+          "relatedEntity": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RelatedEntity"
+            }
+          },
+          "relatedParty": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RelatedParty"
+            }
+          },
+          "externalIdentifier": {
+            "$ref": "#/components/schemas/ExternalIdentifier"
+          }
+        }
+      },
+      "ExternalIdentifier": {
+        "type": "object",
+        "description": "External identifier of the ticket in the originating system.",
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "Type of the external identifier.",
+            "example": "ExternalIdentifier"
+          },
+          "id": {
+            "type": "string",
+            "description": "BD number in ServiceNow.",
+            "example": "SPC0001432"
+          }
+        }
+      },
+      "CreateTroubleTicketRequest": {
+        "description": "Payload used to create a new Trouble Ticket.",
+        "type": "object",
+        "required": [
+          "@type",
+          "ticketType",
+          "description",
+          "severity"
+        ],
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "Type of the entity being created.",
+            "example": "TroubleTicket"
+          },
+          "ticketType": {
+            "type": "string",
+            "description": "Type of ticket or complaint classification.",
+            "example": "Case"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the problem or technical observation.",
+            "example": "TESTE"
+          },
+          "severity": {
+            "type": "string",
+            "description": "Severity level of the reported problem.",
+            "example": "3"
+          },
+          "requestedResolutionDate": {
+            "type": "string",
+            "description": "Start of validity date/time (ISO 8601).",
+            "example": "YYYY-MM-DDThh:mm:ss.sTZD"
+          },
+          "expectedResolutionDate": {
+            "type": "string",
+            "description": "End of validity date/time (ISO 8601).",
+            "example": "YYYY-MM-DDThh:mm:ss.sTZD"
+          },
+          "name": {
+            "type": "string",
+            "description": "Title or summary of the reported defect/incident.",
+            "example": "Queda de Conexão"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/Channel"
+          },
+          "relatedEntity": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RelatedEntityCreate"
+            }
+          },
+          "relatedParty": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RelatedPartyCreate"
+            }
+          },
+          "troubleTicketCharacteristic": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TroubleTicketCharacteristic"
+            }
+          }
+        }
+      },
+      "PatchTroubleTicketRequest": {
+        "description": "Payload used to cancel, reschedule, or add a comment to a Trouble Ticket.",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "@type"
+        ],
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "Type of the entity being updated.",
+            "example": "ServiceProblemCase"
+          },
+          "ticketType": {
+            "type": "string",
+            "description": "Type of ticket or complaint classification.",
+            "example": "Case"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status to set on the Trouble Ticket, such as cancelled or rescheduled."
+          },
+          "requestedResolutionDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Requested resolution date and time.",
+            "example": "2026-04-29T10:00:00.000-03:00"
+          },
+          "expectedResolutionDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Expected resolution date and time.",
+            "example": "2026-04-29T12:00:00.000-03:00"
+          },
+          "troubleTicketCharacteristic": {
+            "type": "array",
+            "description": "Characteristics associated with the Trouble Ticket update.",
+            "items": {
+              "$ref": "#/components/schemas/PatchTroubleTicketCharacteristic"
+            }
+          },
+          "note": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PatchTroubleTicketNote"
+            }
+          }
+        }
+      },
+      "PatchTroubleTicketCharacteristic": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the Trouble Ticket characteristic."
+          },
+          "value": {
+            "type": "string",
+            "description": "Value associated with the characteristic."
+          }
+        }
+      },
+      "PatchTroubleTicketNote": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Note content."
+          },
+          "@type": {
+            "type": "string",
+            "description": "Specific resource type.",
+            "example": "comments"
+          }
+        }
+      },
+      "RelatedEntityCreate": {
+        "type": "object",
+        "required": [
+          "@type",
+          "entity"
+        ],
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "Type of the related entity.",
+            "example": "Product"
+          },
+          "entity": {
+            "type": "object",
+            "required": [
+              "@type",
+              "id"
+            ],
+            "properties": {
+              "@type": {
+                "type": "string",
+                "description": "Type of the related entity.",
+                "example": "ServiceTest"
+              },
+              "name": {
+                "type": "string",
+                "description": "Name of the related entity.",
+                "example": "relatedEntity"
+              },
+              "id": {
+                "type": "string",
+                "description": "Unique identifier of the related entity.",
+                "example": "47d86eb587bd8310c14b40040cbb35d6"
+              }
+            }
+          }
+        }
+      },
+      "RelatedPartyCreate": {
+        "type": "object",
+        "required": [
+          "@type",
+          "role"
+        ],
+        "properties": {
+          "@type": {
+            "type": "string",
+            "description": "Type of the related party.",
+            "example": "Customer"
+          },
+          "role": {
+            "type": "string",
+            "description": "Category/type of the customer.",
+            "example": "Digital"
+          },
+          "partyOrPartyRole": {
+            "type": "object",
+            "properties": {
+              "@type": {
+                "type": "string",
+                "description": "Type of the related party.",
+                "example": "Customer"
+              },
+              "id": {
+                "type": "string",
+                "description": "Customer identifier from Salesforce.",
+                "example": "{{som_tmf629_gen_externalid}}"
+              },
+              "name": {
+                "type": "string",
+                "description": "Name of the customer.",
+                "example": "Cliente Teste"
+              },
+              "@referredType": {
+                "type": "string",
+                "description": "Referenced type of the entity.",
+                "example": "CustomerContact"
+              },
+              "characteristic": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PartyCharacteristic"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PartyCharacteristic": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the characteristic.",
+            "example": "EmailContactMedium"
+          },
+          "value": {
+            "type": "string",
+            "description": "Value associated with the characteristic.",
+            "example": "contato@email.com"
+          }
+        }
+      },
+      "TroubleTicketCharacteristic": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the characteristic key/attribute.",
+            "example": "designadorAcesso"
+          },
+          "value": {
+            "type": "string",
+            "description": "Value associated with the characteristic (may contain escaped JSON).",
+            "example": "SPO-SF703229-069"
+          }
+        }
+      },
+      "TroubleTicketList": {
+        "description": "List of Trouble Ticket resources.",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/TroubleTicket"
+        }
+      },
+      "Channel": {
+        "type": "object",
+        "description": "Channel through which the ticket was reported.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Channel name.",
+            "example": "phone"
+          },
+          "@type": {
+            "type": "string",
+            "description": "Concrete type of the channel object in the TMF pattern.",
+            "example": "ServiceProblemCase"
+          }
+        }
+      },
+      "Note": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Note identifier."
+          },
+          "author": {
+            "type": "string",
+            "description": "Note author."
+          },
+          "date": {
+            "type": "string",
+            "description": "Note date and time."
+          },
+          "text": {
+            "type": "string",
+            "description": "Note content."
+          },
+          "@baseType": {
+            "type": "string",
+            "description": "Base resource type."
+          },
+          "@schemaLocation": {
+            "type": "string",
+            "format": "uri",
+            "description": "JSON schema URL."
+          },
+          "@type": {
+            "type": "string",
+            "description": "Specific resource type."
+          }
+        }
+      },
+      "RelatedEntity": {
+        "type": "object",
+        "required": [
+          "role",
+          "entity"
+        ],
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "Role of the entity in the relationship.",
+            "example": "This is the product associated with the case"
+          },
+          "entity": {
+            "$ref": "#/components/schemas/EntityReference"
+          }
+        }
+      },
+      "EntityReference": {
+        "type": "object",
+        "required": [
+          "id",
+          "@referredType"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Related entity identifier."
+          },
+          "href": {
+            "type": "string",
+            "description": "Related entity URL."
+          },
+          "name": {
+            "type": "string",
+            "description": "Related entity name."
+          },
+          "@type": {
+            "type": "string",
+            "description": "Specific resource type."
+          },
+          "@referredType": {
+            "type": "string",
+            "description": "Referenced resource type."
+          }
+        }
+      },
+      "RelatedParty": {
+        "type": "object",
+        "properties": {
+          "partyOrPartyRole": {
+            "$ref": "#/components/schemas/PartyReference"
+          }
+        }
+      },
+      "PartyReference": {
+        "type": "object",
+        "required": [
+          "id",
+          "@referredType"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Related party identifier."
+          },
+          "name": {
+            "type": "string",
+            "description": "Related party name."
+          },
+          "@referredType": {
+            "type": "string",
+            "description": "Referenced resource type."
+          }
+        }
+      },
+      "ErrorTemplate": {
+        "description": "Standard error response. Do not return sensitive data in this structure.",
+        "type": "object",
+        "properties": {
+          "_errorCode": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Error code."
+          },
+          "_message": {
+            "type": "string",
+            "maxLength": 30,
+            "description": "Error message."
+          },
+          "_details": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Error details."
+          },
+          "_timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time when the error occurred."
+          },
+          "_traceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Trace identifier received or generated for the request."
+          },
+          "_errors": {
+            "type": "array",
+            "description": "Additional error information.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_code": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "_field": {
+                  "type": "string",
+                  "maxLength": 50
+                },
+                "_message": {
+                  "type": "string",
+                  "maxLength": 100
+                }
+              },
+              "required": [
+                "_message"
+              ]
+            }
+          }
+        },
+        "required": [
+          "_errorCode",
+          "_message",
+          "_details",
+          "_timestamp",
+          "_traceId"
+        ]
+      }
+    }
+  }
+}

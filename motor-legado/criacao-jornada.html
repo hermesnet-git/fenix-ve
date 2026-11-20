@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FTAT-933 · Criação da jornada Abertura de BD pelo VE no motor</title>
+<style>
+  :root {
+    --bg: #f6f5fa; --surface: #ffffff; --text: #1f1d26; --muted: #5d5a6b; --border: #e2dfec;
+    --accent: #660099; --accent-soft: #f1e6f8; --ok: #1f7a4d; --ok-soft: #e4f4ec;
+    --warn: #8a5a00; --warn-soft: #fdf3dc; --code: #f0eef6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141219; --surface: #1d1a24; --text: #ecebf2; --muted: #a9a5b8; --border: #2f2b3a;
+      --accent: #c48ae6; --accent-soft: #2c1f37; --ok: #6fd3a0; --ok-soft: #173126;
+      --warn: #f0c060; --warn-soft: #362a12; --code: #262230;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 960px; margin: 0 auto; padding: 40px 24px 64px; }
+  header { margin-bottom: 32px; }
+  .eyebrow { color: var(--accent); font-weight: 600; font-size: 14px; letter-spacing: .02em; }
+  h1 { font-size: 30px; line-height: 1.25; margin: 6px 0 12px; }
+  h2 { font-size: 21px; margin: 0 0 14px; }
+  h3 { font-size: 17px; margin: 18px 0 8px; }
+  p { margin: 0 0 12px; }
+  section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+            padding: 24px 28px; margin-bottom: 20px; }
+  ul, ol { margin: 0 0 12px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  code { background: var(--code); border-radius: 4px; padding: 1px 6px; font-size: 14px;
+         font-family: ui-monospace, SFMono-Regular, Menlo, monospace; word-break: break-word; }
+  .lead { color: var(--muted); font-size: 17px; }
+  .callout { border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 8px;
+             padding: 14px 18px; margin: 16px 0 0; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 600; border-radius: 999px; padding: 1px 10px;
+         background: var(--warn-soft); color: var(--warn); margin-left: 6px; vertical-align: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 13px; }
+  td.ok { color: var(--ok); font-weight: 600; white-space: nowrap; }
+  .table-wrap { overflow-x: auto; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 20px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .stat strong { display: block; font-size: 24px; color: var(--accent); }
+  .stat span { color: var(--muted); font-size: 14px; }
+  ol.pendencias > li { margin-bottom: 12px; }
+  footer { color: var(--muted); font-size: 14px; margin-top: 28px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Vivo Empresas · Fênix VE · FTAT-933 · 09/11/2026</div>
+    <h1>Criação da jornada “Abertura de BD pelo VE” no motor customizado</h1>
+    <p class="lead">Gerei o <code>fenix-ve-abertura-bd.bpmn</code> e a migration Flyway das telas. O id do processo é
+      <code>fenix-ve-abertura-bd</code>, igual ao nome do arquivo, versão <code>v1</code>, numa jornada própria
+      (<code>journey_id</code> <code>a33acd94-31d3-401e-b8cd-f50506e45667</code>).</p>
+    <p class="lead">O motor aceita qualquer id. Quem exigia o padrão <code>Journey_&lt;uuid&gt;</code> era a fachada
+      <code>ms-journey-v1</code>, que tira desse id a jornada para achar o snapshot e as telas. Agora ela também consulta
+      a tabela <code>espec_registry.process_key</code>, que liga <code>fenix-ve-abertura-bd</code> à jornada.</p>
+    <div class="stats">
+      <div class="stat"><strong>76</strong><span>nós no BPMN</span></div>
+      <div class="stat"><strong>94</strong><span>ligações</span></div>
+      <div class="stat"><strong>24</strong><span>telas SDUI</span></div>
+      <div class="stat"><strong>14</strong><span>cenários testados</span></div>
+    </div>
+  </header>
+
+  <section>
+    <h2>Como validei</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Verificação</th><th>O que foi feito</th><th>Resultado</th></tr></thead>
+        <tbody>
+          <tr><td>Fluxo</td><td>14 cenários das US num Camunda 7.24 em memória, com a mesma task HTTP do motor e um
+            servidor que simula as APIs: impedimentos, diagnóstico, sem energia, timeout, falha da WO e as 3 tentativas
+            de BD.</td><td class="ok">Todos passaram</td></tr>
+          <tr><td>Telas</td><td>Com o código da própria fachada e as migrations aplicadas em H2: a chave
+            <code>fenix-ve-abertura-bd</code> resolve para a jornada pelo <code>process_key</code>; 24 telas resolvidas com
+            variáveis preenchidas e lista de horários montada; variáveis de entrada e respostas convertidas.</td><td class="ok">OK</td></tr>
+          <tr><td>SQL</td><td>Migrations da fachada (V1 a V4 e a <code>R__</code> da jornada) aplicadas num PostgreSQL
+            local temporário, criado e apagado pelo próprio teste; checagem da fachada com o portal vazio.</td>
+            <td class="ok">Sem erro</td></tr>
+          <tr><td>Suítes dos repositórios</td><td>Motor: 385 testes. <code>ms-journey-v1</code>: 91 testes.
+            <code>ms-journey-event-consumer-v1</code>: 33 testes.</td>
+            <td class="ok">Sem falhas</td></tr>
+          <tr><td>Pacote</td><td>Importador do <code>ms-journey-v1</code> em <code>--dry-run</code>.</td>
+            <td class="ok">Válido</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Arquivos</h2>
+    <ul>
+      <li><strong>Motor:</strong> <code>wf-journey-motor-v1/src/main/resources/process/fenix-ve-abertura-bd.bpmn</code>.
+        Há uma cópia em <code>Fenix-VE/fenix-ve-abertura-bd.bpmn</code>, que sobrescreveu o arquivo antigo gerado pelo admin.
+        <code>InboundCorrelationConfigSeeder</code> grava na subida, em <code>inbound_correlation_config</code>, onde achar
+        o <code>processInstanceId</code> no evento do HPSD (<code>journey.inbound.correlations</code> no
+        <code>application.yml</code>).</li>
+      <li><strong>Consumer:</strong> <code>ms-journey-event-consumer-v1/src/main/resources/db/vendor/postgresql/R__topico_hpsd_servicetestresult.sql</code>
+        cadastra o tópico em <code>consumer_topic_config</code> no deploy, com os valores de cada ambiente vindos das
+        variáveis <code>HPSD_SERVICE_TEST_RESULT_*</code>. Só roda em PostgreSQL; os testes em H2 não a executam.</li>
+      <li><strong>Fachada:</strong>
+        <ul>
+          <li><code>ms-journey-v1/src/main/resources/db/specregistry/R__fenix_ve_abertura_bd_telas.sql</code>: grava a
+            ligação <code>fenix-ve-abertura-bd</code> → jornada, o snapshot e as telas. É uma migration repetível: roda de
+            novo sempre que o conteúdo muda e marca as versões anteriores das telas como <code>deprecated</code>. Vai
+            para cada ambiente no deploy da fachada, sem SQL manual.</li>
+          <li><code>V3__process_key.sql</code>, <code>ProcessKeyJdbcAdapter</code>, <code>JourneyProcessKeyPortOut</code> e
+            o ajuste em <code>JourneyProcessService</code>: a fachada tenta o padrão <code>Journey_&lt;uuid&gt;</code> e,
+            se não bater, consulta <code>espec_registry.process_key</code>.</li>
+          <li><code>V4__published_snapshot.sql</code> e o ajuste em <code>JourneyPublicationJdbcAdapter</code>: a fachada
+            lê o snapshot primeiro em <code>espec_registry.published_snapshot</code> e, se não achar, nas tabelas do
+            portal. Não escreve nas tabelas do portal.</li>
+        </ul>
+      </li>
+      <li><strong>Pacote <code>Fenix-VE/fenix-ve-abertura-bd-v1/</code>:</strong>
+        <ul>
+          <li><code>manifest</code>, <code>snapshot</code> e <code>screens</code> no formato do importador.</li>
+        </ul>
+      </li>
+      <li><strong>Gerador:</strong> <code>Fenix-VE/skills/gerar_fenix_ve_abertura_bd.py</code> refaz todos esses arquivos.</li>
+    </ul>
+    <p class="callout">Commits na branch <code>feature/232416-fenix-abertura-bd</code> dos três repositórios, com PRs
+      para <code>master</code> vinculados ao card 232416: !361061 (motor), !361062 (<code>ms-journey-v1</code>) e !361063
+      (consumer).</p>
+  </section>
+
+  <section>
+    <h2>Como o fluxo funciona no motor</h2>
+    <ul>
+      <li><strong>Chamadas REST:</strong> usam a task <code>${httpTask}</code> do motor. As respostas são interpretadas em
+        scripts Groovy, porque um corpo vazio (o 204 do WFM) quebraria o mapeamento automático.</li>
+      <li><strong>Telas:</strong> reaproveitei 20 telas do export; só <code>Node_HorarioOcupado</code> ficou de fora do fluxo.</li>
+      <li><strong>Telas novas</strong> <span class="tag">decisão minha</span>: criei quatro, no mesmo padrão SDUI, que as US
+        exigem e não existiam no export:
+        <ul>
+          <li><code>Node_Inicio</code> (“Agora, vamos verificar…”);</li>
+          <li><code>Node_RetentarBD</code> (pergunta se tenta abrir o BD de novo, US-10);</li>
+          <li><code>Node_SemHorarios</code> (WFM sem horários);</li>
+          <li><code>Node_AgendamentoNaoRealizado</code> (falha na WO, US-09).</li>
+        </ul>
+      </li>
+      <li><strong>Retorno do HPSD:</strong> a espera usa o evento com <code>correlationTopic</code>, que o motor reconhece.
+        No POST do diagnóstico o fluxo envia o <code>processInstanceId</code> como <code>ExternalId</code>, para o evento
+        voltar à instância certa.</li>
+      <li><strong>Token</strong> <span class="tag">decisão minha</span>: o Bearer do usuário recebido no
+        <code>/advance</code> é repassado no header <code>Authorization</code>, como no dossiê. Por isso a tela inicial vem
+        antes das consultas.</li>
+      <li><strong>URLs:</strong> vêm de variáveis de ambiente do motor, sem valor padrão, configuradas em
+        <code>wf-journey-motor-v1/.azuredevops/config/{dev,preprod,prod}/values.yml</code>:
+        <ul>
+          <li><code>FENIX_VE_CPM_BASE_URL</code>: <code>cssp-preprod</code> em dev e preprod (o contrato só publica
+            preprod), <code>cssp.redecorp.br</code> em prod;</li>
+          <li><code>FENIX_VE_TT_BASE_URL</code>: <code>spmg-dev</code>, <code>spmg-preprod</code> e <code>spmg</code>;</li>
+          <li><code>FENIX_VE_HPSD_BASE_URL</code>: <code>api-dev</code>, <code>api-hml</code> (não há preprod no contrato)
+            e <code>api</code>;</li>
+          <li><code>FENIX_VE_WFM_BASE_URL</code>: ainda sem URL, comentada nos três ambientes;</li>
+          <li><code>FENIX_VE_HPSD_TIMEOUT</code>, para o tempo de espera do diagnóstico (padrão 3 minutos).</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Limitações e pendências</h2>
+    <ol class="pendencias">
+      <li><strong>Resultado do diagnóstico pode não ser lido:</strong> o motor retoma a instância com o evento Kafka, mas
+        não grava o conteúdo do evento em variáveis. Por isso o fluxo busca o resultado com
+        <code>GET /serviceTest/{id}</code>, chamada que roda sem token porque não há uma ação do usuário nesse momento.
+        Enquanto o motor não tiver token de sistema ou não passar o evento como variável, a chamada deve voltar 401 e o
+        fluxo segue sempre para o agendamento. Os ramos ID 06/07/10 e ID 09 já estão prontos e testados.</li>
+      <li><strong>Falha técnica não cai em tela de erro:</strong> um timeout ou erro de conexão numa chamada REST vira erro
+        do <code>/advance</code>, e a instância fica parada na tela anterior. A task do motor não gera erro BPMN nesses
+        casos; só respostas 4xx/5xx seguem para as telas de falha.</li>
+      <li><strong>Respostas grandes podem estourar o limite de texto:</strong> a task do motor grava o corpo de cada
+        resposta numa variável de texto, que no Postgres tem limite de 4000 caracteres. Uma lista de horários grande do
+        WFM pode passar disso.</li>
+      <li><strong>Contratos pendentes:</strong>
+        <ul>
+          <li>URLs e payloads do WFM (o corpo de criação da WO é provisório);</li>
+          <li>IDs do TMF653;</li>
+          <li>schema real do evento Kafka;</li>
+          <li>campo de protocolo da Massiva (usei <code>incidentId</code>);</li>
+          <li>combinações de impedimento não previstas nas US (BD + fatura sem Massiva, e as três juntas): usei a
+            precedência fatura antes de BD.</li>
+        </ul>
+      </li>
+      <li><strong>Tópico do HPSD desligado:</strong> o cadastro vai no deploy, mas com
+        <code>HPSD_SERVICE_TEST_RESULT_ENABLED=false</code> nos três ambientes. O tópico é compartilhado: um evento com
+        <code>ExternalId</code> que não seja uma instância ativa (de outro sistema, ou que chegue depois do timeout de 3
+        minutos) volta do motor como <code>NOT_CORRELATED</code> com nova tentativa, e o consumer tenta de novo sem limite,
+        travando a partição. Antes de ligar, falta limitar as tentativas no consumer (ou o motor não pedir nova tentativa
+        nesse caso) e conferir o JSONPath e o formato (JSON ou AVRO) com um evento real. Com o tópico desligado, a espera
+        vence o timeout e o fluxo segue para o agendamento.</li>
+    </ol>
+  </section>
+
+  <footer>Resumo da geração do BPMN e das telas para o <code>wf-journey-motor-v1</code> e o <code>ms-journey-v1</code>.</footer>
+</main>
+</body>
+</html>

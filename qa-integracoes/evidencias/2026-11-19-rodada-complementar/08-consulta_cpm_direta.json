@@ -1,0 +1,11 @@
+{
+  "cenario": "B-12/B-13",
+  "etapa": "consulta_cpm_direta",
+  "quando": "2026-11-19T22:49:18.047Z",
+  "http": 200,
+  "observacoes": {},
+  "resposta": {
+    "totalResults": "0",
+    "incidents": []
+  }
+}

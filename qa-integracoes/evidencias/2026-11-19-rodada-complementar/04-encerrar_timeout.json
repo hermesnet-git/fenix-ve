@@ -1,0 +1,23 @@
+{
+  "cenario": "B-12/B-13",
+  "etapa": "encerrar_timeout",
+  "quando": "2026-11-19T22:48:24.936Z",
+  "http": 200,
+  "observacoes": {},
+  "resposta": {
+    "processInstanceId": "2d4adb84-e46b-11f1-8248-06dfec022e82",
+    "previousActivityId": "Node_FalhaConsulta",
+    "activityId": null,
+    "activityType": null,
+    "executionId": null,
+    "taskId": null,
+    "status": "COMPLETED",
+    "activeProcessInstanceId": null,
+    "variables": {},
+    "matchedTransition": {
+      "kind": "guarded",
+      "label": null,
+      "eventName": null
+    }
+  }
+}

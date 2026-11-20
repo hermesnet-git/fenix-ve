@@ -1,0 +1,26 @@
+[
+  {
+    "nome": "semBD",
+    "http": 200,
+    "total": 0,
+    "abertas": 0
+  },
+  {
+    "nome": "comBD",
+    "http": 200,
+    "total": 0,
+    "abertas": 0
+  },
+  {
+    "nome": "servicoReferencia",
+    "http": 200,
+    "total": 0,
+    "abertas": 0
+  },
+  {
+    "nome": "acessoReferencia",
+    "http": 200,
+    "total": 0,
+    "abertas": 0
+  }
+]

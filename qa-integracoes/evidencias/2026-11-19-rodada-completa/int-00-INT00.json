@@ -1,0 +1,38 @@
+{
+  "integracao": "INT00",
+  "estado": "Operacional",
+  "motivo": null,
+  "verificacoes": [
+    {
+      "ok": true,
+      "texto": "HTTP esperado (200/206) recebido 200"
+    },
+    {
+      "ok": true,
+      "texto": "Resposta Asset em JSON"
+    },
+    {
+      "ok": true,
+      "texto": "Asset selecionado Indice 0 de 2 item(ns)"
+    }
+  ],
+  "requisicao": {
+    "linha_e_headers": "GET https://csin-preprod.redecorp.br/customerAssetInformation/v2/customers/[DOC SUPRIMIDO]/assets?typeId=documentNumber&fields=status%3DAtivo%2CSuspenso%3BproductCode%3DINTERNET_BASICA%2CACESSO%3Bconsumer%3DVE",
+    "corpo": "Accept: application/json\nX-Vivo-Origin: VE\nX-Vivo-Referer: coop.vivo.com.br\nX-Vivo-System: B2B\nX-Vivo-TraceId: TID_VE_MULE000048_2026-11-19T23:18:31.509Z\nAuthorization: Bearer [REMOVIDO]"
+  },
+  "resposta": {
+    "status": "HTTP 200 · 1871 ms",
+    "headers": "content-type: application/json\ndate: Thu, 19 Nov 2026 23:18:33 GMT\nserver: istio-envoy\nx-envoy-upstream-service-time: 1755\nx-qa-transport: local",
+    "corpo": {
+      "content_total": 2,
+      "status": [
+        "Ativo",
+        "Ativo"
+      ],
+      "familias": [
+        "Internet",
+        "Acesso"
+      ]
+    }
+  }
+}

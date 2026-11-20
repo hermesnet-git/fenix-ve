@@ -1,0 +1,21 @@
+{
+  "etapa": "sair_preparo",
+  "quando": "2026-11-19T22:21:56.004Z",
+  "http": 200,
+  "resposta": {
+    "processInstanceId": "79693bfa-e467-11f1-8248-06dfec022e82",
+    "previousActivityId": "Node_TesteConexao",
+    "activityId": null,
+    "activityType": null,
+    "executionId": null,
+    "taskId": null,
+    "status": "COMPLETED",
+    "activeProcessInstanceId": null,
+    "variables": {},
+    "matchedTransition": {
+      "kind": "guarded",
+      "label": null,
+      "eventName": null
+    }
+  }
+}

@@ -1,0 +1,451 @@
+{
+    "modalidade": "offline_simulado",
+    "bpmn": "fenix-ve-abertura-bd-v1/fenix-ve-abertura-bd.bpmn",
+    "limites": "Scripts isolados; sem Camunda, fachada, Kafka, WFM ou telas. Spin de slots substitu\u00eddo por string JSON.",
+    "resultados": [
+        {
+            "cenario": "B-01",
+            "entrada": {
+                "massiva": false,
+                "bd": false,
+                "productStatus": "Ativo"
+            },
+            "esperado": "NENHUM",
+            "observado": "NENHUM",
+            "passou": true
+        },
+        {
+            "cenario": "B-02",
+            "entrada": {
+                "massiva": true,
+                "bd": false,
+                "productStatus": "bloqueio"
+            },
+            "esperado": "MASSIVA_ATRASO",
+            "observado": "MASSIVA_ATRASO",
+            "passou": true
+        },
+        {
+            "cenario": "B-03",
+            "entrada": {
+                "massiva": true,
+                "bd": true,
+                "productStatus": "Ativo"
+            },
+            "esperado": "MASSIVA_VISITA",
+            "observado": "MASSIVA_VISITA",
+            "passou": true
+        },
+        {
+            "cenario": "B-04",
+            "entrada": {
+                "massiva": true,
+                "bd": false,
+                "productStatus": "Ativo"
+            },
+            "esperado": "MASSIVA",
+            "observado": "MASSIVA",
+            "passou": true
+        },
+        {
+            "cenario": "B-05",
+            "entrada": {
+                "massiva": false,
+                "bd": false,
+                "productStatus": "bloqueio"
+            },
+            "esperado": "ATRASO",
+            "observado": "ATRASO",
+            "passou": true
+        },
+        {
+            "cenario": "B-06",
+            "entrada": {
+                "massiva": false,
+                "bd": true,
+                "productStatus": "Ativo"
+            },
+            "esperado": "VISITA",
+            "observado": "VISITA",
+            "passou": true
+        },
+        {
+            "cenario": "B-08",
+            "entrada": {
+                "massiva": true,
+                "bd": true,
+                "productStatus": "Ativo"
+            },
+            "esperado": "MASSIVA_VISITA",
+            "observado": "MASSIVA_VISITA",
+            "passou": true
+        },
+        {
+            "cenario": "B-09",
+            "entrada": {
+                "massiva": false,
+                "bd": false,
+                "productStatus": "bloqueio"
+            },
+            "esperado": "ATRASO",
+            "observado": "ATRASO",
+            "passou": true
+        },
+        {
+            "cenario": "H-02",
+            "entrada": "ID06",
+            "esperado": "RESOLVIDO",
+            "observado": "RESOLVIDO",
+            "passou": true
+        },
+        {
+            "cenario": "H-02-rota",
+            "entrada": "ID06",
+            "esperado": "Node_ReinicieNovamente",
+            "observado": "Node_ReinicieNovamente",
+            "passou": true
+        },
+        {
+            "cenario": "H-03",
+            "entrada": "ID07",
+            "esperado": "RESOLVIDO",
+            "observado": "RESOLVIDO",
+            "passou": true
+        },
+        {
+            "cenario": "H-03-rota",
+            "entrada": "ID07",
+            "esperado": "Node_ReinicieNovamente",
+            "observado": "Node_ReinicieNovamente",
+            "passou": true
+        },
+        {
+            "cenario": "H-04",
+            "entrada": "ID10",
+            "esperado": "RESOLVIDO",
+            "observado": "RESOLVIDO",
+            "passou": true
+        },
+        {
+            "cenario": "H-04-rota",
+            "entrada": "ID10",
+            "esperado": "Node_ReinicieNovamente",
+            "observado": "Node_ReinicieNovamente",
+            "passou": true
+        },
+        {
+            "cenario": "H-07",
+            "entrada": "ID09",
+            "esperado": "SEM_ENERGIA",
+            "observado": "SEM_ENERGIA",
+            "passou": true
+        },
+        {
+            "cenario": "H-07-rota",
+            "entrada": "ID09",
+            "esperado": "Node_SemEnergia",
+            "observado": "Node_SemEnergia",
+            "passou": true
+        },
+        {
+            "cenario": "H-13",
+            "entrada": "ID01",
+            "esperado": "PERSISTE",
+            "observado": "PERSISTE",
+            "passou": true
+        },
+        {
+            "cenario": "H-13-rota",
+            "entrada": "ID01",
+            "esperado": "Node_AgendarVisita",
+            "observado": "Node_AgendarVisita",
+            "passou": true
+        },
+        {
+            "cenario": "H-05",
+            "entrada": {
+                "form_voltouNovamente": "sim"
+            },
+            "esperado": "Node_InternetVoltou",
+            "observado": "Node_InternetVoltou",
+            "passou": true
+        },
+        {
+            "cenario": "H-06",
+            "entrada": {
+                "form_voltouNovamente": "nao"
+            },
+            "esperado": "Node_AgendarVisita",
+            "observado": "Node_AgendarVisita",
+            "passou": true
+        },
+        {
+            "cenario": "H-08",
+            "entrada": {
+                "form_acaoEnergia": "nao_consigo"
+            },
+            "esperado": "Node_AgendarVisita",
+            "observado": "Node_AgendarVisita",
+            "passou": true
+        },
+        {
+            "cenario": "H-09",
+            "entrada": {
+                "form_voltouEnergia": "sim"
+            },
+            "esperado": "Node_InternetVoltou",
+            "observado": "Node_InternetVoltou",
+            "passou": true
+        },
+        {
+            "cenario": "H-10",
+            "entrada": {
+                "form_voltouEnergia": "nao"
+            },
+            "esperado": "Node_TemEnergia",
+            "observado": "Node_TemEnergia",
+            "passou": true
+        },
+        {
+            "cenario": "H-11",
+            "entrada": {
+                "form_temEnergia": "nao"
+            },
+            "esperado": "Node_RedeEletrica",
+            "observado": "Node_RedeEletrica",
+            "passou": true
+        },
+        {
+            "cenario": "H-12",
+            "entrada": {
+                "form_temEnergia": "sim"
+            },
+            "esperado": "Node_AgendarVisita",
+            "observado": "Node_AgendarVisita",
+            "passou": true
+        },
+        {
+            "cenario": "W-01",
+            "entrada": {
+                "http": 200
+            },
+            "esperado": "DISPONIVEL",
+            "observado": "DISPONIVEL",
+            "passou": true
+        },
+        {
+            "cenario": "W-06",
+            "entrada": {
+                "http": 204
+            },
+            "esperado": "SEM_SLOT",
+            "observado": "SEM_SLOT",
+            "passou": true
+        },
+        {
+            "cenario": "W-04",
+            "entrada": {
+                "http": 500
+            },
+            "esperado": "FALHA",
+            "observado": "FALHA",
+            "passou": true
+        },
+        {
+            "cenario": "W-02",
+            "entrada": {
+                "http": 200
+            },
+            "esperado": true,
+            "observado": true,
+            "passou": true
+        },
+        {
+            "cenario": "W-05",
+            "entrada": {
+                "http": 500
+            },
+            "esperado": false,
+            "observado": false,
+            "passou": true
+        },
+        {
+            "cenario": "BD-01",
+            "entrada": {
+                "status": [
+                    201
+                ]
+            },
+            "esperado": {
+                "tentativas": 1,
+                "criado": true
+            },
+            "observado": {
+                "tentativas": 1,
+                "criado": true
+            },
+            "passou": true
+        },
+        {
+            "cenario": "BD-01-rota",
+            "entrada": {
+                "status": [
+                    201
+                ]
+            },
+            "esperado": "Node_VisitaAgendada",
+            "observado": "Node_VisitaAgendada",
+            "passou": true
+        },
+        {
+            "cenario": "BD-02",
+            "entrada": {
+                "status": [
+                    500
+                ]
+            },
+            "esperado": {
+                "tentativas": 1,
+                "criado": false
+            },
+            "observado": {
+                "tentativas": 1,
+                "criado": false
+            },
+            "passou": true
+        },
+        {
+            "cenario": "BD-02-rota",
+            "entrada": {
+                "status": [
+                    500
+                ]
+            },
+            "esperado": "Node_RetentarBD",
+            "observado": "Node_RetentarBD",
+            "passou": true
+        },
+        {
+            "cenario": "BD-03",
+            "entrada": {
+                "status": [
+                    500,
+                    201
+                ]
+            },
+            "esperado": {
+                "tentativas": 2,
+                "criado": true
+            },
+            "observado": {
+                "tentativas": 2,
+                "criado": true
+            },
+            "passou": true
+        },
+        {
+            "cenario": "BD-03-rota",
+            "entrada": {
+                "status": [
+                    500,
+                    201
+                ]
+            },
+            "esperado": "Node_VisitaAgendada",
+            "observado": "Node_VisitaAgendada",
+            "passou": true
+        },
+        {
+            "cenario": "BD-04",
+            "entrada": {
+                "status": [
+                    500,
+                    500,
+                    201
+                ]
+            },
+            "esperado": {
+                "tentativas": 3,
+                "criado": true
+            },
+            "observado": {
+                "tentativas": 3,
+                "criado": true
+            },
+            "passou": true
+        },
+        {
+            "cenario": "BD-04-rota",
+            "entrada": {
+                "status": [
+                    500,
+                    500,
+                    201
+                ]
+            },
+            "esperado": "Node_VisitaAgendada",
+            "observado": "Node_VisitaAgendada",
+            "passou": true
+        },
+        {
+            "cenario": "BD-05",
+            "entrada": {
+                "status": [
+                    500,
+                    500,
+                    500
+                ]
+            },
+            "esperado": {
+                "tentativas": 3,
+                "criado": false
+            },
+            "observado": {
+                "tentativas": 3,
+                "criado": false
+            },
+            "passou": true
+        },
+        {
+            "cenario": "BD-05-rota",
+            "entrada": {
+                "status": [
+                    500,
+                    500,
+                    500
+                ]
+            },
+            "esperado": "Node_DecWOIdentificadaBD",
+            "observado": "Node_DecWOIdentificadaBD",
+            "passou": true
+        },
+        {
+            "cenario": "BD-06",
+            "entrada": {
+                "status": [
+                    500
+                ]
+            },
+            "esperado": {
+                "tentativas": 1,
+                "criado": false
+            },
+            "observado": {
+                "tentativas": 1,
+                "criado": false
+            },
+            "passou": true
+        },
+        {
+            "cenario": "BD-06-rota",
+            "entrada": {
+                "status": [
+                    500
+                ]
+            },
+            "esperado": "Node_RetentarBD",
+            "observado": "Node_RetentarBD",
+            "passou": true
+        }
+    ]
+}

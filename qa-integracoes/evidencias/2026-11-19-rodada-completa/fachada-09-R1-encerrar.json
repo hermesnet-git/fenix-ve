@@ -1,0 +1,23 @@
+{
+  "run": "R1",
+  "etapa": "encerrar",
+  "quando": "2026-11-19T23:23:58.951Z",
+  "http": 200,
+  "observacoes": {},
+  "resposta": {
+    "processInstanceId": "49b86f88-e470-11f1-8248-06dfec022e82",
+    "previousActivityId": "Node_InternetVoltou",
+    "activityId": null,
+    "activityType": null,
+    "executionId": null,
+    "taskId": null,
+    "status": "COMPLETED",
+    "activeProcessInstanceId": null,
+    "variables": {},
+    "matchedTransition": {
+      "kind": "guarded",
+      "label": null,
+      "eventName": null
+    }
+  }
+}

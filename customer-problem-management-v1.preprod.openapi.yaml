@@ -1,0 +1,330 @@
+openapi: 3.1.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: https://cssp-preprod.redecorp.br/customer-problem-management/v1
+  description: Generated server url
+tags:
+- name: customer problem management
+  description: Gerenciamento de massivas
+paths:
+  /incidents:
+    get:
+      tags:
+      - customer problem management
+      - Customer Problem Management
+      summary: List network incidents by service designator
+      description: "Retrieves a list of network incidents (massiva confirmada, suspeita\
+        \ de massiva, serviços programados) affecting a given service designator.\
+        \ Orchestrates parallel queries to Incident Management v1 (SIGITM/Massive\
+        \ Report) and SIGMA Fibra, consolidating results into a unified response."
+      operationId: getIncidents
+      parameters:
+      - name: Authorization
+        in: header
+        description: "Token JWT (pass-through do consumidor, validado no Istio)"
+        required: true
+        schema:
+          type: string
+      - name: serviceDesignator
+        in: query
+        description: "Designador de serviço do cliente (voz, dados ou TV). Identificador\
+          \ único do serviço contratado pelo cliente Fixa Next."
+        required: true
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: Filtro por status do incidente de rede
+        required: false
+        schema:
+          type: string
+      - name: startDate
+        in: query
+        description: "Data de início da janela de consulta (ISO 8601). Se não informado,\
+          \ assume 180 dias para trás a partir da data atual"
+        required: false
+        schema:
+          type: string
+      - name: endDate
+        in: query
+        description: "Data de fim da janela de consulta (ISO 8601). Se não informado,\
+          \ assume data/hora atual"
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListIncidentsDTO"
+        "404":
+          description: Object not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetailsDto"
+        "5XX":
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetailsDto"
+  /customers/{customerId}/customerProblems:
+    get:
+      tags:
+      - customer problem management
+      - Customer Problem Management
+      summary: Listagem de Massivas
+      operationId: getCustomerProblem
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: X-Origin
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: X-System
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: X-Referer
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: X-TraceId
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: customerId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: startDate
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: endDate
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: asset
+        in: query
+        required: true
+        schema:
+          type: array
+          items: {}
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListCustomerProblemsDto"
+        "404":
+          description: Object not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetailsDto"
+        "5XX":
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetailsDto"
+components:
+  schemas:
+    IncidentDTO:
+      type: object
+      description: "Representa um incidente de rede (massiva confirmada, suspeita\
+        \ de massiva ou serviço programado)"
+      properties:
+        incidentId:
+          type: string
+        status:
+          type: string
+          enum:
+          - ACTIVE
+          - CLOSED
+          - SCHEDULED
+          - SUSPECTED
+          - CONFIRMED
+          - PENDING
+        type:
+          type: string
+        source:
+          type: string
+        openDate:
+          type: string
+        expectedResolutionDate:
+          type: string
+        description:
+          type: string
+        affectedServices:
+          type: array
+          items:
+            type: string
+        serviceDesignator:
+          type: string
+    ListIncidentsDTO:
+      type: object
+      description: Resposta consolidada de incidentes de rede
+      properties:
+        totalResults:
+          type: string
+        incidents:
+          type: array
+          items:
+            $ref: "#/components/schemas/IncidentDTO"
+    ProblemDetailsDto:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        detail:
+          type: string
+        instance:
+          type: string
+    AssetDto:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryDto"
+        identifiers:
+          type: array
+          items:
+            $ref: "#/components/schemas/IdentifierDto"
+    CategoryDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    CustomerProblemDto:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        typeTrouble:
+          type: string
+        status:
+          type: string
+        startDate:
+          type: string
+        previewDate:
+          type: string
+        endDate:
+          type: string
+        origin:
+          type: string
+        occurTime:
+          type: string
+        customerProblemDetail:
+          type: string
+        assets:
+          type: array
+          items:
+            $ref: "#/components/schemas/AssetDto"
+    IdentifierDto:
+      type: object
+      properties:
+        value:
+          type: string
+    ListCustomerProblemsDto:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/CustomerProblemDto"
+        pagination:
+          $ref: "#/components/schemas/PaginationDto"
+    PageableDto:
+      type: object
+      properties:
+        sort:
+          $ref: "#/components/schemas/SortDto"
+        offset:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        paged:
+          type: boolean
+        unpaged:
+          type: boolean
+    PaginationDto:
+      type: object
+      properties:
+        pageable:
+          $ref: "#/components/schemas/PageableDto"
+        totalElements:
+          type: integer
+          format: int32
+        last:
+          type: boolean
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        number:
+          type: integer
+          format: int32
+        sort:
+          $ref: "#/components/schemas/SortDto"
+        first:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        empty:
+          type: boolean
+    SortDto:
+      type: object
+      properties:
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
+        empty:
+          type: boolean

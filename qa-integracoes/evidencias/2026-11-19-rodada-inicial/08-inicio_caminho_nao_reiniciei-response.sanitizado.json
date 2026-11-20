@@ -1,0 +1,206 @@
+{
+  "etapa": "inicio_caminho_nao_reiniciei",
+  "quando": "2026-11-19T22:21:07.064Z",
+  "http": 200,
+  "resposta": {
+    "processInstanceId": "79693bfa-e467-11f1-8248-06dfec022e82",
+    "previousActivityId": "Node_Reinicie",
+    "activityId": "Node_VoltouReinicio",
+    "activityType": "userTask",
+    "executionId": "79693bfa-e467-11f1-8248-06dfec022e82",
+    "taskId": "Node_VoltouReinicio",
+    "status": "ACTIVE",
+    "activeProcessInstanceId": "79693bfa-e467-11f1-8248-06dfec022e82",
+    "variables": {
+      "data_requestTimestamp": "2026-11-19T22:20:48.882Z",
+      "data_wo_customerCategory": "[DADO SUPRIMIDO]",
+      "channel": "MOBILE",
+      "data_wo_streetName": "[DADO SUPRIMIDO]",
+      "data_bloqueioFinanceiro": "[DADO SUPRIMIDO]",
+      "data_wo_workNumber": "[DADO SUPRIMIDO]",
+      "data_wo_orderDetail": "[DADO SUPRIMIDO]",
+      "data_temBD": false,
+      "data_temMassiva": false,
+      "data_wfmCentralOffice": "[DADO SUPRIMIDO]",
+      "data_wo_phoneNumber": "[DADO SUPRIMIDO]",
+      "data_wo_longitude": "[DADO SUPRIMIDO]",
+      "data_bdPrevisaoConclusao": "[DADO SUPRIMIDO]",
+      "data_correlationId": "CID_VE_FTAT933_QA_1795126848882",
+      "data_wo_acessoId": "[DADO SUPRIMIDO]",
+      "Node_ConsultaBD-response": "[DADO SUPRIMIDO]",
+      "data_wo_streetCode": "[DADO SUPRIMIDO]",
+      "data_designador": "[DADO SUPRIMIDO]",
+      "_lastAnswerKeys": "[DADO SUPRIMIDO]",
+      "data_wo_documentNumber": "[DADO SUPRIMIDO]",
+      "data_massivaPrevisaoConclusao": "[DADO SUPRIMIDO]",
+      "form_acaoReinicio": "reiniciei",
+      "data_wo_customerName": "[DADO SUPRIMIDO]",
+      "data_wo_latitude": "[DADO SUPRIMIDO]",
+      "data_wo_productId": "[DADO SUPRIMIDO]",
+      "data_wo_orderProtocol": "[DADO SUPRIMIDO]",
+      "assignee": "ve-app",
+      "data_wo_addressReference": "[DADO SUPRIMIDO]",
+      "data_wo_detail": "[DADO SUPRIMIDO]",
+      "Node_ConsultaMassiva-status": 200,
+      "data_wo_dateOfSale": "[DADO SUPRIMIDO]",
+      "data_wo_mobileNumber": "[DADO SUPRIMIDO]",
+      "data_wo_cnlAcronym": "[DADO SUPRIMIDO]",
+      "data_wfmTelephonicArea": "[DADO SUPRIMIDO]",
+      "data_bd_relatedServiceId": "[DADO SUPRIMIDO]",
+      "data_impedimento": "[DADO SUPRIMIDO]",
+      "data_wo_acessoDesignador": "[DADO SUPRIMIDO]",
+      "data_bdNumero": "[DADO SUPRIMIDO]",
+      "Node_ConsultaBD-status": 404,
+      "Node_ConsultaMassiva-response": "[DADO SUPRIMIDO]",
+      "data_wo_contactName": "[DADO SUPRIMIDO]",
+      "data_bd_relatedServiceSpecificationId": "[DADO SUPRIMIDO]",
+      "data_issServiceNow": "[DADO SUPRIMIDO]",
+      "data_wo_neighborhood": "[DADO SUPRIMIDO]",
+      "data_wfmMediaType": "[DADO SUPRIMIDO]",
+      "data_wfmAttendantId": "[DADO SUPRIMIDO]",
+      "data_wo_stateOrProvince": "[DADO SUPRIMIDO]",
+      "data_wfmGeographicSiteId": "[DADO SUPRIMIDO]",
+      "data_wo_streetNr": "[DADO SUPRIMIDO]",
+      "data_wfmNetworkOwner": "[DADO SUPRIMIDO]",
+      "data_productStatus": "Ativo",
+      "data_bdProtocoloAtendimento": "[DADO SUPRIMIDO]",
+      "data_massivaProtocolo": "[DADO SUPRIMIDO]",
+      "trigger": "[DADO SUPRIMIDO]",
+      "data_bd_productInventoryId": "[DADO SUPRIMIDO]",
+      "data_wo_orderId": "[DADO SUPRIMIDO]",
+      "data_wfmPostcode": "[DADO SUPRIMIDO]",
+      "data_wo_complement": "[DADO SUPRIMIDO]",
+      "data_wfmCnl": "[DADO SUPRIMIDO]",
+      "data_wo_city": "[DADO SUPRIMIDO]",
+      "data_wo_emailAddress": "[DADO SUPRIMIDO]",
+      "data_consultaMassivaOk": true,
+      "data_consultaBDOk": true,
+      "data_wo_customerId": "[DADO SUPRIMIDO]"
+    },
+    "matchedTransition": {
+      "kind": "linear",
+      "label": null,
+      "eventName": null
+    },
+    "form": {
+      "id": null,
+      "name": "A internet voltou?",
+      "description": null,
+      "sdui": {
+        "schemaVersion": "1.0.0",
+        "catalogVersion": "1.0.0",
+        "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+        "journeyVersion": 1,
+        "uiStepId": "Node_VoltouReinicio",
+        "status": "published",
+        "publishedAt": "2026-11-09T12:00:00Z",
+        "supportedTargets": [
+          "react.mobile",
+          "flutter.mobile"
+        ],
+        "minRendererVersion": {
+          "react.mobile": "[DADO SUPRIMIDO]",
+          "flutter.mobile": "[DADO SUPRIMIDO]"
+        },
+        "dataSources": {},
+        "data": [
+          "ui.screen",
+          {
+            "id": "screen_voltoureinicio",
+            "title": "Suporte técnico",
+            "version": "1.0.0",
+            "scrollable": true,
+            "paddingToken": "[DADO SUPRIMIDO]",
+            "backgroundToken": "[DADO SUPRIMIDO]"
+          },
+          [
+            [
+              "ui.stack",
+              {
+                "id": "stack_voltoureinicio",
+                "version": "1.0.0",
+                "alignment": "stretch",
+                "direction": "vertical",
+                "spacingToken": "[DADO SUPRIMIDO]"
+              },
+              [
+                [
+                  "ui.text",
+                  {
+                    "id": "Node_VoltouReinicio_titulo",
+                    "text": "Depois de reiniciar o modem, a internet voltou a funcionar?",
+                    "align": "start",
+                    "variant": "title",
+                    "version": "1.0.0",
+                    "maxLines": 2,
+                    "colorToken": "[DADO SUPRIMIDO]"
+                  }
+                ],
+                [
+                  "ui.text",
+                  {
+                    "id": "Node_VoltouReinicio_dica",
+                    "text": "Aguarde as luzes pararem de piscar antes de testar",
+                    "align": "start",
+                    "variant": "caption",
+                    "version": "1.0.0",
+                    "maxLines": 2,
+                    "colorToken": "[DADO SUPRIMIDO]"
+                  }
+                ],
+                [
+                  "ui.button",
+                  {
+                    "id": "Node_VoltouReinicio_sim",
+                    "size": "medium",
+                    "label": "Sim",
+                    "$events": {
+                      "onPress": {
+                        "action": "action.submit",
+                        "params": {
+                          "path": "form.voltouReinicio",
+                          "value": "sim"
+                        }
+                      }
+                    },
+                    "loading": false,
+                    "variant": "secondary",
+                    "version": "1.0.0",
+                    "disabled": false,
+                    "fullWidth": true
+                  }
+                ],
+                [
+                  "ui.button",
+                  {
+                    "id": "Node_VoltouReinicio_nao",
+                    "size": "medium",
+                    "label": "Não",
+                    "$events": {
+                      "onPress": {
+                        "action": "action.submit",
+                        "params": {
+                          "path": "form.voltouReinicio",
+                          "value": "nao"
+                        }
+                      }
+                    },
+                    "loading": false,
+                    "variant": "secondary",
+                    "version": "1.0.0",
+                    "disabled": false,
+                    "fullWidth": true
+                  }
+                ]
+              ]
+            ]
+          ]
+        ]
+      },
+      "context": {
+        "form": {},
+        "data": "[DADOS SUPRIMIDOS]"
+      }
+    }
+  }
+}

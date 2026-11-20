@@ -1,0 +1,235 @@
+{
+  "info": {
+    "name": "Fenix - VE",
+    "description": "Collection independente FTAT-933. Preencha usuario e senha OAM uma vez nas variaveis fenix_auth_username e fenix_auth_password. Os endpoints obtêm e renovam o token automaticamente.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{fenix_access_token}}", "type": "string" }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (pm.info.requestName !== '00 - Obter token VE') {",
+          "  try {",
+          "    const tokenUrl = pm.variables.get('fenix_auth_token_url');",
+          "    const domain = pm.variables.get('fenix_auth_domain');",
+          "    const basic = pm.variables.get('fenix_auth_basic_credentials');",
+          "    const username = pm.variables.get('fenix_auth_username');",
+          "    const password = pm.variables.get('fenix_auth_password');",
+          "    const scope = pm.variables.get('fenix_auth_scope');",
+          "    const token = pm.variables.get('fenix_access_token');",
+          "    const expiresAt = Number(pm.variables.get('fenix_token_expires_at') || 0);",
+          "    if (!token || Date.now() >= expiresAt - 60000) {",
+          "      if (!tokenUrl || !domain || !basic || !username || !password || !scope) throw new Error('Preencha fenix_auth_username e fenix_auth_password nas variaveis da collection.');",
+          "      const response = await pm.sendRequest({",
+          "        url: tokenUrl, method: 'POST',",
+          "        header: { 'x-oauthidentity-domain-name': domain, 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8', Authorization: 'Basic ' + basic },",
+          "        body: { mode: 'urlencoded', urlencoded: [",
+          "          { key: 'grant_type', value: 'password' },",
+          "          { key: 'username', value: username },",
+          "          { key: 'password', value: password },",
+          "          { key: 'scope', value: scope }",
+          "        ] }",
+          "      });",
+          "      if (response.code !== 200) throw new Error('OAM VE retornou HTTP ' + response.code + '.');",
+          "      const payload = response.json();",
+          "      const ttl = Number(payload.expires_in);",
+          "      if (typeof payload.access_token !== 'string' || !payload.access_token.trim() || !Number.isFinite(ttl) || ttl <= 60) throw new Error('Resposta de token OAM VE invalida.');",
+          "      const expiry = String(Date.now() + ttl * 1000);",
+          "      pm.collectionVariables.set('fenix_access_token', payload.access_token);",
+          "      pm.collectionVariables.set('fenix_token_expires_at', expiry);",
+          "      if (pm.environment.name) { pm.environment.set('fenix_access_token', payload.access_token); pm.environment.set('fenix_token_expires_at', expiry); }",
+          "    }",
+          "  } catch (error) {",
+          "    pm.execution.skipRequest();",
+          "    throw new Error('FENIX VE: ' + error.message);",
+          "  }",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    { "key": "fenix_auth_token_url", "value": "https://authhml.vivo.com.br/oauth2/rest/token" },
+    { "key": "fenix_auth_domain", "value": "VivoCustomerDomain" },
+    { "key": "fenix_auth_basic_credentials", "value": "MTk0MjZjNzQwMDI3NGUyMzk0ZDk1Y2QwMDI3Njg3N2I6TmFXa080U1Z3Zm44emo4Ng", "type": "secret" },
+    { "key": "fenix_auth_username", "value": "", "type": "secret" },
+    { "key": "fenix_auth_password", "value": "", "type": "secret" },
+    { "key": "fenix_auth_scope", "value": "openid Customer.Profile" },
+    { "key": "fenix_access_token", "value": "", "type": "secret" },
+    { "key": "fenix_token_expires_at", "value": "0" },
+    { "key": "idDesignador", "value": "" },
+    { "key": "relatedServiceId", "value": "" },
+    { "key": "testSpecificationId", "value": "" },
+    { "key": "serviceTestExternalId", "value": "" },
+    { "key": "transactionId", "value": "" },
+    { "key": "correlationId", "value": "" },
+    { "key": "fenix_wfm_preprod_slots_url", "value": "" },
+    { "key": "fenix_wfm_preprod_base_url", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "00 - Autenticacao",
+      "item": [
+        {
+          "name": "00 - Obter token VE",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [
+              { "key": "x-oauthidentity-domain-name", "value": "{{fenix_auth_domain}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded;charset=UTF-8", "type": "text" },
+              { "key": "Authorization", "value": "Basic {{fenix_auth_basic_credentials}}", "type": "text" }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "grant_type", "value": "password", "type": "text" },
+                { "key": "username", "value": "{{fenix_auth_username}}", "type": "text" },
+                { "key": "password", "value": "{{fenix_auth_password}}", "type": "text" },
+                { "key": "scope", "value": "{{fenix_auth_scope}}", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{fenix_auth_token_url}}" },
+            "description": "Token VE por password grant. Execute para obter token explicitamente ou chame um endpoint FTAT-933 para obtencao/renovacao automatica."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('OAM VE retornou HTTP 200', () => pm.response.to.have.status(200));",
+                  "const payload = pm.response.json();",
+                  "pm.test('access_token presente', () => pm.expect(payload.access_token).to.be.a('string').and.not.empty);",
+                  "const ttl = Number(payload.expires_in);",
+                  "pm.test('expires_in valido', () => pm.expect(ttl).to.be.a('number').and.above(0));",
+                  "const expiry = String(Date.now() + ttl * 1000);",
+                  "pm.collectionVariables.set('fenix_access_token', payload.access_token);",
+                  "pm.collectionVariables.set('fenix_token_expires_at', expiry);",
+                  "if (pm.environment.name) { pm.environment.set('fenix_access_token', payload.access_token); pm.environment.set('fenix_token_expires_at', expiry); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "01 - FTAT-933",
+      "item": [
+        {
+          "name": "01 - Consulta Massiva/Manutencao (INT01)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json", "type": "text" }],
+            "url": { "raw": "https://cssp-preprod.redecorp.br/customer-problem-management/v1/incidents" },
+            "description": "PREPROD: GET /incidents?serviceDesignator=... conforme OpenAPI publicado pelo servico. Diverge do POST na raiz do DFT; confirmar contrato com o time da API."
+          },
+          "event": [{ "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["const designador = pm.variables.get('idDesignador');", "if (!designador || String(designador).includes('{{')) { pm.execution.skipRequest(); throw new Error('Preencha idDesignador.'); }", "pm.request.url.update('https://cssp-preprod.redecorp.br/customer-problem-management/v1/incidents?serviceDesignator=' + encodeURIComponent(String(designador))); "] } }],
+          "response": []
+        },
+        {
+          "name": "02 - Consulta BD aberto (INT03)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Vivo-Transaction-Id", "value": "{{transactionId}}", "type": "text" }
+            ],
+            "url": { "raw": "https://spmg-preprod.redecorp.azr/troubleTicketManagement/v1/troubleTicket?filter=designatorId%3A{{idDesignador}}%3Bstatus%3AActive%3BticketType%3ACase" },
+            "description": "PREPROD OpenAPI: GET /troubleTicket com filtro designatorId, status Active e ticketType Case. Exige X-Vivo-Transaction-Id. DFT INT03 diverge em método/endpoint; confirmar antes de transferir o teste para a Jornada."
+          },
+          "event": [{ "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["const designador = pm.variables.get('idDesignador');", "if (!designador || String(designador).includes('{{')) { pm.execution.skipRequest(); throw new Error('Preencha idDesignador.'); }", "const transactionId = pm.variables.get('transactionId') || pm.variables.replaceIn('{{$guid}}');", "pm.variables.set('transactionId', transactionId);"] } }],
+          "response": []
+        },
+        {
+          "name": "03 - Solicitar diagnostico HPSD (INT06)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" },
+              { "key": "X-Vivo-Transaction-Id", "value": "{{transactionId}}", "type": "text" },
+              { "key": "X-Vivo-Correlation-Id", "value": "{{correlationId}}", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Diagnostico automatico FTTH\",\n  \"relatedService\": { \"id\": \"{{relatedServiceId}}\" },\n  \"testSpecification\": { \"id\": \"{{testSpecificationId}}\" },\n  \"relatedParty\": [{ \"id\": \"{{serviceTestExternalId}}\", \"role\": \"ExternalId\" }]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "https://api-hml.telefonica.com.br/gtw-redes/serviceTestManagement/v1/serviceTest" },
+            "description": "PREPROD TMF653 GTW Redes usa api-hml conforme OpenAPI."
+          },
+          "event": [{ "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["const transactionId = pm.variables.get('transactionId') || pm.variables.replaceIn('{{$guid}}');", "const correlationId = pm.variables.get('correlationId') || pm.variables.replaceIn('{{$guid}}');", "pm.variables.set('transactionId', transactionId);", "pm.variables.set('correlationId', correlationId);"] } }],
+          "response": []
+        },
+        {
+          "name": "04 - Consulta slots WFM (INT11)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{fenix_wfm_preprod_slots_url}}" },
+            "description": "DFT e mapping indicam POST ao WFM Orchestration, mas a URL interna PREPROD nao esta documentada. Nao substituir pela chamada downstream TMF646."
+          },
+          "event": [{ "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["const endpoint = pm.variables.get('fenix_wfm_preprod_slots_url');", "if (!endpoint || !endpoint.startsWith('https://') || endpoint.includes('{{')) { pm.execution.skipRequest(); throw new Error('INT11 sem URL interna PREPROD confirmada; solicite-a ao time WFM antes de enviar.'); }"] } }],
+          "response": []
+        },
+        {
+          "name": "05 - Criar Work Order (INT14)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{fenix_wfm_preprod_base_url}}/createWorkOrder" },
+            "description": "DFT INT14 documenta POST /createWorkOrder, mas nao publica a base interna PREPROD WFM. Nao substituir por TMF697/TMF646."
+          },
+          "event": [{ "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["const base = pm.variables.get('fenix_wfm_preprod_base_url');", "if (!base || !base.startsWith('https://') || base.includes('{{')) { pm.execution.skipRequest(); throw new Error('INT14 sem base interna PREPROD confirmada; solicite-a ao time WFM antes de enviar.'); }"] } }],
+          "response": []
+        },
+        {
+          "name": "06 - Abrir BD (INT18)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" },
+              { "key": "X-Vivo-Transaction-Id", "value": "{{transactionId}}", "type": "text" }
+            ],
+            "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "https://spmg-preprod.redecorp.azr/troubleTicketManagement/v1/troubleTicket" },
+            "description": "Base e rota PREPROD do OpenAPI Trouble Ticket: POST /troubleTicket. O mapping de payload e a correspondencia com o endpoint interno do DFT precisam ser confirmados antes de enviar dados reais."
+          },
+          "event": [{ "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (pm.request.body.raw.trim() === '{}') { pm.execution.skipRequest(); throw new Error('INT18 pendente: preencha o payload aprovado antes de enviar.'); }", "const transactionId = pm.variables.get('transactionId') || pm.variables.replaceIn('{{$guid}}');", "pm.variables.set('transactionId', transactionId);"] } }],
+          "response": []
+        },
+        {
+          "name": "07 - Cancelar Work Order (INT16)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json", "type": "text" }],
+            "url": { "raw": "{{fenix_wfm_preprod_base_url}}/workOrder" },
+            "description": "DFT INT16 documenta DELETE /workOrder, mas nao publica a base interna PREPROD WFM nem os parametros/ID. Nao substituir por TMF697 downstream."
+          },
+          "event": [{ "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["const base = pm.variables.get('fenix_wfm_preprod_base_url');", "if (!base || !base.startsWith('https://') || base.includes('{{')) { pm.execution.skipRequest(); throw new Error('INT16 sem base interna PREPROD confirmada; solicite-a ao time WFM antes de enviar.'); }"] } }],
+          "response": []
+        }
+      ]
+    }
+  ]
+}

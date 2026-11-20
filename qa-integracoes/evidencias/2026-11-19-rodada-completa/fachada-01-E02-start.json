@@ -1,0 +1,15 @@
+{
+  "run": "E02",
+  "etapa": "start",
+  "quando": "2026-11-19T23:23:32.534Z",
+  "http": 400,
+  "observacoes": {},
+  "resposta": {
+    "_errorCode": 400,
+    "_message": "Unable to process request",
+    "_details": "Variáveis de entrada obrigatórias não informadas: [designador]",
+    "_timestamp": "2026-11-19T23:23:32.715334922Z",
+    "_traceId": null,
+    "_errors": []
+  }
+}

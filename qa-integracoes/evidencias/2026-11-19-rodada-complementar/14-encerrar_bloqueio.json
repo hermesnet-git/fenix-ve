@@ -1,0 +1,23 @@
+{
+  "cenario": "B-05/B-09",
+  "etapa": "encerrar_bloqueio",
+  "quando": "2026-11-19T22:50:59.339Z",
+  "http": 200,
+  "observacoes": {},
+  "resposta": {
+    "processInstanceId": "94f31cbc-e46b-11f1-8248-06dfec022e82",
+    "previousActivityId": "Node_StatusAtraso",
+    "activityId": null,
+    "activityType": null,
+    "executionId": null,
+    "taskId": null,
+    "status": "COMPLETED",
+    "activeProcessInstanceId": null,
+    "variables": {},
+    "matchedTransition": {
+      "kind": "guarded",
+      "label": null,
+      "eventName": null
+    }
+  }
+}

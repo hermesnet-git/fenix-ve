@@ -1,0 +1,5 @@
+curl --location 'https://authhml.vivo.com.br/oauth2/rest/token' \
+--header 'x-oauthidentity-domain-name: VivoCustomerDomain' \
+--header 'Content-Type: application/x-www-form-urlencoded;charset=UTF-8' \
+--header 'Authorization: Basic MTk0MjZjNzQwMDI3NGUyMzk0ZDk1Y2QwMDI3Njg3N2I6TmFXa080U1Z3Zm44emo4Ng' \
+--data-raw 'grant_type=password&username=89510568724&password=Vivo@3385&scope=openid Customer.Profile'

@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" targetNamespace="http://tlf.com.br/eljy/visita-local" exporter="Camunda Modeler" exporterVersion="5.48.0">
+  <process id="fenix-ve-reagendar-cancelar-visita" name="Fenix VE - visita tecnica (prototipo local)" isExecutable="true" camunda:versionTag="v1" camunda:historyTimeToLive="P1D">
+    <documentation>Prototipo de teste com situacao sintetica; nao consulta nem altera visita real.</documentation>
+    <startEvent id="Node_Start" />
+    <sequenceFlow id="Flow_Start_Situacao" sourceRef="Node_Start" targetRef="Node_ConsultaBD" />
+    <sequenceFlow id="Flow_ConsultaBD_Situacao" sourceRef="Node_ConsultaBD" targetRef="Node_Situacao" />
+    <exclusiveGateway id="Node_Situacao" name="Situacao da visita" default="Flow_Situacao_Indisponivel" />
+    <sequenceFlow id="Flow_Situacao_Andamento" sourceRef="Node_Situacao" targetRef="Node_Andamento">
+      <conditionExpression xsi:type="tFormalExpression">${execution.getVariable('data_situacao') == 'andamento'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_Situacao_Caminho" sourceRef="Node_Situacao" targetRef="Node_Caminho">
+      <conditionExpression xsi:type="tFormalExpression">${execution.getVariable('data_situacao') == 'caminho'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_Situacao_Concluida" sourceRef="Node_Situacao" targetRef="Node_Concluida">
+      <conditionExpression xsi:type="tFormalExpression">${execution.getVariable('data_situacao') == 'concluida'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_Situacao_Cancelada" sourceRef="Node_Situacao" targetRef="Node_Cancelada">
+      <conditionExpression xsi:type="tFormalExpression">${execution.getVariable('data_situacao') == 'cancelada'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_Situacao_Indisponivel" sourceRef="Node_Situacao" targetRef="Node_Indisponivel" />
+    <userTask id="Node_Andamento" name="Visita em andamento" camunda:assignee="${assignee}" />
+    <userTask id="Node_Caminho" name="Equipe a caminho" camunda:assignee="${assignee}" />
+    <userTask id="Node_Concluida" name="Visita concluida" camunda:assignee="${assignee}" />
+    <userTask id="Node_Cancelada" name="Visita cancelada" camunda:assignee="${assignee}" />
+    <sequenceFlow id="Flow_Andamento_Acao" sourceRef="Node_Andamento" targetRef="Node_Acao" />
+    <sequenceFlow id="Flow_Caminho_Acao" sourceRef="Node_Caminho" targetRef="Node_Acao" />
+    <sequenceFlow id="Flow_Concluida_Fim" sourceRef="Node_Concluida" targetRef="Node_End" />
+    <sequenceFlow id="Flow_Cancelada_Fim" sourceRef="Node_Cancelada" targetRef="Node_End" />
+    <exclusiveGateway id="Node_Acao" name="Acao escolhida" default="Flow_Acao_Indisponivel" />
+    <sequenceFlow id="Flow_Acao_Escolha" sourceRef="Node_Acao" targetRef="Node_BloqueioSlots">
+      <conditionExpression xsi:type="tFormalExpression">${execution.getVariable('form_acaoVisita') == 'reagendar'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_Acao_Cancelamento" sourceRef="Node_Acao" targetRef="Node_ConfirmarCancelamento">
+      <conditionExpression xsi:type="tFormalExpression">${execution.getVariable('form_acaoVisita') == 'cancelar'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_Acao_Indisponivel" sourceRef="Node_Acao" targetRef="Node_Indisponivel" />
+    <exclusiveGateway id="Node_BloqueioSlots" name="Consulta de horarios pendente" default="Flow_BloqueioSlots_Escolha" />
+    <sequenceFlow id="Flow_BloqueioSlots_Escolha" sourceRef="Node_BloqueioSlots" targetRef="Node_Escolha" />
+    <sequenceFlow id="Flow_Bloqueio_ConsultaSlots" sourceRef="Node_BloqueioSlots" targetRef="Node_ConsultaSlots">
+      <conditionExpression xsi:type="tFormalExpression">${false}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_ConsultaSlots_Escolha" sourceRef="Node_ConsultaSlots" targetRef="Node_Escolha" />
+    <userTask id="Node_Escolha" name="Escolher data e periodo" camunda:assignee="${assignee}" />
+    <sequenceFlow id="Flow_Escolha_Confirmacao" sourceRef="Node_Escolha" targetRef="Node_ConfirmarReagendamento" />
+    <userTask id="Node_ConfirmarReagendamento" name="Confirmar reagendamento" camunda:assignee="${assignee}" />
+    <sequenceFlow id="Flow_Confirmacao_Decisao" sourceRef="Node_ConfirmarReagendamento" targetRef="Node_DecReagendamento" />
+    <exclusiveGateway id="Node_DecReagendamento" name="Confirmar reagendamento" default="Flow_Reagendamento_Indisponivel" />
+    <sequenceFlow id="Flow_Reagendamento_Alterar" sourceRef="Node_DecReagendamento" targetRef="Node_Escolha">
+      <conditionExpression xsi:type="tFormalExpression">${execution.getVariable('form_confirmacaoReagendar') == 'alterar'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_Reagendamento_Indisponivel" sourceRef="Node_DecReagendamento" targetRef="Node_BloqueioReagendamento" />
+    <exclusiveGateway id="Node_BloqueioReagendamento" name="Reagendamento pendente" default="Flow_BloqueioReagendamento_Indisponivel" />
+    <sequenceFlow id="Flow_BloqueioReagendamento_Indisponivel" sourceRef="Node_BloqueioReagendamento" targetRef="Node_Indisponivel" />
+    <sequenceFlow id="Flow_Bloqueio_ReagendaWFM" sourceRef="Node_BloqueioReagendamento" targetRef="Node_ReagendaWFM">
+      <conditionExpression xsi:type="tFormalExpression">${false}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_ReagendaWFM_AtualizaBD" sourceRef="Node_ReagendaWFM" targetRef="Node_AtualizaBDReagendado" />
+    <sequenceFlow id="Flow_AtualizaBDReagendado_Indisponivel" sourceRef="Node_AtualizaBDReagendado" targetRef="Node_DecSucessoReagendamento" />
+    <exclusiveGateway id="Node_DecSucessoReagendamento" name="Sucesso pendente de validacao" default="Flow_Reagendamento_SemConfirmacao" />
+    <sequenceFlow id="Flow_Reagendamento_SemConfirmacao" sourceRef="Node_DecSucessoReagendamento" targetRef="Node_Indisponivel" />
+    <sequenceFlow id="Flow_Sucesso_Reagendada" sourceRef="Node_DecSucessoReagendamento" targetRef="Node_Reagendada">
+      <conditionExpression xsi:type="tFormalExpression">${false}</conditionExpression>
+    </sequenceFlow>
+    <userTask id="Node_Reagendada" name="Visita reagendada" camunda:assignee="${assignee}" />
+    <sequenceFlow id="Flow_Reagendada_End" sourceRef="Node_Reagendada" targetRef="Node_End" />
+    <userTask id="Node_ConfirmarCancelamento" name="Confirmar intencao de cancelar" camunda:assignee="${assignee}" />
+    <sequenceFlow id="Flow_Cancelamento_Decisao" sourceRef="Node_ConfirmarCancelamento" targetRef="Node_DecCancelamento" />
+    <exclusiveGateway id="Node_DecCancelamento" name="Cancelar ou reagendar" default="Flow_Cancelamento_Indisponivel" />
+    <sequenceFlow id="Flow_Cancelamento_Reagendar" sourceRef="Node_DecCancelamento" targetRef="Node_BloqueioSlots">
+      <conditionExpression xsi:type="tFormalExpression">${execution.getVariable('form_acaoCancelamento') == 'reagendar'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_Cancelamento_Motivo" sourceRef="Node_DecCancelamento" targetRef="Node_Motivo">
+      <conditionExpression xsi:type="tFormalExpression">${execution.getVariable('form_acaoCancelamento') == 'cancelar'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_Cancelamento_Indisponivel" sourceRef="Node_DecCancelamento" targetRef="Node_Indisponivel" />
+    <userTask id="Node_Motivo" name="Motivo do cancelamento" camunda:assignee="${assignee}" />
+    <sequenceFlow id="Flow_Motivo_Indisponivel" sourceRef="Node_Motivo" targetRef="Node_BloqueioCancelamento" />
+    <exclusiveGateway id="Node_BloqueioCancelamento" name="Cancelamento pendente" default="Flow_BloqueioCancelamento_Indisponivel" />
+    <sequenceFlow id="Flow_BloqueioCancelamento_Indisponivel" sourceRef="Node_BloqueioCancelamento" targetRef="Node_Indisponivel" />
+    <sequenceFlow id="Flow_Bloqueio_CancelaWFM" sourceRef="Node_BloqueioCancelamento" targetRef="Node_CancelaWFM">
+      <conditionExpression xsi:type="tFormalExpression">${false}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_CancelaWFM_AtualizaBD" sourceRef="Node_CancelaWFM" targetRef="Node_AtualizaBDCancelado" />
+    <sequenceFlow id="Flow_AtualizaBDCancelado_Indisponivel" sourceRef="Node_AtualizaBDCancelado" targetRef="Node_DecSucessoCancelamento" />
+    <exclusiveGateway id="Node_DecSucessoCancelamento" name="Sucesso pendente de validacao" default="Flow_Cancelamento_SemConfirmacao" />
+    <sequenceFlow id="Flow_Cancelamento_SemConfirmacao" sourceRef="Node_DecSucessoCancelamento" targetRef="Node_Indisponivel" />
+    <sequenceFlow id="Flow_Sucesso_Cancelamento" sourceRef="Node_DecSucessoCancelamento" targetRef="Node_CancelamentoConcluido">
+      <conditionExpression xsi:type="tFormalExpression">${false}</conditionExpression>
+    </sequenceFlow>
+    <userTask id="Node_CancelamentoConcluido" name="Cancelamento concluido" camunda:assignee="${assignee}" />
+    <sequenceFlow id="Flow_CancelamentoConcluido_End" sourceRef="Node_CancelamentoConcluido" targetRef="Node_End" />
+    <userTask id="Node_Indisponivel" name="Operacao indisponivel no prototipo" camunda:assignee="${assignee}" />
+    <sequenceFlow id="Flow_Indisponivel_Fim" sourceRef="Node_Indisponivel" targetRef="Node_End" />
+    <endEvent id="Node_End" name="Fim do prototipo" />
+    <serviceTask id="Node_ConsultaBD" name="Consultar BD - pendente" camunda:delegateExpression="${httpTask}">
+      <documentation>Pendente: filtro pelo numero do BD, identificacao unica, autorizacao, headers e resposta.</documentation>
+      <extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="method">GET</camunda:inputParameter>
+          <camunda:inputParameter name="baseUrl">${environment.getProperty('FENIX_VE_TT_BASE_URL')}</camunda:inputParameter>
+          <camunda:inputParameter name="path">/troubleTicket</camunda:inputParameter>
+          <camunda:inputParameter name="connectTimeoutMs">3000</camunda:inputParameter>
+          <camunda:inputParameter name="responseTimeoutMs">10000</camunda:inputParameter>
+          <camunda:inputParameter name="maxAttempts">1</camunda:inputParameter>
+        </camunda:inputOutput>
+      </extensionElements>
+      <incoming>Flow_Start_Situacao</incoming>
+    </serviceTask>
+    <serviceTask id="Node_ConsultaSlots" name="Consultar horarios - pendente" camunda:delegateExpression="${httpTask}">
+      <documentation>Pendente: payload e dados de rede, headers, autorizacao, tratamento de 204 e validacao dos horarios.</documentation>
+      <extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="method">POST</camunda:inputParameter>
+          <camunda:inputParameter name="baseUrl">${environment.getProperty('FENIX_VE_WFM_BASE_URL')}</camunda:inputParameter>
+          <camunda:inputParameter name="path">/searchTimeSlot</camunda:inputParameter>
+          <camunda:inputParameter name="connectTimeoutMs">3000</camunda:inputParameter>
+          <camunda:inputParameter name="responseTimeoutMs">10000</camunda:inputParameter>
+          <camunda:inputParameter name="maxAttempts">1</camunda:inputParameter>
+        </camunda:inputOutput>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="Node_AtualizaBDReagendado" name="Atualizar BD reagendado - pendente" camunda:delegateExpression="${httpTask}">
+      <documentation>Pendente: ID interno do ticket, path codificado, payload, headers e regra de atualizacao apos WFM.</documentation>
+      <extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="method">PATCH</camunda:inputParameter>
+          <camunda:inputParameter name="baseUrl">${environment.getProperty('FENIX_VE_TT_BASE_URL')}</camunda:inputParameter>
+          <camunda:inputParameter name="connectTimeoutMs">3000</camunda:inputParameter>
+          <camunda:inputParameter name="responseTimeoutMs">10000</camunda:inputParameter>
+          <camunda:inputParameter name="maxAttempts">1</camunda:inputParameter>
+        </camunda:inputOutput>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="Node_AtualizaBDCancelado" name="Atualizar BD cancelado - pendente" camunda:delegateExpression="${httpTask}">
+      <documentation>Pendente: ID interno do ticket, path codificado, motivo, payload, headers e regra de cancelamento do BD.</documentation>
+      <extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="method">PATCH</camunda:inputParameter>
+          <camunda:inputParameter name="baseUrl">${environment.getProperty('FENIX_VE_TT_BASE_URL')}</camunda:inputParameter>
+          <camunda:inputParameter name="connectTimeoutMs">3000</camunda:inputParameter>
+          <camunda:inputParameter name="responseTimeoutMs">10000</camunda:inputParameter>
+          <camunda:inputParameter name="maxAttempts">1</camunda:inputParameter>
+        </camunda:inputOutput>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="Node_ReagendaWFM" name="Reagendar visita WFM - contrato pendente" camunda:delegateExpression="${httpTask}">
+      <documentation>Pendente: metodo, base, path, headers, payload, identificador do agendamento, autorizacao, idempotencia e consulta de resultado.</documentation>
+    </serviceTask>
+    <serviceTask id="Node_CancelaWFM" name="Cancelar visita WFM - contrato pendente" camunda:delegateExpression="${httpTask}">
+      <documentation>Pendente: metodo, base, path, headers, payload, identificador da visita, motivo, autorizacao, idempotencia e consulta de resultado.</documentation>
+    </serviceTask>
+  </process>
+  <bpmndi:BPMNDiagram id="Diagram_Visita">
+    <bpmndi:BPMNPlane id="Plane_Visita" bpmnElement="fenix-ve-reagendar-cancelar-visita">
+      <bpmndi:BPMNShape id="Shape_Start" bpmnElement="Node_Start">
+        <dc:Bounds x="152" y="492" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Situacao" bpmnElement="Node_Situacao" isMarkerVisible="true">
+        <dc:Bounds x="645" y="485" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="547.5" y="503" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Andamento" bpmnElement="Node_Andamento">
+        <dc:Bounds x="770" y="310" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Caminho" bpmnElement="Node_Caminho">
+        <dc:Bounds x="770" y="430" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Concluida" bpmnElement="Node_Concluida">
+        <dc:Bounds x="770" y="550" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Cancelada" bpmnElement="Node_Cancelada">
+        <dc:Bounds x="770" y="670" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Acao" bpmnElement="Node_Acao" isMarkerVisible="true">
+        <dc:Bounds x="1005" y="385" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="993" y="435" width="75" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_BloqueioSlots" bpmnElement="Node_BloqueioSlots" isMarkerVisible="true">
+        <dc:Bounds x="1075" y="285" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1056" y="335" width="89" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Escolha" bpmnElement="Node_Escolha">
+        <dc:Bounds x="1150" y="270" width="150" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_ConfirmarReagendamento" bpmnElement="Node_ConfirmarReagendamento">
+        <dc:Bounds x="1390" y="270" width="150" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DecReagendamento" bpmnElement="Node_DecReagendamento" isMarkerVisible="true">
+        <dc:Bounds x="1635" y="285" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1621" y="335" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_BloqueioReagendamento" bpmnElement="Node_BloqueioReagendamento" isMarkerVisible="true">
+        <dc:Bounds x="1735" y="285" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1719" y="335" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DecSucessoReagendamento" bpmnElement="Node_DecSucessoReagendamento" isMarkerVisible="true">
+        <dc:Bounds x="2200" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2180" y="225" width="90" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Reagendada" bpmnElement="Node_Reagendada">
+        <dc:Bounds x="2320" y="160" width="150" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_ConfirmarCancelamento" bpmnElement="Node_ConfirmarCancelamento">
+        <dc:Bounds x="1150" y="470" width="150" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DecCancelamento" bpmnElement="Node_DecCancelamento" isMarkerVisible="true">
+        <dc:Bounds x="1415" y="485" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1410" y="535" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Motivo" bpmnElement="Node_Motivo">
+        <dc:Bounds x="1570" y="470" width="150" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_BloqueioCancelamento" bpmnElement="Node_BloqueioCancelamento" isMarkerVisible="true">
+        <dc:Bounds x="1740" y="485" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1730" y="535" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DecSucessoCancelamento" bpmnElement="Node_DecSucessoCancelamento" isMarkerVisible="true">
+        <dc:Bounds x="2200" y="485" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2180" y="535" width="90" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_CancelamentoConcluido" bpmnElement="Node_CancelamentoConcluido">
+        <dc:Bounds x="2320" y="470" width="150" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Indisponivel" bpmnElement="Node_Indisponivel">
+        <dc:Bounds x="2530" y="670" width="150" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_ConsultaBD" bpmnElement="Node_ConsultaBD">
+        <dc:Bounds x="325" y="470" width="150" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_ConsultaSlots" bpmnElement="Node_ConsultaSlots">
+        <dc:Bounds x="1075" y="80" width="150" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_AtualizaBDReagendado" bpmnElement="Node_AtualizaBDReagendado">
+        <dc:Bounds x="2020" y="160" width="150" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_AtualizaBDCancelado" bpmnElement="Node_AtualizaBDCancelado">
+        <dc:Bounds x="2020" y="470" width="150" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_ReagendaWFM" bpmnElement="Node_ReagendaWFM">
+        <dc:Bounds x="1830" y="160" width="150" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_CancelaWFM" bpmnElement="Node_CancelaWFM">
+        <dc:Bounds x="1830" y="470" width="150" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End" bpmnElement="Node_End">
+        <dc:Bounds x="2812" y="702" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2858" y="713" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Start_Situacao" bpmnElement="Flow_Start_Situacao">
+        <di:waypoint x="188" y="510" />
+        <di:waypoint x="325" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_ConsultaBD_Situacao" bpmnElement="Flow_ConsultaBD_Situacao">
+        <di:waypoint x="475" y="510" />
+        <di:waypoint x="645" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Situacao_Andamento" bpmnElement="Flow_Situacao_Andamento">
+        <di:waypoint x="670" y="485" />
+        <di:waypoint x="670" y="350" />
+        <di:waypoint x="770" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Situacao_Caminho" bpmnElement="Flow_Situacao_Caminho">
+        <di:waypoint x="695" y="510" />
+        <di:waypoint x="730" y="510" />
+        <di:waypoint x="730" y="470" />
+        <di:waypoint x="770" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Situacao_Concluida" bpmnElement="Flow_Situacao_Concluida">
+        <di:waypoint x="670" y="535" />
+        <di:waypoint x="670" y="590" />
+        <di:waypoint x="770" y="590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Situacao_Cancelada" bpmnElement="Flow_Situacao_Cancelada">
+        <di:waypoint x="670" y="535" />
+        <di:waypoint x="670" y="710" />
+        <di:waypoint x="770" y="710" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Situacao_Indisponivel" bpmnElement="Flow_Situacao_Indisponivel">
+        <di:waypoint x="670" y="535" />
+        <di:waypoint x="670" y="870" />
+        <di:waypoint x="2605" y="870" />
+        <di:waypoint x="2605" y="750" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Andamento_Acao" bpmnElement="Flow_Andamento_Acao">
+        <di:waypoint x="910" y="350" />
+        <di:waypoint x="1030" y="350" />
+        <di:waypoint x="1030" y="385" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Caminho_Acao" bpmnElement="Flow_Caminho_Acao">
+        <di:waypoint x="910" y="470" />
+        <di:waypoint x="1030" y="470" />
+        <di:waypoint x="1030" y="435" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Concluida_Fim" bpmnElement="Flow_Concluida_Fim">
+        <di:waypoint x="910" y="590" />
+        <di:waypoint x="960" y="590" />
+        <di:waypoint x="960" y="810" />
+        <di:waypoint x="2820" y="810" />
+        <di:waypoint x="2820" y="738" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Cancelada_Fim" bpmnElement="Flow_Cancelada_Fim">
+        <di:waypoint x="910" y="710" />
+        <di:waypoint x="950" y="710" />
+        <di:waypoint x="950" y="840" />
+        <di:waypoint x="2830" y="840" />
+        <di:waypoint x="2830" y="738" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Acao_Escolha" bpmnElement="Flow_Acao_Escolha">
+        <di:waypoint x="1030" y="385" />
+        <di:waypoint x="1030" y="310" />
+        <di:waypoint x="1075" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Acao_Cancelamento" bpmnElement="Flow_Acao_Cancelamento">
+        <di:waypoint x="1055" y="410" />
+        <di:waypoint x="1100" y="410" />
+        <di:waypoint x="1100" y="510" />
+        <di:waypoint x="1150" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Acao_Indisponivel" bpmnElement="Flow_Acao_Indisponivel">
+        <di:waypoint x="1030" y="435" />
+        <di:waypoint x="1030" y="770" />
+        <di:waypoint x="2570" y="770" />
+        <di:waypoint x="2570" y="750" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_BloqueioSlots_Escolha" bpmnElement="Flow_BloqueioSlots_Escolha">
+        <di:waypoint x="1125" y="310" />
+        <di:waypoint x="1150" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Bloqueio_ConsultaSlots" bpmnElement="Flow_Bloqueio_ConsultaSlots">
+        <di:waypoint x="1100" y="285" />
+        <di:waypoint x="1100" y="223" />
+        <di:waypoint x="1150" y="223" />
+        <di:waypoint x="1150" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_ConsultaSlots_Escolha" bpmnElement="Flow_ConsultaSlots_Escolha">
+        <di:waypoint x="1150" y="160" />
+        <di:waypoint x="1150" y="230" />
+        <di:waypoint x="1225" y="230" />
+        <di:waypoint x="1225" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Escolha_Confirmacao" bpmnElement="Flow_Escolha_Confirmacao">
+        <di:waypoint x="1300" y="310" />
+        <di:waypoint x="1390" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Confirmacao_Decisao" bpmnElement="Flow_Confirmacao_Decisao">
+        <di:waypoint x="1540" y="310" />
+        <di:waypoint x="1635" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Reagendamento_Alterar" bpmnElement="Flow_Reagendamento_Alterar">
+        <di:waypoint x="1660" y="285" />
+        <di:waypoint x="1660" y="220" />
+        <di:waypoint x="1225" y="220" />
+        <di:waypoint x="1225" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Reagendamento_Indisponivel" bpmnElement="Flow_Reagendamento_Indisponivel">
+        <di:waypoint x="1685" y="310" />
+        <di:waypoint x="1735" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_BloqueioReagendamento_Indisponivel" bpmnElement="Flow_BloqueioReagendamento_Indisponivel">
+        <di:waypoint x="1785" y="310" />
+        <di:waypoint x="1805" y="310" />
+        <di:waypoint x="1805" y="600" />
+        <di:waypoint x="2560" y="600" />
+        <di:waypoint x="2560" y="670" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Bloqueio_ReagendaWFM" bpmnElement="Flow_Bloqueio_ReagendaWFM">
+        <di:waypoint x="1760" y="285" />
+        <di:waypoint x="1760" y="200" />
+        <di:waypoint x="1830" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_ReagendaWFM_AtualizaBD" bpmnElement="Flow_ReagendaWFM_AtualizaBD">
+        <di:waypoint x="1980" y="200" />
+        <di:waypoint x="2020" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_AtualizaBDReagendado_Indisponivel" bpmnElement="Flow_AtualizaBDReagendado_Indisponivel">
+        <di:waypoint x="2170" y="200" />
+        <di:waypoint x="2200" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Reagendamento_SemConfirmacao" bpmnElement="Flow_Reagendamento_SemConfirmacao">
+        <di:waypoint x="2225" y="225" />
+        <di:waypoint x="2270" y="225" />
+        <di:waypoint x="2270" y="580" />
+        <di:waypoint x="2600" y="580" />
+        <di:waypoint x="2600" y="670" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Sucesso_Reagendada" bpmnElement="Flow_Sucesso_Reagendada">
+        <di:waypoint x="2250" y="200" />
+        <di:waypoint x="2320" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Reagendada_End" bpmnElement="Flow_Reagendada_End">
+        <di:waypoint x="2470" y="200" />
+        <di:waypoint x="2740" y="200" />
+        <di:waypoint x="2740" y="720" />
+        <di:waypoint x="2812" y="720" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Cancelamento_Decisao" bpmnElement="Flow_Cancelamento_Decisao">
+        <di:waypoint x="1300" y="510" />
+        <di:waypoint x="1415" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Cancelamento_Reagendar" bpmnElement="Flow_Cancelamento_Reagendar">
+        <di:waypoint x="1440" y="485" />
+        <di:waypoint x="1440" y="400" />
+        <di:waypoint x="1100" y="400" />
+        <di:waypoint x="1100" y="335" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Cancelamento_Motivo" bpmnElement="Flow_Cancelamento_Motivo">
+        <di:waypoint x="1465" y="510" />
+        <di:waypoint x="1570" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Cancelamento_Indisponivel" bpmnElement="Flow_Cancelamento_Indisponivel">
+        <di:waypoint x="1440" y="535" />
+        <di:waypoint x="1440" y="615" />
+        <di:waypoint x="2545" y="615" />
+        <di:waypoint x="2545" y="670" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Motivo_Indisponivel" bpmnElement="Flow_Motivo_Indisponivel">
+        <di:waypoint x="1720" y="510" />
+        <di:waypoint x="1740" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_BloqueioCancelamento_Indisponivel" bpmnElement="Flow_BloqueioCancelamento_Indisponivel">
+        <di:waypoint x="1765" y="535" />
+        <di:waypoint x="1765" y="650" />
+        <di:waypoint x="2575" y="650" />
+        <di:waypoint x="2575" y="670" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Bloqueio_CancelaWFM" bpmnElement="Flow_Bloqueio_CancelaWFM">
+        <di:waypoint x="1790" y="510" />
+        <di:waypoint x="1830" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_CancelaWFM_AtualizaBD" bpmnElement="Flow_CancelaWFM_AtualizaBD">
+        <di:waypoint x="1980" y="510" />
+        <di:waypoint x="2020" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_AtualizaBDCancelado_Indisponivel" bpmnElement="Flow_AtualizaBDCancelado_Indisponivel">
+        <di:waypoint x="2170" y="510" />
+        <di:waypoint x="2200" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Cancelamento_SemConfirmacao" bpmnElement="Flow_Cancelamento_SemConfirmacao">
+        <di:waypoint x="2225" y="535" />
+        <di:waypoint x="2225" y="630" />
+        <di:waypoint x="2620" y="630" />
+        <di:waypoint x="2620" y="670" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Sucesso_Cancelamento" bpmnElement="Flow_Sucesso_Cancelamento">
+        <di:waypoint x="2250" y="510" />
+        <di:waypoint x="2320" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_CancelamentoConcluido_End" bpmnElement="Flow_CancelamentoConcluido_End">
+        <di:waypoint x="2470" y="510" />
+        <di:waypoint x="2710" y="510" />
+        <di:waypoint x="2710" y="720" />
+        <di:waypoint x="2812" y="720" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Indisponivel_Fim" bpmnElement="Flow_Indisponivel_Fim">
+        <di:waypoint x="2680" y="710" />
+        <di:waypoint x="2780" y="710" />
+        <di:waypoint x="2780" y="720" />
+        <di:waypoint x="2812" y="720" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

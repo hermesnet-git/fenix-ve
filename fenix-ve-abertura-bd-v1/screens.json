@@ -1,0 +1,2895 @@
+[
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_Inicio",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_inicio",
+        "title": "Suporte técnico",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_inicio",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "in_titulo",
+                "text": "Agora, vamos verificar o que pode estar acontecendo com sua internet",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "in_sub",
+                "text": "Antes dos testes, vamos conferir o seu serviço para identificar possíveis problemas",
+                "align": "start",
+                "variant": "body",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "in_continuar",
+                "size": "medium",
+                "label": "Continuar",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {}
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_StatusMassivaAtraso",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_statusmassivaatraso",
+        "title": "Identificamos o que pode estar afetando seu serviço",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_statusmassivaatraso",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "Node_StatusMassivaAtraso_titulo",
+                "text": "Identificamos o que pode estar afetando seu serviço",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.card",
+              {
+                "id": "card_sma_massiva",
+                "variant": "default",
+                "version": "1.0.0",
+                "paddingToken": "spacing.md",
+                "elevationToken": "elevation.low"
+              },
+              [
+                [
+                  "ui.stack",
+                  {
+                    "id": "stack_sma_massiva",
+                    "version": "1.0.0",
+                    "alignment": "stretch",
+                    "direction": "vertical",
+                    "spacingToken": "spacing.sm"
+                  },
+                  [
+                    [
+                      "ui.text",
+                      {
+                        "id": "sma_massiva_titulo",
+                        "text": "Instabilidade na região",
+                        "align": "start",
+                        "variant": "heading",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ],
+                    [
+                      "ui.text",
+                      {
+                        "id": "sma_massiva_prev",
+                        "text": "Os serviços devem voltar a funcionar em {{data.massivaPrevisaoConclusao}}",
+                        "align": "start",
+                        "variant": "body",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ],
+                    [
+                      "ui.text",
+                      {
+                        "id": "sma_massiva_prot",
+                        "text": "Protocolo {{data.massivaProtocolo}}",
+                        "align": "start",
+                        "variant": "caption",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "ui.card",
+              {
+                "id": "card_sma_faturas",
+                "variant": "default",
+                "version": "1.0.0",
+                "paddingToken": "spacing.md",
+                "elevationToken": "elevation.low"
+              },
+              [
+                [
+                  "ui.stack",
+                  {
+                    "id": "stack_sma_faturas",
+                    "version": "1.0.0",
+                    "alignment": "stretch",
+                    "direction": "vertical",
+                    "spacingToken": "spacing.sm"
+                  },
+                  [
+                    [
+                      "ui.text",
+                      {
+                        "id": "sma_fat_titulo",
+                        "text": "Faturas em atraso",
+                        "align": "start",
+                        "variant": "heading",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ],
+                    [
+                      "ui.text",
+                      {
+                        "id": "sma_fat_sub",
+                        "text": "Identificamos um bloqueio financeiro. Consulte as faturas na Central de faturas.",
+                        "align": "start",
+                        "variant": "caption",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "ui.button",
+              {
+                "id": "Node_StatusMassivaAtraso_btn",
+                "size": "medium",
+                "label": "Ir pra Central de faturas",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {}
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_StatusMassivaVisita",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_statusmassivavisita",
+        "title": "Identificamos o que pode estar afetando seu serviço",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_statusmassivavisita",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "Node_StatusMassivaVisita_titulo",
+                "text": "Identificamos o que pode estar afetando seu serviço",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.card",
+              {
+                "id": "card_smv_massiva",
+                "variant": "default",
+                "version": "1.0.0",
+                "paddingToken": "spacing.md",
+                "elevationToken": "elevation.low"
+              },
+              [
+                [
+                  "ui.stack",
+                  {
+                    "id": "stack_smv_massiva",
+                    "version": "1.0.0",
+                    "alignment": "stretch",
+                    "direction": "vertical",
+                    "spacingToken": "spacing.sm"
+                  },
+                  [
+                    [
+                      "ui.text",
+                      {
+                        "id": "smv_massiva_titulo",
+                        "text": "Instabilidade na região",
+                        "align": "start",
+                        "variant": "heading",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ],
+                    [
+                      "ui.text",
+                      {
+                        "id": "smv_massiva_prev",
+                        "text": "Os serviços devem voltar a funcionar em {{data.massivaPrevisaoConclusao}}",
+                        "align": "start",
+                        "variant": "body",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ],
+                    [
+                      "ui.text",
+                      {
+                        "id": "smv_massiva_prot",
+                        "text": "Protocolo {{data.massivaProtocolo}}",
+                        "align": "start",
+                        "variant": "caption",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "ui.card",
+              {
+                "id": "card_smv_visita",
+                "variant": "default",
+                "version": "1.0.0",
+                "paddingToken": "spacing.md",
+                "elevationToken": "elevation.low"
+              },
+              [
+                [
+                  "ui.stack",
+                  {
+                    "id": "stack_smv_visita",
+                    "version": "1.0.0",
+                    "alignment": "stretch",
+                    "direction": "vertical",
+                    "spacingToken": "spacing.sm"
+                  },
+                  [
+                    [
+                      "ui.text",
+                      {
+                        "id": "smv_vis_titulo",
+                        "text": "Visita técnica agendada",
+                        "align": "start",
+                        "variant": "heading",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ],
+                    [
+                      "ui.text",
+                      {
+                        "id": "smv_vis_sub",
+                        "text": "Abaixo mais informações sobre a visita técnica agendada",
+                        "align": "start",
+                        "variant": "caption",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ],
+                    [
+                      "ui.text",
+                      {
+                        "id": "smv_vis_data",
+                        "text": "Agendada para {{data.bdPrevisaoConclusao}}",
+                        "align": "start",
+                        "variant": "body",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ],
+                    [
+                      "ui.text",
+                      {
+                        "id": "smv_vis_prot",
+                        "text": "Protocolo {{data.bdProtocoloAtendimento}}",
+                        "align": "start",
+                        "variant": "caption",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "ui.button",
+              {
+                "id": "Node_StatusMassivaVisita_btn",
+                "size": "medium",
+                "label": "Ir pra Central de visitas",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {}
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_StatusMassiva",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_statusmassiva",
+        "title": "Instabilidade na região",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_statusmassiva",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "sm_titulo",
+                "text": "Identificamos uma instabilidade na sua região",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "sm_prev",
+                "text": "Os serviços devem voltar a funcionar em {{data.massivaPrevisaoConclusao}}",
+                "align": "start",
+                "variant": "body",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "sm_prot",
+                "text": "Protocolo {{data.massivaProtocolo}}",
+                "align": "start",
+                "variant": "caption",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "sm_btn",
+                "size": "medium",
+                "label": "Ir para o início",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {}
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_StatusAtraso",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_statusatraso",
+        "title": "Identificamos o que pode estar afetando seu serviço",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_statusatraso",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "Node_StatusAtraso_titulo",
+                "text": "Identificamos o que pode estar afetando seu serviço",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.card",
+              {
+                "id": "card_sa_faturas",
+                "variant": "default",
+                "version": "1.0.0",
+                "paddingToken": "spacing.md",
+                "elevationToken": "elevation.low"
+              },
+              [
+                [
+                  "ui.stack",
+                  {
+                    "id": "stack_sa_faturas",
+                    "version": "1.0.0",
+                    "alignment": "stretch",
+                    "direction": "vertical",
+                    "spacingToken": "spacing.sm"
+                  },
+                  [
+                    [
+                      "ui.text",
+                      {
+                        "id": "sa_fat_titulo",
+                        "text": "Faturas em atraso",
+                        "align": "start",
+                        "variant": "heading",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ],
+                    [
+                      "ui.text",
+                      {
+                        "id": "sa_fat_sub",
+                        "text": "Identificamos um bloqueio financeiro. Consulte as faturas na Central de faturas.",
+                        "align": "start",
+                        "variant": "caption",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "ui.button",
+              {
+                "id": "Node_StatusAtraso_btn",
+                "size": "medium",
+                "label": "Ir pra Central de faturas",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {}
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_StatusVisita",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_statusvisita",
+        "title": "Identificamos o que pode estar afetando seu serviço",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_statusvisita",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "Node_StatusVisita_titulo",
+                "text": "Identificamos o que pode estar afetando seu serviço",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.card",
+              {
+                "id": "card_sv_visita",
+                "variant": "default",
+                "version": "1.0.0",
+                "paddingToken": "spacing.md",
+                "elevationToken": "elevation.low"
+              },
+              [
+                [
+                  "ui.stack",
+                  {
+                    "id": "stack_sv_visita",
+                    "version": "1.0.0",
+                    "alignment": "stretch",
+                    "direction": "vertical",
+                    "spacingToken": "spacing.sm"
+                  },
+                  [
+                    [
+                      "ui.text",
+                      {
+                        "id": "sv_vis_titulo",
+                        "text": "Visita técnica agendada",
+                        "align": "start",
+                        "variant": "heading",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ],
+                    [
+                      "ui.text",
+                      {
+                        "id": "sv_vis_sub",
+                        "text": "Abaixo mais informações sobre a visita técnica agendada",
+                        "align": "start",
+                        "variant": "caption",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ],
+                    [
+                      "ui.text",
+                      {
+                        "id": "sv_vis_data",
+                        "text": "Agendada para {{data.bdPrevisaoConclusao}}",
+                        "align": "start",
+                        "variant": "body",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ],
+                    [
+                      "ui.text",
+                      {
+                        "id": "sv_vis_prot",
+                        "text": "Protocolo {{data.bdProtocoloAtendimento}}",
+                        "align": "start",
+                        "variant": "caption",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "ui.button",
+              {
+                "id": "Node_StatusVisita_btn",
+                "size": "medium",
+                "label": "Ir pra Central de visitas",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {}
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_Reinicie",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_reinicie",
+        "title": "Suporte técnico",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_reinicie",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "re_titulo",
+                "text": "Até aqui, não identificamos o que está afetando sua internet",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "re_sub",
+                "text": "Agora, vamos reiniciar o modem para tentar resolver o problema. Siga as etapas:",
+                "align": "start",
+                "variant": "body",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "re_passo_1",
+                "text": "1. Retire o modem da tomada",
+                "align": "start",
+                "variant": "body",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "re_passo_2",
+                "text": "2. Aguarde 30 segundos",
+                "align": "start",
+                "variant": "body",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "re_passo_3",
+                "text": "3. Ligue o modem de novo",
+                "align": "start",
+                "variant": "body",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "re_ok",
+                "size": "medium",
+                "label": "Já reiniciei",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.acaoReinicio",
+                      "value": "reiniciei"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "re_nao",
+                "size": "medium",
+                "label": "Não consigo reiniciar",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.acaoReinicio",
+                      "value": "nao_consigo"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "secondary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_VoltouReinicio",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_voltoureinicio",
+        "title": "Suporte técnico",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_voltoureinicio",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "Node_VoltouReinicio_titulo",
+                "text": "Depois de reiniciar o modem, a internet voltou a funcionar?",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "Node_VoltouReinicio_dica",
+                "text": "Aguarde as luzes pararem de piscar antes de testar",
+                "align": "start",
+                "variant": "caption",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "Node_VoltouReinicio_sim",
+                "size": "medium",
+                "label": "Sim",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.voltouReinicio",
+                      "value": "sim"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "secondary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "Node_VoltouReinicio_nao",
+                "size": "medium",
+                "label": "Não",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.voltouReinicio",
+                      "value": "nao"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "secondary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_InternetVoltou",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_internetvoltou",
+        "title": "Suporte técnico",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_internetvoltou",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "iv_titulo",
+                "text": "Sua internet voltou a funcionar",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "iv_sub",
+                "text": "A gente está por aqui se você precisar de ajuda",
+                "align": "start",
+                "variant": "body",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "iv_btn",
+                "size": "medium",
+                "label": "Ir para o início",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {}
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_TesteConexao",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_testeconexao",
+        "title": "Suporte técnico",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_testeconexao",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "tc_titulo",
+                "text": "Agora, vamos testar a sua conexão",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "tc_sub",
+                "text": "Como o problema continua, a gente vai tentar identificar o que está acontecendo",
+                "align": "start",
+                "variant": "body",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "tc_1t",
+                "text": "Isso pode levar alguns minutos",
+                "align": "start",
+                "variant": "heading",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "tc_1d",
+                "text": "Aguarde enquanto verificamos sua conexão",
+                "align": "start",
+                "variant": "caption",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "tc_2t",
+                "text": "Você pode ficar sem internet",
+                "align": "start",
+                "variant": "heading",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "tc_2d",
+                "text": "Isso pode acontecer durante os testes",
+                "align": "start",
+                "variant": "caption",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "tc_3t",
+                "text": "Use outra conexão",
+                "align": "start",
+                "variant": "heading",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "tc_3d",
+                "text": "Se possível, use os dados móveis do seu celular",
+                "align": "start",
+                "variant": "caption",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "tc_ok",
+                "size": "medium",
+                "label": "Continuar",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.acaoTeste",
+                      "value": "continuar"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "tc_inicio",
+                "size": "medium",
+                "label": "Ir para o início",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.acaoTeste",
+                      "value": "inicio"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "secondary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_ReinicieNovamente",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_reinicienovamente",
+        "title": "Suporte técnico",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_reinicienovamente",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "rn_titulo",
+                "text": "Vamos reiniciar o modem de novo",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "rn_sub",
+                "text": "Algumas mudanças precisam que você desligue e ligue o modem. Siga as etapas:",
+                "align": "start",
+                "variant": "body",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "rn_passo_1",
+                "text": "1. Retire o modem da tomada",
+                "align": "start",
+                "variant": "body",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "rn_passo_2",
+                "text": "2. Aguarde 30 segundos",
+                "align": "start",
+                "variant": "body",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "rn_passo_3",
+                "text": "3. Ligue o modem de novo",
+                "align": "start",
+                "variant": "body",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "rn_ok",
+                "size": "medium",
+                "label": "Já reiniciei",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {}
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_VoltouNovamente",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_voltounovamente",
+        "title": "Suporte técnico",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_voltounovamente",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "Node_VoltouNovamente_titulo",
+                "text": "Depois de reiniciar o modem, a internet voltou a funcionar?",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "Node_VoltouNovamente_dica",
+                "text": "Aguarde as luzes pararem de piscar antes de testar",
+                "align": "start",
+                "variant": "caption",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "Node_VoltouNovamente_sim",
+                "size": "medium",
+                "label": "Sim",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.voltouNovamente",
+                      "value": "sim"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "secondary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "Node_VoltouNovamente_nao",
+                "size": "medium",
+                "label": "Não",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.voltouNovamente",
+                      "value": "nao"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "secondary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_SemEnergia",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_semenergia",
+        "title": "Suporte técnico",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_semenergia",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "se_titulo",
+                "text": "O modem não está recebendo energia",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "se_sub",
+                "text": "Vamos verificar o que pode estar acontecendo",
+                "align": "start",
+                "variant": "body",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "se_1t",
+                "text": "A tomada está funcionando?",
+                "align": "start",
+                "variant": "heading",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "se_1d",
+                "text": "Você pode testar o modem em outro ponto de energia que esteja funcionando",
+                "align": "start",
+                "variant": "caption",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "se_2t",
+                "text": "O cabo de energia está conectado?",
+                "align": "start",
+                "variant": "heading",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "se_2d",
+                "text": "Verifique se o modem está bem encaixado",
+                "align": "start",
+                "variant": "caption",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "se_ok",
+                "size": "medium",
+                "label": "Já verifiquei",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.acaoEnergia",
+                      "value": "verifiquei"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "se_nao",
+                "size": "medium",
+                "label": "Não consigo verificar",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.acaoEnergia",
+                      "value": "nao_consigo"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "secondary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_VoltouEnergia",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_voltouenergia",
+        "title": "Suporte técnico",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_voltouenergia",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "Node_VoltouEnergia_titulo",
+                "text": "Depois de testar a tomada e o cabo, sua internet voltou a funcionar?",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "Node_VoltouEnergia_dica",
+                "text": "Aguarde as luzes do modem pararem de piscar antes de testar a conexão",
+                "align": "start",
+                "variant": "caption",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "Node_VoltouEnergia_sim",
+                "size": "medium",
+                "label": "Sim",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.voltouEnergia",
+                      "value": "sim"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "secondary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "Node_VoltouEnergia_nao",
+                "size": "medium",
+                "label": "Não",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.voltouEnergia",
+                      "value": "nao"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "secondary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_TemEnergia",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_temenergia",
+        "title": "Suporte técnico",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_temenergia",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "te_titulo",
+                "text": "Tem energia elétrica no seu endereço?",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "te_sub",
+                "text": "Pode ser que o problema esteja na rede elétrica. As luzes e outros aparelhos estão funcionando normalmente?",
+                "align": "start",
+                "variant": "body",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "te_sim",
+                "size": "medium",
+                "label": "Sim",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.temEnergia",
+                      "value": "sim"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "secondary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "te_nao",
+                "size": "medium",
+                "label": "Não",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.temEnergia",
+                      "value": "nao"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "secondary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_RedeEletrica",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_redeeletrica",
+        "title": "Suporte técnico",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_redeeletrica",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "rl_titulo",
+                "text": "O problema pode estar na rede elétrica",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "rl_sub",
+                "text": "Pode ser que algo não esteja funcionando bem na rede elétrica. Assim que tudo estiver normalizado, você pode fazer um novo teste",
+                "align": "start",
+                "variant": "body",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "rl_btn",
+                "size": "medium",
+                "label": "Ir para o início",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {}
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_AgendarVisita",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_agendarvisita",
+        "title": "Suporte técnico",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_agendarvisita",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "av_titulo",
+                "text": "Vamos agendar uma visita técnica",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.text",
+              {
+                "id": "av_sub",
+                "text": "Os testes não resolveram o problema com a sua internet. A nossa equipe técnica vai até o endereço para avaliar o que está acontecendo",
+                "align": "start",
+                "variant": "body",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "av_ok",
+                "size": "medium",
+                "label": "Agendar visita",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.acaoAgendar",
+                      "value": "agendar"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "av_inicio",
+                "size": "medium",
+                "label": "Ir para o início",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.acaoAgendar",
+                      "value": "inicio"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "secondary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_SemHorarios",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_semhorarios",
+        "title": "Agendar visita técnica",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_semhorarios",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.alert",
+              {
+                "id": "sh_alerta",
+                "title": "Sem horários disponíveis",
+                "message": "No momento não há horários para a visita técnica no seu endereço. Tente de novo mais tarde ou fale com o atendimento Vivo.",
+                "version": "1.0.0",
+                "severity": "warning",
+                "dismissible": false
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "sh_btn",
+                "size": "medium",
+                "label": "Ir para o início",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {}
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_EscolheHorario",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_escolhehorario",
+        "title": "Agendar visita técnica",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_escolhehorario",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "eh_titulo",
+                "text": "Selecione a melhor data para agendar sua visita técnica",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.datePicker",
+              {
+                "id": "eh_data",
+                "mode": "date",
+                "label": "Data da visita técnica",
+                "format": "locale",
+                "maxDate": null,
+                "minDate": null,
+                "version": "1.0.0",
+                "required": true,
+                "$bindings": {
+                  "value": {
+                    "mode": "twoWay",
+                    "path": "form.dataVisita"
+                  }
+                },
+                "validation": null
+              }
+            ],
+            [
+              "ui.selectList",
+              {
+                "id": "eh_horarios",
+                "label": "Horários",
+                "$events": {
+                  "onAction": {
+                    "action": "action.submit",
+                    "params": {}
+                  }
+                },
+                "actions": [],
+                "version": "1.0.0",
+                "itemHint": null,
+                "maxItems": 50,
+                "required": true,
+                "$bindings": {
+                  "items": {
+                    "mode": "oneWay",
+                    "path": "data.horariosVisita"
+                  },
+                  "value": {
+                    "mode": "twoWay",
+                    "path": "form.horarioVisita"
+                  }
+                },
+                "itemTitle": "{{item.label}}",
+                "itemValue": "value",
+                "emptyMessage": "Não há horários disponíveis.",
+                "itemDescription": null
+              }
+            ],
+            [
+              "ui.checkbox",
+              {
+                "id": "eh_aviso",
+                "label": "Aceito que a Vivo me avise se surgir um horário mais cedo",
+                "version": "1.0.0",
+                "required": false,
+                "$bindings": {
+                  "value": {
+                    "mode": "twoWay",
+                    "path": "form.avisarHorarioMaisCedo"
+                  }
+                },
+                "indeterminate": false
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "eh_ok",
+                "size": "medium",
+                "label": "Confirmar agendamento",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {}
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_AgendamentoNaoRealizado",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_agendamentonaorealizado",
+        "title": "Agendar visita técnica",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_agendamentonaorealizado",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.alert",
+              {
+                "id": "an_alerta",
+                "title": "Não foi possível agendar",
+                "message": "Não conseguimos agendar a visita técnica no horário escolhido. Tente de novo mais tarde ou fale com o atendimento Vivo.",
+                "version": "1.0.0",
+                "severity": "warning",
+                "dismissible": false
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "an_btn",
+                "size": "medium",
+                "label": "Ir para o início",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {}
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_RetentarBD",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_retentarbd",
+        "title": "Agendar visita técnica",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_retentarbd",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.alert",
+              {
+                "id": "rb_alerta",
+                "title": "Não conseguimos registrar a sua solicitação",
+                "message": "Tivemos uma falha ao registrar o atendimento da visita técnica. Você quer tentar de novo?",
+                "version": "1.0.0",
+                "severity": "warning",
+                "dismissible": false
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "rb_sim",
+                "size": "medium",
+                "label": "Tentar de novo",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.retentarBD",
+                      "value": "sim"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "rb_nao",
+                "size": "medium",
+                "label": "Não, encerrar",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.retentarBD",
+                      "value": "nao"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "secondary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_BDNaoCriado",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_bdnaocriado",
+        "title": "Suporte técnico",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_bdnaocriado",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.alert",
+              {
+                "id": "bn_alerta",
+                "title": "Não foi possível concluir",
+                "message": "Não conseguimos registrar a sua solicitação e a visita foi cancelada. Tente de novo mais tarde ou fale com o atendimento Vivo.",
+                "version": "1.0.0",
+                "severity": "warning",
+                "dismissible": false
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "bn_btn",
+                "size": "medium",
+                "label": "Ir para o início",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {}
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_VisitaAgendada",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_visitaagendada",
+        "title": "Visita agendada",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_visitaagendada",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.text",
+              {
+                "id": "va_titulo",
+                "text": "Você agendou a visita técnica",
+                "align": "start",
+                "variant": "title",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.card",
+              {
+                "id": "va_card",
+                "variant": "default",
+                "version": "1.0.0",
+                "paddingToken": "spacing.md",
+                "elevationToken": "elevation.low"
+              },
+              [
+                [
+                  "ui.stack",
+                  {
+                    "id": "va_stack",
+                    "version": "1.0.0",
+                    "alignment": "stretch",
+                    "direction": "vertical",
+                    "spacingToken": "spacing.sm"
+                  },
+                  [
+                    [
+                      "ui.text",
+                      {
+                        "id": "va_data_l",
+                        "text": "Data da visita",
+                        "align": "start",
+                        "variant": "caption",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ],
+                    [
+                      "ui.text",
+                      {
+                        "id": "va_data",
+                        "text": "{{form.dataVisita}}",
+                        "align": "start",
+                        "variant": "body",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ],
+                    [
+                      "ui.text",
+                      {
+                        "id": "va_per_l",
+                        "text": "Período",
+                        "align": "start",
+                        "variant": "caption",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ],
+                    [
+                      "ui.text",
+                      {
+                        "id": "va_per",
+                        "text": "{{data.woHorario}}",
+                        "align": "start",
+                        "variant": "body",
+                        "version": "1.0.0",
+                        "maxLines": 2,
+                        "colorToken": "color.text.primary"
+                      }
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "ui.text",
+              {
+                "id": "va_aviso",
+                "text": "É preciso ter uma pessoa maior de 18 anos presente no dia da visita",
+                "align": "start",
+                "variant": "caption",
+                "version": "1.0.0",
+                "maxLines": 2,
+                "colorToken": "color.text.primary"
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "va_agenda",
+                "size": "medium",
+                "label": "Salvar na agenda",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.acaoFinal",
+                      "value": "salvar_agenda"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "va_inicio",
+                "size": "medium",
+                "label": "Ir para o início",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {
+                      "path": "form.acaoFinal",
+                      "value": "inicio"
+                    }
+                  }
+                },
+                "loading": false,
+                "variant": "secondary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "schemaVersion": "1.0.0",
+    "catalogVersion": "1.0.0",
+    "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+    "journeyVersion": 1,
+    "uiStepId": "Node_FalhaConsulta",
+    "status": "published",
+    "publishedAt": "2026-11-09T12:00:00Z",
+    "supportedTargets": [
+      "react.mobile",
+      "flutter.mobile"
+    ],
+    "minRendererVersion": {
+      "react.mobile": "1.0.0",
+      "flutter.mobile": "1.0.0"
+    },
+    "dataSources": {},
+    "data": [
+      "ui.screen",
+      {
+        "id": "screen_falhaconsulta",
+        "title": "Suporte técnico",
+        "version": "1.0.0",
+        "scrollable": true,
+        "paddingToken": "spacing.md",
+        "backgroundToken": "color.background.primary"
+      },
+      [
+        [
+          "ui.stack",
+          {
+            "id": "stack_falhaconsulta",
+            "version": "1.0.0",
+            "alignment": "stretch",
+            "direction": "vertical",
+            "spacingToken": "spacing.md"
+          },
+          [
+            [
+              "ui.alert",
+              {
+                "id": "fc_alerta",
+                "title": "Não conseguimos verificar agora",
+                "message": "Tivemos um problema para consultar as informações do seu serviço. Fale com o atendimento Vivo.",
+                "version": "1.0.0",
+                "severity": "warning",
+                "dismissible": false
+              }
+            ],
+            [
+              "ui.button",
+              {
+                "id": "fc_btn",
+                "size": "medium",
+                "label": "Ir para o início",
+                "$events": {
+                  "onPress": {
+                    "action": "action.submit",
+                    "params": {}
+                  }
+                },
+                "loading": false,
+                "variant": "primary",
+                "version": "1.0.0",
+                "disabled": false,
+                "fullWidth": true
+              }
+            ]
+          ]
+        ]
+      ]
+    ]
+  }
+]

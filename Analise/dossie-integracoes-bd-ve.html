@@ -1,0 +1,976 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Inventário dos endpoints que a jornada FTAT-933 Abertura de BD pelo VE chama, confrontado com a collection Postman Fenix - VE, DFT v1.2, OpenAPIs e PreDataMappings.">
+  <title>Dossiê FTAT-933 | Integrações e collection Postman</title>
+  <script>
+    (() => {
+      let theme;
+      try { theme = localStorage.getItem('fenix-dossie-theme'); } catch {}
+      if (theme !== 'light' && theme !== 'dark') {
+        theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f6f1f8; --surface: #ffffff; --surface-soft: #f3edf6; --ink: #25172c; --muted: #61536a; --line: #ddd2e3;
+      --brand: #660099; --brand-strong: #4e0076; --brand-bright: #e6007e; --brand-soft: #efe2f5; --brand-line: #c9a6d9;
+      --green: #176b52; --green-soft: #e4f1eb; --green-ink: #14523e;
+      --amber: #99600a; --amber-soft: #fff1d2; --amber-ink: #603b06;
+      --red: #a34032; --red-soft: #f8e7e3; --red-ink: #7d3026;
+      --blue: #345b70; --blue-soft: #e6eff3; --blue-ink: #23485b;
+      --shadow: 0 16px 42px rgba(58, 24, 70, .09);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: var(--sans); color: var(--ink); background: var(--paper);
+      font-synthesis: none; text-rendering: optimizeLegibility;
+    }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --paper: #17121b; --surface: #211a26; --surface-soft: #2a2130; --ink: #f3edf5; --muted: #c2b5c8; --line: #493b50;
+      --brand: #d89af2; --brand-strong: #efc9ff; --brand-bright: #ff6db8; --brand-soft: #392344; --brand-line: #76508a;
+      --green: #83d6af; --green-soft: #20372d; --green-ink: #b7efd1;
+      --amber: #f0c46d; --amber-soft: #392f1c; --amber-ink: #ffe2a2;
+      --red: #ff9a91; --red-soft: #3a252a; --red-ink: #ffc2bb;
+      --blue: #91c9e8; --blue-soft: #202f3b; --blue-ink: #c6e8fa;
+      --shadow: 0 16px 42px rgba(0, 0, 0, .28);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--paper); color: var(--ink); line-height: 1.58; transition: background-color 180ms ease, color 180ms ease; }
+    a { color: var(--brand); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    a:hover { color: var(--brand-strong); }
+    code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .92em; }
+    code { padding: .12em .35em; border: 1px solid var(--line); border-radius: 4px; background: var(--surface-soft); overflow-wrap: anywhere; }
+    pre { max-width: 100%; overflow-x: auto; margin: 12px 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-soft); font-size: .84rem; line-height: 1.5; }
+    pre code { padding: 0; border: 0; background: none; }
+    .masthead { color: #fff; background: #4b006e; border-bottom: 5px solid var(--brand-bright); }
+    .masthead-inner { width: min(1440px, 100%); margin: auto; padding: 34px 32px 38px; }
+    .masthead-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+    .eyebrow { margin: 0 0 14px; color: #f2cfff; font-size: .76rem; font-weight: 750; text-transform: uppercase; }
+    h1 { max-width: 930px; margin: 0; font: 500 clamp(2.2rem, 4vw, 4rem)/1.02 var(--serif); }
+    .dek { max-width: 860px; margin: 18px 0 0; color: #f0e2f5; font-size: 1.08rem; }
+    .meta-row { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 24px; color: #ead9f0; font-size: .9rem; }
+    .meta-row span::before { content: ""; display: inline-block; width: 7px; height: 7px; margin: 0 8px 1px 0; border-radius: 50%; background: #ff78be; }
+    .theme-switch { display: inline-flex; flex: 0 0 auto; gap: 3px; padding: 3px; border: 1px solid rgba(255,255,255,.55); border-radius: 6px; background: rgba(32,0,47,.34); }
+    .theme-switch button { min-height: 34px; padding: 5px 10px; border: 0; border-radius: 4px; background: transparent; color: #f7eafa; font: 650 .82rem var(--sans); cursor: pointer; }
+    .theme-switch button[aria-pressed="true"] { background: #fff; color: #4b006e; }
+    .theme-switch button:focus-visible { outline: 3px solid #ff9ccc; outline-offset: 2px; }
+    .layout { display: grid; grid-template-columns: 248px minmax(0, 1fr); gap: 36px; width: min(1440px, 100%); margin: auto; padding: 30px 32px 70px; }
+    nav { position: sticky; top: 20px; align-self: start; max-height: calc(100vh - 40px); overflow: auto; padding: 17px 15px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+    nav h2 { margin: 0 0 10px; font-size: .76rem; text-transform: uppercase; color: var(--muted); }
+    nav a { display: block; padding: 6px 3px; color: var(--ink); font-size: .86rem; text-decoration: none; }
+    nav a:hover { color: var(--brand); text-decoration: underline; }
+    nav a.sub { padding-left: 14px; font-size: .82rem; color: var(--muted); }
+    main { min-width: 0; }
+    section { scroll-margin-top: 20px; margin: 0 0 26px; padding: 30px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); box-shadow: var(--shadow); }
+    section h2 { margin: 0 0 18px; font: 500 1.85rem/1.12 var(--serif); }
+    section h3 { margin: 28px 0 10px; font-size: 1.12rem; scroll-margin-top: 20px; }
+    section h4 { margin: 18px 0 8px; font-size: .94rem; }
+    p { margin: 10px 0; }
+    .lead { max-width: 920px; font-size: 1.08rem; }
+    .lede-label { color: var(--muted); font-size: .78rem; font-weight: 750; text-transform: uppercase; }
+    .callout { margin: 18px 0; padding: 15px 17px; border: 1px solid var(--line); border-left: 4px solid var(--amber); border-radius: 0 6px 6px 0; background: var(--amber-soft); }
+    .callout strong { color: var(--amber-ink); }
+    .callout.red { border-left-color: var(--red); background: var(--red-soft); }
+    .callout.red strong { color: var(--red-ink); }
+    .callout.green { border-left-color: var(--green); background: var(--green-soft); }
+    .callout.green strong { color: var(--green-ink); }
+    .callout.blue { border-left-color: var(--blue); background: var(--blue-soft); }
+    .callout.blue strong { color: var(--blue-ink); }
+    .metrics { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin: 22px 0; }
+    .metric { padding: 14px; border-top: 3px solid var(--brand-bright); background: var(--surface-soft); }
+    .metric b { display: block; font: 500 1.65rem var(--serif); }
+    .metric span { color: var(--muted); font-size: .81rem; }
+    .table-wrap { width: 100%; min-width: 0; overflow-x: auto; margin: 16px 0 20px; }
+    table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    th, td { padding: 10px 11px; border: 1px solid var(--line); text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+    th { background: var(--surface-soft); font-size: .8rem; }
+    td p:first-child { margin-top: 0; }
+    td p:last-child { margin-bottom: 0; }
+    .tag { display: inline-block; margin: 2px 3px 2px 0; padding: 2px 7px; border-radius: 3px; background: var(--blue-soft); color: var(--blue-ink); font-size: .72rem; font-weight: 750; white-space: nowrap; }
+    .tag.red { background: var(--red-soft); color: var(--red-ink); }
+    .tag.amber { background: var(--amber-soft); color: var(--amber-ink); }
+    .tag.green { background: var(--green-soft); color: var(--green-ink); }
+    .tag.muted { background: var(--surface-soft); color: var(--muted); }
+    .endpoint { margin: 26px 0 0; padding: 20px 22px; border: 1px solid var(--line); border-left: 4px solid var(--brand); border-radius: 0 8px 8px 0; background: var(--surface); }
+    .endpoint.ok { border-left-color: var(--green); }
+    .endpoint.partial { border-left-color: var(--amber); }
+    .endpoint.blocked { border-left-color: var(--red); }
+    .endpoint h3 { margin-top: 0; }
+    .request-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; margin: 6px 0 12px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9rem; overflow-wrap: anywhere; }
+    .method { padding: 2px 8px; border-radius: 3px; background: var(--brand); color: var(--surface); font-weight: 800; font-size: .78rem; }
+    .kv { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 6px 14px; margin: 10px 0; font-size: .9rem; }
+    .kv dt { color: var(--muted); font-weight: 700; }
+    .kv dd { margin: 0; }
+    .plain-list { padding-left: 20px; }
+    .plain-list li { margin: 6px 0; }
+    .questions { counter-reset: q; padding: 0; list-style: none; }
+    .questions li { position: relative; padding: 15px 12px 15px 56px; border-top: 1px solid var(--line); }
+    .questions li::before { counter-increment: q; content: "P" counter(q, decimal-leading-zero); position: absolute; left: 0; top: 14px; color: var(--red); font-size: .76rem; font-weight: 800; }
+    .questions strong { display: block; }
+    .questions .state { margin: 8px 0 0; color: var(--muted); font-size: .84rem; }
+    .questions .state b { color: var(--amber); }
+    .small { color: var(--muted); font-size: .84rem; }
+    .footer { padding: 12px 0 0; color: var(--muted); font-size: .82rem; }
+    .nowrap { white-space: nowrap; }
+    details.exemplo { margin: 10px 0; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+    details.exemplo > summary { padding: 10px 14px; font-weight: 700; cursor: pointer; }
+    details.exemplo > pre { margin: 0 12px 12px; }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; gap: 18px; padding: 18px; }
+      nav { position: static; max-height: none; }
+      nav a, nav a.sub { display: inline-block; margin-right: 10px; padding-left: 3px; }
+      .masthead-inner { padding: 28px 20px; }
+      section { padding: 22px; }
+    }
+    @media (max-width: 620px) {
+      .metrics { grid-template-columns: 1fr 1fr; }
+      .kv { grid-template-columns: 1fr; }
+      section h2 { font-size: 1.55rem; }
+      .meta-row { display: grid; gap: 5px; }
+    }
+    @media print {
+      :root { --paper: #fff; --surface: #fff; --shadow: none; }
+      body { background: #fff; font-size: 10pt; }
+      .masthead { color: #111; background: #fff; border-bottom: 2px solid #660099; }
+      .eyebrow, .dek, .meta-row { color: #333; }
+      .theme-switch, nav { display: none; }
+      .layout { display: block; width: auto; padding: 0; }
+      section { break-inside: avoid; margin: 0 0 8mm; padding: 7mm 0; border: 0; border-top: 1px solid #aaa; }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <div class="masthead-top">
+        <p class="eyebrow">Vivo Empresas · Fênix VE · FTAT-933 · Jornada APP</p>
+        <div class="theme-switch" role="group" aria-label="Tema de exibição">
+          <button type="button" data-theme-choice="light" aria-pressed="true">Claro</button>
+          <button type="button" data-theme-choice="dark" aria-pressed="false">Escuro</button>
+        </div>
+      </div>
+      <h1>Integrações da Abertura de BD pelo VE</h1>
+      <p class="dek">Inventário exato dos endpoints que a jornada chama, confrontado com a collection Postman <code>Fenix - VE</code>: o que já está pronto, o que falta configurar e o que depende de resposta dos times responsáveis.</p>
+      <div class="meta-row">
+        <span>Análise em 07 nov 2026 · atualizado em 12 nov 2026</span>
+        <span>Collection: postman/fenix-ve.postman_collection.json</span>
+        <span>Ambiente-alvo da collection: PREPROD</span>
+        <span>Complementa o <a href="dossie-abertura-bd-ve.html" style="color:#fff">dossiê funcional</a></span>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav aria-label="Navegação do dossiê">
+      <h2>Conteúdo</h2>
+      <a href="#pendencia-critica"><strong>⚠ Pendência crítica: INT14</strong></a>
+      <a href="#parecer">Parecer</a>
+      <a href="#fontes">Fontes</a>
+      <a href="#escopo">Escopo: o que entra na collection</a>
+      <a href="#resumo">Resumo por request</a>
+      <a href="#ambientes">URLs por ambiente</a>
+      <a href="#collection">Collection: autenticação e variáveis</a>
+      <a href="#endpoints">Endpoints em detalhe</a>
+      <a class="sub" href="#ep-01">01 · Massiva (INT01)</a>
+      <a class="sub" href="#ep-02">02 · Consulta BD (INT03)</a>
+      <a class="sub" href="#ep-03">03 · HPSD (INT06)</a>
+      <a class="sub" href="#ep-int10">— · Resultado HPSD (INT10)</a>
+      <a class="sub" href="#ep-04">04 · Slots WFM (INT11)</a>
+      <a class="sub" href="#ep-05">05 · Criar WO (INT14)</a>
+      <a class="sub" href="#ep-06">06 · Abrir BD (INT18)</a>
+      <a class="sub" href="#ep-07">07 · Cancelar WO (INT16)</a>
+      <a href="#rastreio">Headers de rastreio</a>
+      <a href="#token">Token e autenticação</a>
+      <a href="#seguranca">Segurança das credenciais</a>
+      <a href="#wfm-12nov">WFM: recebido em 12 nov 2026</a>
+      <a href="#perguntas">Decisões (P01–P07, A–D)</a>
+      <a href="#jornada">Ajustes aplicados na jornada</a>
+      <a href="#notas">Notas de pendência por etapa</a>
+      <a href="#acoes">Ações propostas</a>
+    </nav>
+
+    <main>
+      <section id="parecer">
+        <p class="lede-label">Conclusão</p>
+        <h2>Sete chamadas HTTP e um evento Kafka; três requests ainda sem destino</h2>
+        <p class="lead">A jornada FTAT-933 origina 8 integrações no DFT v1.2: sete síncronas (HTTP) e uma assíncrona (callback Kafka do HPSD). A collection <code>Fenix - VE</code> já cobre as sete chamadas HTTP com a estrutura certa. Massiva e HPSD estão prontos para teste; Consulta BD e Abertura de BD precisam de ajustes que já podem ser feitos com os mappings disponíveis; os três requests de WFM continuam bloqueados por falta de URL interna.</p>
+        <div class="metrics" aria-label="Resumo">
+          <div class="metric"><b>7</b><span>requests HTTP originados pela jornada</span></div>
+          <div class="metric"><b>2</b><span>prontos para teste (01, 03)</span></div>
+          <div class="metric"><b>2</b><span>ajustáveis agora com os mappings (02, 06)</span></div>
+          <div class="metric"><b>3</b><span>bloqueados por URL WFM TBD (04, 05, 07)</span></div>
+          <div class="metric"><b>1</b><span>evento Kafka fora do escopo HTTP (INT10)</span></div>
+        </div>
+        <div class="callout red" id="pendencia-critica"><strong>⚠ PENDÊNCIA CRÍTICA DA JORNADA — resolução urgente (18 nov 2026): a jornada não cria WO no WFM (INT14).</strong>
+          <p>O corpo da INT14 montado pelo BPMN (<code>Node_CriaWO</code>/<code>BODY_WO</code> no gerador) e pela collection Postman diverge do contrato do WFM; o WFM responde <code>500 "Erro não mapeado"</code>. Sem WO não há agendamento nem abertura de BD: a jornada termina em “Agendamento não realizado”.</p>
+          <p><strong>Evidência (preprod, 18 nov):</strong> o curl oficial enviado pelo time WFM (<code>postman/curls/INT14.json</code>) retornou <code>200</code> (WO <code>AL_WO20261021_1100</code>, <code>idWork</code> 319140293). A página de QA, ajustada para a estrutura desse curl, retornou <code>200</code> (WOs <code>VE6463aeda-c657-4335-9c73-54c2adc45772</code> e <code>VE1002285c-8bc4-4988-a65d-fdbcfe4c9e5b</code>). As três WOs foram canceladas pela INT16 (<code>200</code>). O exemplo do PreDataMapping Abertura de WO v2.2 confirma o curl.</p>
+          <p><strong>Divergências de estrutura (BPMN e Postman × curl/mapping):</strong></p>
+          <ul>
+            <li><code>WorkOrder_Create.sourceSystem</code>: enviamos <code>MVE</code>; correto <code>SERVICENOWB2BMASSIVO</code>.</li>
+            <li><code>Appointment_Create.relatedParty[Attendant]</code>: enviamos <code>id</code> = atendente vazio e <code>role</code> = “Cliente via Vivo Empresas”; correto <code>id: "Cliente via Vivo Empresa"</code>, <code>role: ""</code>.</li>
+            <li><code>relatedEntity</code>: falta a característica <code>Code</code> na Banda Larga e os produtos <code>ACESSO</code> (Postman), velocidade (<code>Banda Larga-VEL</code>), IP Fixo (<code>Banda Larga-IPFIXO</code>) e roteador (<code>Roteador</code>).</li>
+            <li><code>CustomerOrderValue.characteristic[Detail]</code> e <code>note[ADDRESS_REFERENCE]</code>: omitidos quando vazios; o curl sempre envia.</li>
+            <li><code>place.stateOrProvince</code>: a Asset devolve o estado por extenso (“São Paulo”); o WFM espera a sigla (“SP”).</li>
+            <li>Campos enviados como <code>null</code> (o WFM não aceita), entre eles <code>geographicSite.id</code>, obrigatório no mapping.</li>
+            <li>Postman: a INT14 usa variáveis <code>woCustomerId</code>, <code>woCity</code>…, enquanto a consulta de Asset grava <code>wo_customerId</code>, <code>wo_city</code>… — os dados do Asset não chegam à INT14.</li>
+          </ul>
+          <p><strong>Origem dos dados não identificada (22 campos, P08):</strong> categoria do cliente; nome, e-mail, celular, telefone e telefone comercial do contato; id, protocolo, data da venda e detalhe do pedido; sigla do CNL; código do logradouro; complemento; longitude e latitude; armário (<code>geographicSite.id</code>); <code>Code</code> do produto; velocidade; IP Fixo; roteador; <code>DETALHE</code>; referência do endereço. Na página de QA esses campos usam os valores do curl como padrão editável, com aviso de pendência — <strong>são dados de teste e não devem ir para a jornada</strong>.</p>
+          <p><strong>Ações para resolver:</strong> (1) times WFM e VE definirem a origem de cada um dos 22 campos (entrada do VE no início da jornada, Asset ou outra API); (2) depois da definição, alinhar BPMN/gerador e Postman à estrutura do curl (itens acima), incluindo os nomes de variáveis da Postman; (3) homologar a INT14 pela jornada em preprod e cancelar as WOs de teste pela INT16.</p>
+          <p><strong>Decisão (18 nov):</strong> BPMN, gerador e Postman <strong>não</strong> foram alterados até a definição da origem dos dados; apenas a página de QA foi ajustada. Ver QA-BPMN-15.</p>
+        </div>
+        <div class="callout blue"><strong>Fronteira:</strong> a collection testa as chamadas que a jornada fará, uma a uma, antes de configurá-las nos conectores do Journey Admin. Não inclui chamadas downstream dos microsserviços (SIGITM, ServiceNow, TMF646/TMF697, Salesforce) nem a fachada <code>ms-journey-v1</code> usada pelo VE/BFF.</div>
+        <div class="callout red"><strong>Não foram feitas chamadas a ambientes nesta análise.</strong> O único resultado de execução citado (HTTP 200 em INT01 PREPROD) vem do dossiê funcional. Nenhuma alteração foi feita na collection.</div>
+        <div class="callout green"><strong>Atualização 07 nov 2026:</strong> decisões P01–P07 e A–D registradas em <a href="#perguntas">Decisões</a>. A jornada “Abertura de BD pelo VE” no Journey Admin foi ajustada pelo script novo <code>skills/jornada_abertura_bd_ve_integracoes.mjs</code> (o script original ficou intacto); ver <a href="#jornada">Ajustes aplicados</a>.</div>
+        <div class="callout green"><strong>Atualização 12 nov 2026:</strong> recebidos do time WFM a URL PREPROD <code>http://preprod.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1</code> e exemplos de request de INT11, INT14, INT16 e reagendamento. Ficam pendentes a origem dos dados do payload (P08) e o swagger para entender as respostas (P09). Ver <a href="#wfm-12nov">WFM: recebido em 12 nov 2026</a>.</div>
+      </section>
+
+      <section id="fontes">
+        <h2>Fontes utilizadas</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Fonte</th><th>O que forneceu</th></tr></thead>
+            <tbody>
+              <tr><td><a href="../DFT_FTAT933_Jornada_EndToEnd_v1.2.pptx">DFT FTAT-933 End-to-End v1.2</a></td><td>Sequências e inventário INT01–INT28 (endpoint, origem, destino, método, rota, síncrono/assíncrono). Prevalece para endpoint/método quando a US é omissa.</td></tr>
+              <tr><td><a href="../Trouble%20Ticket%20Management-V1.1.0.json">Trouble Ticket Management V1.1.0</a></td><td>Servers por ambiente (<code>spmg-*</code>), <code>GET/POST /troubleTicket</code>, <code>PATCH /troubleTicket/{id}</code>, Bearer JWT, <code>X-Vivo-Transaction-Id</code> obrigatório.</td></tr>
+              <tr><td><a href="../Gtw%20Redes%20Service%20Test%20Management-V1.0.0-API.json">Gtw Redes Service Test Management V1.0.0</a></td><td>Servers (<code>api-dev</code> … <code>api</code>), <code>POST /serviceTest</code> com <code>X-Vivo-Transaction-Id</code> e <code>X-Vivo-Correlation-Id</code> obrigatórios, <code>GET /serviceTest/{id}</code>.</td></tr>
+              <tr><td><a href="../customer-problem-management-v1.preprod.openapi.yaml">Customer Problem Management v1 (OpenAPI PREPROD)</a></td><td><code>GET /incidents?serviceDesignator=</code> e <code>GET /customers/{customerId}/customerProblems</code>.</td></tr>
+              <tr><td><a href="../PreDataMapping%20FTAT-933%20-%20Consulta%20de%20BD%20-%20v2.0.xlsx">PreDataMapping Consulta de BD v2.0</a></td><td>Filtro <code>designatorId:…;status:Active;ticketType:Case</code>, headers e exemplo downstream 404 com <code>code=60</code> e “No Record found for given filter criteria”, na aba “MS T T x ServiceNow - Resp ERRO”, células K8, K16 e B22. Decisão funcional confirmada em 19/11: consulta concluída sem BD aberto.</td></tr>
+              <tr><td><a href="../PreDataMapping%20FTAT-933%20-%20Abertura%20de%20BD%20-%20v2.1.xlsx">PreDataMapping Abertura de BD v2.1</a></td><td>Payload Camunda → MS Trouble Ticket campo a campo, headers e formato dos IDs de rastreio.</td></tr>
+              <tr><td><a href="../PreDataMapping%20FTAT-933%20-%20Consulta%20de%20Slot%20WFM%20(Revalida%C3%A7%C3%A3o)%20-%20v2.2.xlsx">PreDataMapping Consulta de Slot WFM v2.2</a></td><td>Headers e body Camunda → WFM Journey (variantes VIVO1/VIVO2), respostas 200 / 204 / erro 401.</td></tr>
+              <tr><td><a href="../postman/fenix-ve.postman_collection.json">postman/fenix-ve.postman_collection.json</a></td><td>Estado atual dos 7 requests, autenticação OAM VE e variáveis.</td></tr>
+              <tr><td><a href="dossie-abertura-bd-ve.html">Dossiê funcional FTAT-933</a></td><td>Decisões já registradas (Q01–Q12), divergências DFT × API e evidência de teste do INT01.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="escopo">
+        <h2>Escopo: o que entra na collection</h2>
+        <p>Entra na collection apenas o que tem o <strong>Elastic Journey como origem</strong>. As demais integrações do DFT são executadas pelos microsserviços e não são configuradas na jornada.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>INT</th><th>Integração (DFT v1.2)</th><th>Origem → destino</th><th>Na collection?</th></tr></thead>
+            <tbody>
+              <tr><td>INT01</td><td>Consulta Massiva/Manutenção</td><td>Journey → Customer Problem Mgmt</td><td><span class="tag green">Sim · 01</span></td></tr>
+              <tr><td>INT03</td><td>Consulta BD</td><td>Journey → Trouble Ticket Mgmt</td><td><span class="tag green">Sim · 02</span></td></tr>
+              <tr><td>INT06</td><td>Diagnóstico TMF653</td><td>Journey → GTW Redes / HPSD</td><td><span class="tag green">Sim · 03</span></td></tr>
+              <tr><td>INT10</td><td>Resultado do diagnóstico</td><td>Kafka → Journey (assíncrono)</td><td><span class="tag muted">Não · é evento, não HTTP</span></td></tr>
+              <tr><td>INT11</td><td>Consulta de slots</td><td>Journey → WFM Orchestration</td><td><span class="tag green">Sim · 04</span></td></tr>
+              <tr><td>INT14</td><td>Criação de WO</td><td>Journey → WFM Orchestration</td><td><span class="tag green">Sim · 05</span></td></tr>
+              <tr><td>INT16</td><td>Cancelamento de WO</td><td>Journey → WFM Orchestration</td><td><span class="tag green">Sim · 07</span></td></tr>
+              <tr><td>INT18</td><td>Abertura de BD</td><td>Journey → Trouble Ticket Mgmt</td><td><span class="tag green">Sim · 06</span></td></tr>
+              <tr><td>INT13 / INT27</td><td>VE ↔ Elastic Journey (wf-journey-v1)</td><td>VE/BFF → fachada <code>ms-journey-v1</code></td><td><span class="tag muted">Não · contrato do canal, coberto na collection ms-journey-v1</span></td></tr>
+              <tr><td>INT02, 04, 05, 07–09, 12, 15, 17, 19–26, 28</td><td>SIGITM, ServiceNow, HPSD, Service Test Result, TMF646/TMF697, Salesforce, Vivo Observa, VE API</td><td>Microsserviços → sistemas finais</td><td><span class="tag muted">Não · downstream</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="resumo">
+        <h2>Resumo por request</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Request</th><th>Endpoint PREPROD</th><th>Estado na collection</th><th>Falta</th></tr></thead>
+            <tbody>
+              <tr><td><a href="#ep-01">01 · Massiva (INT01)</a></td><td><code>GET https://cssp-preprod.redecorp.br/customer-problem-management/v1/incidents?serviceDesignator=</code></td><td><span class="tag green">Pronto</span></td><td>Preencher <code>idDesignador</code>. Divergência DFT (POST na raiz) × API (GET) segue aberta.</td></tr>
+              <tr><td><a href="#ep-02">02 · Consulta BD (INT03)</a></td><td><code>GET https://spmg-preprod.redecorp.azr/troubleTicketManagement/v1/troubleTicket?filter=…</code></td><td><span class="tag amber">Quase pronto</span></td><td>Header <code>X-Vivo-Correlation-Id</code>; formato dos IDs de rastreio.</td></tr>
+              <tr><td><a href="#ep-03">03 · HPSD (INT06)</a></td><td><code>POST https://api-hml.telefonica.com.br/gtw-redes/serviceTestManagement/v1/serviceTest</code></td><td><span class="tag green">Pronto</span></td><td>Valores de <code>relatedServiceId</code>, <code>testSpecificationId</code>, <code>serviceTestExternalId</code>; validar token no gateway.</td></tr>
+              <tr><td><a href="#ep-04">04 · Slots WFM (INT11)</a></td><td><code>POST http://preprod.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1/searchTimeSlot</code></td><td><span class="tag amber">URL recebida 12/11</span></td><td>Origem de <code>postcode</code>, <code>microArea</code> e dados de rede (P08); respostas (P09).</td></tr>
+              <tr><td><a href="#ep-05">05 · Criar WO (INT14)</a></td><td><code>POST http://preprod.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1/workOrder/appointment</code></td><td><span class="tag amber">URL e exemplo recebidos 12/11</span></td><td>Origem dos dados de cliente, pedido, endereço e produtos (P08); swagger da resposta (P09).</td></tr>
+              <tr><td><a href="#ep-06">06 · Abrir BD (INT18)</a></td><td><code>POST https://spmg-preprod.redecorp.azr/troubleTicketManagement/v1/troubleTicket</code></td><td><span class="tag amber">Body vazio</span></td><td>Body do mapping v2.1; header <code>X-Vivo-Correlation-Id</code>.</td></tr>
+              <tr><td><a href="#ep-07">07 · Cancelar WO (INT16)</a></td><td><code>DELETE http://preprod.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1/workOrder/{id}?reason=&amp;context=</code></td><td><span class="tag amber">URL e exemplo recebidos 12/11</span></td><td>Valores de <code>reason</code> e <code>context</code> (P08); respostas (P09).</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="ambientes">
+        <h2>URLs por ambiente</h2>
+        <p>Produção e PREPROD têm URLs diferentes. A jornada “Abertura de BD pelo VE” no Journey Admin está configurada com as URLs de <strong>PREPROD</strong>. As URLs citadas do DFT v1.2 são de produção.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Integração</th><th>Produção</th><th>PREPROD</th><th>Situação</th></tr></thead>
+            <tbody>
+              <tr><td>INT01 Consulta Massiva</td><td><code>https://cssp.redecorp.br/customer-problem-management/v1/incidents</code> (base do DFT + rota do OpenAPI; não testada)</td><td><code>https://cssp-preprod.redecorp.br/customer-problem-management/v1/incidents</code> (OpenAPI PREPROD; HTTP 200 validado)</td><td><span class="tag green">Identificada nos dois</span></td></tr>
+              <tr><td>INT03 Consulta BD e INT18 Abrir BD</td><td><code>https://spmg.redecorp.azr/troubleTicketManagement/v1/troubleTicket</code></td><td><code>https://spmg-preprod.redecorp.azr/troubleTicketManagement/v1/troubleTicket</code></td><td><span class="tag green">Identificada nos dois</span> (servers do OpenAPI V1.1.0)</td></tr>
+              <tr><td>INT06 Diagnóstico HPSD</td><td><code>https://api.telefonica.com.br/gtw-redes/serviceTestManagement/v1/serviceTest</code></td><td><code>https://api-hml.telefonica.com.br/gtw-redes/serviceTestManagement/v1/serviceTest</code></td><td><span class="tag amber">PREPROD a confirmar</span> — o OpenAPI lista dev, qa1, qa2, hml, prodlike e prod; não há “preprod”</td></tr>
+              <tr><td>INT10 Resultado HPSD (Kafka)</td><td>Tópico <code>telco.service.servicetestmanagement.servicetestresult</code>; cluster/broker não identificado</td><td>Mesmo tópico; cluster/broker não identificado</td><td><span class="tag red">Cluster não identificado nos dois</span> · Q07</td></tr>
+              <tr><td>INT11 Consulta de slots WFM</td><td><code>http://prod.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1/searchTimeSlot</code> (base configurada no motor; não recebida formalmente)</td><td><code>http://preprod.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1/searchTimeSlot</code> (recebida em 12 nov 2026)</td><td><span class="tag amber">PREPROD recebida</span> · P05, P08, P09</td></tr>
+              <tr><td>INT14 Criar WO</td><td>Mesma base · <code>POST /workOrder/appointment</code></td><td>Mesma base · <code>POST /workOrder/appointment</code></td><td><span class="tag amber">PREPROD recebida</span> · P08, P09</td></tr>
+              <tr><td>INT16 Cancelar WO</td><td>Mesma base · <code>DELETE /workOrder/{id}?reason=&amp;context=</code></td><td>Mesma base · <code>DELETE /workOrder/{id}?reason=&amp;context=</code></td><td><span class="tag amber">PREPROD recebida</span> · P08, P09</td></tr>
+              <tr><td>INT13/INT27 Entrada do VE (wf-journey-v1, fora dos conectores)</td><td><code>https://api.telefonica.com.br/wfJourney/v1</code> (DFT)</td><td>Não identificada</td><td><span class="tag amber">PREPROD não identificada</span> · Q01</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small">Endpoints downstream (SIGITM, ServiceNow, TMF646/TMF697, Salesforce) não entram na jornada e não foram listados.</p>
+      </section>
+
+      <section id="collection">
+        <h2>Collection: autenticação e variáveis</h2>
+        <p>A collection <code>Fenix - VE</code> é independente da collection <code>ms-journey-v1</code>. Ela tem duas pastas: <code>00 - Autenticacao</code> e <code>01 - FTAT-933</code>. A autenticação é do tipo Bearer com <code>{{fenix_access_token}}</code>, herdada por todos os requests.</p>
+        <h3>Obtenção do token</h3>
+        <ul class="plain-list">
+          <li>Request <code>00 - Obter token VE</code>: <code>POST {{fenix_auth_token_url}}</code>, password grant, header <code>x-oauthidentity-domain-name: {{fenix_auth_domain}}</code> e <code>Authorization: Basic</code> com credencial do client.</li>
+          <li>Pre-request da collection obtém e renova o token automaticamente quando ausente ou a menos de 60 s de expirar; grava em variável da collection (e do environment, se houver).</li>
+          <li>Equivale ao conteúdo do arquivo <code>postman/token</code>: endpoint OAM HML, domínio <code>VivoCustomerDomain</code>, scope <code>openid Customer.Profile</code>.</li>
+        </ul>
+        <h3>Variáveis da collection</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Variável</th><th>Uso</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td><code>fenix_auth_token_url</code>, <code>fenix_auth_domain</code>, <code>fenix_auth_scope</code></td><td>Token OAM VE</td><td><span class="tag green">Preenchidas</span></td></tr>
+              <tr><td><code>fenix_auth_basic_credentials</code></td><td>Credencial Basic do client OAM</td><td><span class="tag red">Preenchida dentro da collection</span> ver <a href="#seguranca">Segurança</a></td></tr>
+              <tr><td><code>fenix_auth_username</code>, <code>fenix_auth_password</code></td><td>Usuário OAM</td><td><span class="tag amber">Vazias, preencher localmente</span></td></tr>
+              <tr><td><code>idDesignador</code></td><td>Requests 01 e 02</td><td><span class="tag amber">Vazia</span></td></tr>
+              <tr><td><code>relatedServiceId</code>, <code>testSpecificationId</code>, <code>serviceTestExternalId</code></td><td>Request 03 (TMF653)</td><td><span class="tag red">Vazias, sem fonte de valor</span></td></tr>
+              <tr><td><code>transactionId</code>, <code>correlationId</code></td><td>Headers <code>X-Vivo-*</code></td><td><span class="tag amber">Vazias; scripts geram <code>{{$guid}}</code></span></td></tr>
+              <tr><td><code>fenix_wfm_preprod_slots_url</code>, <code>fenix_wfm_preprod_base_url</code></td><td>Requests 04, 05, 07</td><td><span class="tag red">Vazias, URL TBD</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="endpoints">
+        <h2>Endpoints em detalhe</h2>
+        <p>Cada bloco indica o endpoint esperado, o contrato de referência, como está na collection e o que falta configurar. A cor da borda indica o estado: verde pronto, âmbar ajustável agora, vermelho bloqueado.</p>
+
+        <div class="endpoint ok" id="ep-01">
+          <h3>01 · Consulta Massiva/Manutenção — INT01</h3>
+          <div class="request-line"><span class="method">GET</span>https://cssp-preprod.redecorp.br/customer-problem-management/v1/incidents?serviceDesignator={{idDesignador}}</div>
+          <dl class="kv">
+            <dt>Contrato</dt><dd>OpenAPI PREPROD do Customer Problem Management. Opcionais: <code>status</code>, <code>startDate</code>, <code>endDate</code> (janela padrão 180 dias). Resposta <code>{totalResults, incidents[{incidentId, status, type, source, openDate, expectedResolutionDate, description, affectedServices, serviceDesignator}]}</code>. O OpenAPI define 404 como “Object not found” (<code>ProblemDetailsDto</code>); a jornada trata 404 como falha. Sem massiva = 200 sem incidente aberto.</dd>
+            <dt>Headers</dt><dd><code>Authorization: Bearer</code>, <code>Accept: application/json</code>.</dd>
+            <dt>Na collection</dt><dd>Configurado; pre-request exige <code>idDesignador</code> e monta a URL com encode.</dd>
+            <dt>DEV</dt><dd><code>cssp-dev</code> retornava 503; <code>cssp-test</code> com certificado inválido.</dd>
+          </dl>
+          <div class="callout"><strong>Divergência aberta:</strong> o DFT v1.2 indica <code>POST https://cssp.redecorp.br/customer-problem-management/v1</code>; a API publicada responde em <code>GET /incidents</code> e retorna 405 para POST na raiz. Alternativa no mesmo contrato: <code>GET /customers/{customerId}/customerProblems</code>, que exige <code>X-Origin</code>, <code>X-System</code>, <code>X-Referer</code>, <code>X-TraceId</code>, <code>startDate</code>, <code>endDate</code> e <code>asset</code>. Falta também definir qual campo representa o protocolo exibido na US-02.</div>
+        </div>
+
+        <div class="endpoint partial" id="ep-02">
+          <h3>02 · Consulta BD aberto — INT03</h3>
+          <div class="request-line"><span class="method">GET</span>https://spmg-preprod.redecorp.azr/troubleTicketManagement/v1/troubleTicket?filter=designatorId:{{idDesignador}};status:Active;ticketType:Case</div>
+          <dl class="kv">
+            <dt>Contrato</dt><dd>OpenAPI Trouble Ticket V1.1.0 + <a href="../PreDataMapping%20FTAT-933%20-%20Consulta%20de%20BD%20-%20v2.0.xlsx">PreDataMapping Consulta BD v2.0</a>. No backend, o MS converte para ServiceNow <code>ticketType=Case&amp;sys_class_name=sn_sprb_mgmt_case&amp;active=true&amp;correlation_display=…</code>. A aba “MS T T x ServiceNow - Resp ERRO” registra HTTP 404 (K8), “No Record found for given filter criteria” (K16) e exemplo <code>code=60</code> (B22). Decisão funcional de 19/11: 404 com <code>code=60</code> é consulta concluída sem BD aberto; 200/206 sem ticket aberto também. Outros 404 são falha. A planilha documenta a resposta downstream; RUN-003 observou o caso na URL temporária ServiceNow, não no MS Trouble Ticket.</dd>
+            <dt>Headers exigidos</dt><dd><code>Authorization: Bearer</code>, <code>X-Vivo-Transaction-Id</code> (obrigatório no OpenAPI), <code>X-Vivo-Correlation-Id</code> (obrigatório no mapping).</dd>
+            <dt>Na collection</dt><dd>URL e filtro configurados; envia <code>X-Vivo-Transaction-Id</code>.</dd>
+            <dt>Falta</dt><dd><span class="tag amber">Adicionar</span> <code>X-Vivo-Correlation-Id</code>. Ajustar formato dos IDs (ver <a href="#rastreio">Headers de rastreio</a>).</dd>
+          </dl>
+          <div class="callout"><strong>Divergência:</strong> o DFT indica INT03 como <code>POST</code> com endpoint TBD; o OpenAPI e o mapping definem <code>GET /troubleTicket</code>. Confirmar com o time do Trouble Ticket antes de levar o conector à jornada.</div>
+        </div>
+
+        <div class="endpoint ok" id="ep-03">
+          <h3>03 · Solicitar diagnóstico HPSD — INT06</h3>
+          <div class="request-line"><span class="method">POST</span>https://api-hml.telefonica.com.br/gtw-redes/serviceTestManagement/v1/serviceTest</div>
+          <dl class="kv">
+            <dt>Contrato</dt><dd>OpenAPI GTW Redes Service Test Management V1.0.0, schema <code>ServiceTest_Create</code> (<code>name</code>, <code>relatedService</code>, <code>testSpecification</code> obrigatórios). Resposta 201 = aceite, não resultado.</dd>
+            <dt>Headers exigidos</dt><dd><code>Authorization: Bearer</code>, <code>X-Vivo-Transaction-Id</code> e <code>X-Vivo-Correlation-Id</code> (UUID v4, ambos obrigatórios). O callback deve ecoar <code>X-Vivo-Correlation-Id</code> em <code>correlationId</code>.</dd>
+            <dt>Na collection</dt><dd>Configurado com headers e body; scripts geram UUIDs quando as variáveis estão vazias.</dd>
+            <dt>Falta</dt><dd>Valores de <code>relatedServiceId</code>, <code>testSpecificationId</code> e <code>serviceTestExternalId</code>: o PreDataMapping de Diagnóstico não está disponível. Não assumir que <code>relatedService.id</code> é o designador.</dd>
+          </dl>
+<pre><code>{
+  "name": "Diagnostico automatico FTTH",
+  "relatedService": { "id": "{{relatedServiceId}}" },
+  "testSpecification": { "id": "{{testSpecificationId}}" },
+  "relatedParty": [{ "id": "{{serviceTestExternalId}}", "role": "ExternalId" }]
+}</code></pre>
+          <div class="callout blue"><strong>Premissa a validar:</strong> o OpenAPI não lista servidor “preprod”; a collection associa PREPROD a <code>api-hml</code>. Também não está confirmado que o token OAM VE seja aceito pelo gateway <code>api*.telefonica.com.br</code>.</div>
+          <h4>Request opcional sugerido</h4>
+          <p><code>GET /serviceTest/{id}</code> (mesmo contrato) para acompanhar o estado do teste enquanto o callback Kafka (INT10) não estiver disponível. Serve apenas para teste manual; a jornada continua aguardando o evento.</p>
+        </div>
+
+        <div class="endpoint" id="ep-int10">
+          <h3>— · Resultado do diagnóstico — INT10 (Kafka)</h3>
+          <div class="request-line"><span class="method">EVENT</span>telco.service.servicetestmanagement.servicetestresult</div>
+          <dl class="kv">
+            <dt>Natureza</dt><dd>Assíncrono, Kafka/AMQ, Service Test Result → Journey. Não é endpoint HTTP e não deve virar request fictício na collection.</dd>
+            <dt>Falta</dt><dd>Broker/cluster e credencial por ambiente, autorização do Elastic Journey como consumer, schema do evento, campo de correlação, formato canônico dos IDs 06/07/09/10, timeout e política para evento atrasado ou duplicado.</dd>
+          </dl>
+        </div>
+
+        <div class="endpoint blocked" id="ep-04">
+          <h3>04 · Consulta de slots WFM — INT11</h3>
+          <div class="request-line"><span class="method">POST</span>http://preprod.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1/searchTimeSlot <span class="tag amber">Recebida em 12 nov 2026</span></div>
+          <dl class="kv">
+            <dt>Contrato</dt><dd>DFT INT11 (Journey → WFM Orchestration, <code>ms-ooap-tlf-wfm-journey-v1</code>) + PreDataMapping Consulta de Slot WFM v2.2. Downstream TMF646 <code>POST https://oss.vivo.com.br/tmf-api/appointment/v1/searchTimeSlot</code> não substitui o INT11.</dd>
+            <dt>Respostas</dt><dd>200 com <code>availableTimeSlot[]</code>; <strong>204 No Content</strong> quando não há slot (não é falha técnica); 401 com “Jwt is expired”.</dd>
+            <dt>Na collection</dt><dd>URL vazia, sem headers específicos, body <code>{}</code>; pre-request bloqueia o envio.</dd>
+            <dt>Falta</dt><dd><span class="tag red">URL interna PREPROD</span> <span class="tag amber">Headers</span> <span class="tag amber">Body</span></dd>
+          </dl>
+          <h4>Headers do mapping v2.2</h4>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Header</th><th>Valor de referência</th></tr></thead>
+              <tbody>
+                <tr><td><code>Authorization</code></td><td><code>Bearer {{token}}</code> — o mapping escreve “Baerer”; não copiar o erro de grafia.</td></tr>
+                <tr><td><code>flow</code></td><td><code>B2B_MASSIVO</code></td></tr>
+                <tr><td><code>requestSystem</code></td><td><code>MVE</code></td></tr>
+                <tr><td><code>X-Vivo-Transaction-Id</code></td><td><code>TID_ELJY_FTAT933INT005_YYYY-MM-DDTHH24:MI:SS.FFFZ</code></td></tr>
+                <tr><td><code>X-Vivo-Correlation-Id</code></td><td><code>CID_VE_FTAT933INT001_YYYY-MM-DDTHH24:MI:SS.FFFZ</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <h4>Body derivado do mapping v2.2 (variante VIVO1)</h4>
+<pre><code>{
+  "relatedParty": { "role": "acronym", "name": "TT_B" },
+  "relatedEntity": [
+    { "role": "Ouvidoria", "id": "{{attendantId}}", "@type": "Attendant" }
+  ],
+  "requestedTimeSlot": [
+    { "validFor": { "startDateTime": "{{slotStart}}", "endDateTime": "{{slotEnd}}" } }
+  ],
+  "relatedPlace": {
+    "geographicAddress": {
+      "placePhysicalResourceAssoc": {
+        "resourceSpecificationCharacteristic": [ { "name": "mediaType", "value": "GPON" } ]
+      },
+      "telephonicArea": "{{telephonicArea}}",
+      "networkOwner": "VIVO1",
+      "cnl": "{{cnl}}",
+      "centralOffice": "{{centralOffice}}",
+      "geographicSite": { "@type": "Cabinet", "id": "{{geographicSiteId}}" }
+    }
+  }
+}</code></pre>
+          <p class="small">Caminhos e valores de domínio extraídos da aba “Camunda x WFM Journey REQ Vivo1”. O nome exato da lista em <code>placePhysicalResourceAssoc</code> aparece truncado na planilha (<code>resourceSpecificationCharacteris…</code>); confirmar. A variante VIVO2 está em aba própria. Pendente: como derivar <code>telephonicArea</code>, <code>cnl</code>, <code>centralOffice</code> e <code>geographicSite</code> a partir do asset do VE.</p>
+        </div>
+
+        <div class="endpoint blocked" id="ep-05">
+          <h3>05 · Criar Work Order — INT14</h3>
+          <div class="request-line"><span class="method">POST</span>http://preprod.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1/workOrder/appointment <span class="tag amber">Recebida em 12 nov 2026</span></div>
+          <dl class="kv">
+            <dt>Contrato</dt><dd>DFT INT14 (Journey → WFM Orchestration). Downstream INT15: TMF697 <code>POST /workOrderManagement/v2/workOrder</code> e TMF646 <code>POST /appointment/v1/appointment</code> — não chamar diretamente.</dd>
+            <dt>Na collection</dt><dd>URL depende de variável vazia; body <code>{}</code>; sem headers <code>X-Vivo-*</code>.</dd>
+            <dt>Falta</dt><dd><span class="tag amber">Origem dos dados do payload (P08)</span> <span class="tag amber">Swagger da resposta (P09)</span>. Estrutura do request recebida em 12 nov 2026 (<code>WorkOrder_Create</code> + <code>Appointment_Create</code>), ver <a href="#wfm-12nov">exemplos</a>. Confirmar qual ID volta (WO e/ou Appointment); pelo exemplo, o ID da WO é enviado pela jornada em <code>WorkOrder_Create.id</code> e reutilizado no cancelamento.</dd>
+          </dl>
+        </div>
+
+        <div class="endpoint partial" id="ep-06">
+          <h3>06 · Abrir BD — INT18</h3>
+          <div class="request-line"><span class="method">POST</span>https://spmg-preprod.redecorp.azr/troubleTicketManagement/v1/troubleTicket</div>
+          <dl class="kv">
+            <dt>Contrato</dt><dd>OpenAPI Trouble Ticket V1.1.0 + PreDataMapping Abertura de BD v2.1 (aba “Camunda x MS Trouble Ticket Req”). O MS orquestra TMF629 <code>POST /customer</code> e TMF621 <code>POST /troubleTicket</code> no ServiceNow.</dd>
+            <dt>Headers exigidos</dt><dd><code>Content-Type: application/json</code>, <code>Authorization: Bearer</code>, <code>X-Vivo-Transaction-Id</code> (<code>TID_ELJY_FTAT933INT009_…</code>, “gerado pelo MS”), <code>X-Vivo-Correlation-Id</code> (<code>CID_VE_FTAT933INT002_…</code>, “gerado pelo VE no início da jornada”).</dd>
+            <dt>Resposta</dt><dd>201; <code>externalIdentifier.id</code> = número do BD no ServiceNow (candidato a “protocolo”, Q08 do dossiê funcional).</dd>
+            <dt>Na collection</dt><dd>URL e <code>X-Vivo-Transaction-Id</code> configurados; body <code>{}</code> e pre-request bloqueia envio.</dd>
+            <dt>Falta</dt><dd><span class="tag amber">Body</span> <span class="tag amber">X-Vivo-Correlation-Id</span></dd>
+          </dl>
+          <h4>Campos do body (mapping v2.1)</h4>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Bloco</th><th>Campos</th></tr></thead>
+              <tbody>
+                <tr><td>Ticket (raiz)</td><td><code>@type=TroubleTicket</code>*, <code>ticketType=Case</code>*, <code>description</code>*, <code>severity</code>*, <code>requestedResolutionDate</code>, <code>expectedResolutionDate</code>, <code>name</code></td></tr>
+                <tr><td>Canal</td><td><code>name</code> (ex.: Alert, Portal, CallCenter), <code>@type=ServiceProblemCase</code></td></tr>
+                <tr><td>Entidades relacionadas</td><td>Itens <code>{@type, name, id}</code>: <code>ProductInventory</code>, <code>testSpecification</code>, <code>relatedServiceSpecification</code>, <code>relatedService</code> e <code>mode=Proactive</code>; tipos <code>Product</code>, <code>Service</code>, <code>ServiceTest</code></td></tr>
+                <tr><td>Cliente</td><td><code>@type=Customer</code>, <code>role=Digital</code>; <code>id</code> = id do cliente no Salesforce (<code>{{som_tmf629_gen_externalid}}</code>), <code>name</code>, <code>@referredType=CustomerContact</code></td></tr>
+                <tr><td>Meios de contato</td><td><code>EmailContactMedium</code>, <code>PhoneContactMedium</code>, <code>idCustomer</code> (id no ServiceNow, <code>{{som_tmf629_id_account}}</code>)</td></tr>
+                <tr><td>Characteristics — endereço</td><td><code>estadoDescricao</code>, <code>city</code>, <code>endBairro</code>, <code>postcode</code>, <code>telephonicArea</code>, <code>streetName</code>, <code>streetNr</code>, <code>complement</code></td></tr>
+                <tr><td>Characteristics — cliente e contato</td><td><code>reclamanteNome</code>, <code>documentNumber</code>, <code>clienteClassificacao</code>, <code>contatoLocal</code>, <code>telefoneContatoLocal1/2</code>, <code>telefoneTitular1/2</code>, <code>telefoneReclamante1/2</code>, <code>horarioFuncionamento</code>, <code>preferenciaContato</code></td></tr>
+                <tr><td>Characteristics — atendimento</td><td><code>motivo</code>, <code>submotivo</code>, <code>SLA</code>, <code>etapa</code>, <code>palitagemFinal</code>, <code>previsaoAtendimento</code>, <code>caseOrigin</code></td></tr>
+                <tr><td>Characteristics — serviço</td><td><code>tipoDescricao</code>, <code>tipoOferta</code>, <code>designadorAcesso</code>, <code>velocidade</code>, <code>servicoCpccNome</code></td></tr>
+                <tr><td>Characteristics — WFM e diagnóstico</td><td><code>WorkOrder</code>, <code>WorkOrderItem</code>, <code>idAppointment</code>, <code>payloadDiagnostico</code> (JSON escapado do evento do HPSD)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small">* obrigatório no mapping. O agrupamento em blocos segue os grupos numéricos da planilha; os nomes das propriedades-pai (ex.: <code>channel</code>, <code>relatedEntity</code>, <code>relatedParty</code>, <code>contactMedium</code>, <code>troubleTicketCharacteristic</code>) devem ser confirmados no mapping antes de montar o JSON. Os exemplos da planilha contêm dados de pessoa e empresa; não foram copiados para este dossiê e não devem ir para a collection — usar variáveis.</p>
+          <div class="callout"><strong>Dependências do body:</strong> <code>WorkOrder</code>, <code>WorkOrderItem</code> e <code>idAppointment</code> vêm da resposta do INT14; <code>payloadDiagnostico</code> vem do callback INT10; ids de cliente vêm do TMF629. Para testar o request 06 isolado, esses campos precisam de valores de massa de teste.</div>
+        </div>
+
+        <div class="endpoint blocked" id="ep-07">
+          <h3>07 · Cancelar Work Order — INT16</h3>
+          <div class="request-line"><span class="method">DELETE</span>http://preprod.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1/workOrder/{id}?reason=&amp;context= <span class="tag amber">Recebida em 12 nov 2026</span></div>
+          <dl class="kv">
+            <dt>Contrato</dt><dd>DFT INT16 (Journey → WFM Orchestration). Downstream INT17 TMF697 <code>DELETE /workOrderManagement/v2/workOrder/{workorder_id}</code> — não chamar diretamente.</dd>
+            <dt>Na collection</dt><dd>URL depende de variável vazia; sem parâmetro de ID; sem headers <code>X-Vivo-*</code>.</dd>
+            <dt>Falta</dt><dd><span class="tag amber">Valores de reason/context (P08)</span> <span class="tag amber">Respostas (P09)</span>. Só cancelar quando houver ID de WO válido (contradição da US-09, Q05 do dossiê funcional).</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section id="rastreio">
+        <h2>Headers de rastreio</h2>
+        <p>A collection gera <code>X-Vivo-Transaction-Id</code> e <code>X-Vivo-Correlation-Id</code> com <code>{{$guid}}</code>. Os PreDataMappings de Trouble Ticket e WFM definem outro formato; o OpenAPI do HPSD pede UUID v4.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Integração</th><th>X-Vivo-Transaction-Id</th><th>X-Vivo-Correlation-Id</th><th>Fonte</th></tr></thead>
+            <tbody>
+              <tr><td>INT03 Consulta BD</td><td>obrigatório</td><td>obrigatório</td><td>OpenAPI TT + mapping Consulta BD v2.0</td></tr>
+              <tr><td>INT06 HPSD</td><td>UUID v4</td><td>UUID v4</td><td>OpenAPI GTW Redes</td></tr>
+              <tr><td>INT11 Slots WFM</td><td><code>TID_ELJY_FTAT933INT005_&lt;timestamp UTC&gt;</code></td><td><code>CID_VE_FTAT933INT001_&lt;timestamp UTC&gt;</code></td><td>Mapping WFM v2.2</td></tr>
+              <tr><td>INT18 Abrir BD</td><td><code>TID_ELJY_FTAT933INT009_&lt;timestamp UTC&gt;</code></td><td><code>CID_VE_FTAT933INT002_&lt;timestamp UTC&gt;</code></td><td>Mapping Abertura BD v2.1</td></tr>
+              <tr><td>INT14 / INT16 WFM</td><td colspan="2">Não especificado (sem mapping)</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small">Timestamp no formato <code>YYYY-MM-DDTHH24:MI:SS.FFFZ</code>. O mapping de Abertura de BD diz que o Correlation-Id é gerado pelo VE no início da jornada; portanto, em runtime ele deve ser uma variável START repassada a todos os conectores, não um valor novo por chamada.</p>
+      </section>
+
+      <section id="token">
+        <h2>Token e autenticação</h2>
+        <ul class="plain-list">
+          <li><strong>Collection atual:</strong> token de usuário VE (password grant, <code>VivoCustomerDomain</code>, scope <code>openid Customer.Profile</code>). Funcionou para o INT01 em PREPROD.</li>
+          <li><strong>Runtime da jornada:</strong> o DFT prevê token sistêmico (SHD004 / Token Sistêmico, slide 15) e token exchange do OAM com o ServiceNow no gateway para TMF621/TMF629 (slide 9). A jornada não terá o token do usuário final.</li>
+          <li><strong>Collection anterior (ms-journey-v1):</strong> usava <code>{auth_base_url}/ms_oauth/oauth2/endpoints/vivooauthservice/tokens</code>; a nova usa o endpoint do arquivo <code>postman/token</code>. Definir qual é o oficial para os testes.</li>
+          <li><strong>Gateway HPSD:</strong> confirmar se <code>api-hml.telefonica.com.br</code> aceita o token OAM VE.</li>
+        </ul>
+      </section>
+
+      <section id="seguranca">
+        <h2>Segurança das credenciais</h2>
+        <div class="callout red"><strong>Credenciais em texto puro.</strong> O arquivo <code>postman/token</code> contém usuário, senha OAM e credencial Basic do client. A variável <code>fenix_auth_basic_credentials</code> está preenchida dentro da collection exportada.</div>
+        <ul class="plain-list">
+          <li>Mover credenciais para variáveis do tipo <code>secret</code> em environment local ou para o Vault do Postman.</li>
+          <li>Remover o arquivo <code>postman/token</code> após migrar os valores.</li>
+          <li>Não compartilhar a collection exportada enquanto contiver a credencial Basic. O diretório Fenix-VE não está versionado em Git; manter assim ou incluir regra de ignore antes de versionar.</li>
+          <li>Os PreDataMappings contêm dados de exemplo de pessoa e empresa; usar variáveis com massa de teste autorizada nos bodies.</li>
+        </ul>
+      </section>
+
+      <section id="wfm-12nov">
+        <h2>WFM Journey: recebido em 12 nov 2026</h2>
+        <p>O time WFM enviou a URL base PREPROD da API <code>workforceManagementJourney</code> e exemplos dos quatro requests do fluxo Elastic Journey → WFM. Observação do remetente: “desconsidere os valores, os valores serão definidos pelo caso de teste”.</p>
+        <dl class="kv">
+          <dt>URL PREPROD</dt><dd><code>http://preprod.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1</code></dd>
+          <dt>Host dos exemplos</dt><dd><code>http://esteira2.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1</code></dd>
+          <dt>Headers (todos)</dt><dd><code>Authorization: Bearer</code>, <code>Content-Type: application/json</code>, <code>X-Vivo-Correlation-Id</code>, <code>X-Vivo-Transaction-Id</code>, <code>flow: B2B_MASSIVO</code>, <code>requestSystem: MVE</code></dd>
+        </dl>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Operação (nome do WFM)</th><th>Request</th><th>INT</th></tr></thead>
+            <tbody>
+              <tr><td>Busca de capacidade</td><td><code>POST /searchTimeSlot</code></td><td>INT11</td></tr>
+              <tr><td>Criar workorder e agendamento juntos</td><td><code>POST /workOrder/appointment</code></td><td>INT14</td></tr>
+              <tr><td>Reagendamento</td><td><code>POST /appointment</code></td><td>Não usado pela jornada hoje</td></tr>
+              <tr><td>Cancelar workorder</td><td><code>DELETE /workOrder/{id}?reason=…&amp;context=…</code></td><td>INT16</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Pendências</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ID</th><th>Pendência</th><th>Detalhe</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td>P08</td><td>Origem dos dados do payload</td><td>
+                <p>A jornada recebe hoje só <code>designador</code>, <code>productStatus</code>, <code>correlationId</code>, <code>requestTimestamp</code> e os opcionais <code>wfm*</code>. Os exemplos pedem dados que a jornada não tem:</p>
+                <ul class="plain-list">
+                  <li><strong>INT14 · cliente</strong> (<code>CustomerValue</code>): categoria, documento, id, nome e contato (nome, e-mail, telefones).</li>
+                  <li><strong>INT14 · pedido</strong> (<code>CustomerOrderValue</code>): data da venda, id, protocolo e detalhe.</li>
+                  <li><strong>INT14 · endereço</strong> (<code>workOrderItem.place</code>): cnl e sigla, cidade, bairro, CEP, UF, código e nome do logradouro, número, coordenadas, armário e complemento.</li>
+                  <li><strong>INT14 · produtos</strong> (<code>relatedEntity</code>): banda larga, acesso, velocidade, IP fixo, roteador e seus designadores.</li>
+                  <li><strong>INT14 · agendamento</strong>: valor de <code>DETALHE</code> em <code>specification</code>, atendente (<code>Attendant</code>) e referência do endereço (<code>note</code>).</li>
+                  <li><strong>INT11</strong>: <code>postcode</code> e <code>microArea</code>, novos em relação ao mapping v2.2.</li>
+                  <li><strong>INT16</strong>: valores de <code>reason</code> e <code>context</code> (exemplo: <code>CHUVA</code> / <code>CLIENTE</code>) para os cancelamentos da US-09 e US-10.</li>
+                </ul>
+                <p>Enquanto não houver resposta, o motor monta a estrutura do exemplo e preenche esses campos com entradas opcionais <code>wo_&lt;campo&gt;</code> (<code>data_wo_&lt;campo&gt;</code> no motor) ou deixa nulo. Valores fixos copiados do exemplo e a confirmar: <code>sourceSystem=MVE</code>, <code>WorkOrderPendency.context=TRIAGEM</code>, <code>PRODUTO=Banda</code>, <code>TIPO=Defeito</code>, <code>SEQUENCIA=1/1</code>, <code>category=CORPORATE</code> e <code>description</code> do agendamento. O ID da WO enviado em <code>WorkOrder_Create.id</code> é o UUID gerado pela jornada (US-08); confirmar se o WFM aceita esse formato.</p>
+              </td><td><span class="tag red">Aguardando resposta</span> · time WFM / VE</td></tr>
+              <tr><td>P09</td><td>Swagger da API para entender a resposta</td><td>Obter o swagger/OpenAPI da <code>workforceManagementJourney</code> v1: status de sucesso e erro, corpo de resposta de cada operação e onde vêm os IDs da WO e do agendamento. Hoje o motor lê de forma provisória <code>id</code>, <code>workOrderId</code> ou <code>workOrder.id</code>, e <code>appointmentId</code>; a INT16 e a INT18 dependem desses IDs.</td><td><span class="tag red">Aguardando swagger</span> · time WFM</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout"><strong>Para confirmar junto:</strong> a URL recebida usa <code>http</code> (sem TLS); confirmar se existe <code>https</code>. A URL de DEV não foi enviada; os exemplos usam <code>esteira2</code>, que não está mapeado para nenhum ambiente do Elastic Journey.</div>
+
+        <h3>Exemplos recebidos</h3>
+        <p class="small">Estrutura copiada dos exemplos. Dados de pessoa e empresa (documento, nomes, e-mail, telefones e endereço do cliente) foram trocados por variáveis, como no restante deste dossiê; os demais valores são os do exemplo.</p>
+        <details class="exemplo">
+          <summary>Busca de capacidade · POST /searchTimeSlot (INT11)</summary>
+<pre><code>curl --request POST \
+  --url http://esteira2.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1/searchTimeSlot \
+  --header 'Authorization: Bearer ' \
+  --header 'Content-Type: application/json' \
+  --header 'X-Vivo-Correlation-Id: 222' \
+  --header 'X-Vivo-Transaction-Id: 111' \
+  --header 'flow: B2B_MASSIVO' \
+  --header 'requestSystem: MVE' \
+  --data '{
+  "relatedEntity": [],
+  "relatedParty": { "name": "TT_B", "role": "acronym" },
+  "relatedPlace": {
+    "geographicAddress": {
+      "country": "BR",
+      "postcode": "04605003",
+      "cnl": "11000",
+      "networkOwner": "VIVO1",
+      "telephonicArea": "CB",
+      "centralOffice": "VM",
+      "microArea": "IOC7",
+      "placePhysicalResourceAssoc": {
+        "resourceSpecificationCharacteristic": [ { "name": "mediaType", "value": "GPON" } ]
+      },
+      "geographicSite": { "@type": "Cabinet" }
+    }
+  },
+  "requestedTimeSlot": [
+    { "validFor": { "endDateTime": "2026-11-03T21:00:00.000-03:00", "startDateTime": "2026-10-18T21:00:00.000-03:00" } }
+  ]
+}'</code></pre>
+        </details>
+        <details class="exemplo">
+          <summary>Criar workorder e agendamento juntos · POST /workOrder/appointment (INT14)</summary>
+<pre><code>curl --request POST \
+  --url http://esteira2.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1/workOrder/appointment \
+  --header 'Authorization: Bearer ' \
+  --header 'Content-Type: application/json' \
+  --header 'X-Vivo-Correlation-Id: 222' \
+  --header 'X-Vivo-Transaction-Id: 111' \
+  --header 'flow: B2B_MASSIVO' \
+  --header 'requestSystem: MVE' \
+  --data '{
+  "WorkOrder_Create": {
+    "@type": "WorkOrder",
+    "sourceSystem": "MVE",
+    "id": "AL_WO20261021_1100",
+    "relatedParty": [
+      {
+        "@type": "CustomerValue",
+        "category": "ONE",
+        "documentNumber": "{{documentNumber}}",
+        "id": "001Ot000t6ChyIAEFG",
+        "name": "{{customerName}}",
+        "contactMedium": [
+          {
+            "@type": "ContactMediumValue",
+            "name": "{{contactName}}",
+            "characteristic": [
+              {
+                "@type": "ContactMediumValueCharacteristic",
+                "emailAddress": "{{emailAddress}}",
+                "mobileNumber": "{{mobileNumber}}",
+                "phoneNumber": "{{phoneNumber}}",
+                "workNumber": "{{workNumber}}"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "@type": "CustomerOrderValue",
+        "dateOfSale": "2025-10-30T23:35:14.000Z",
+        "id": "500W400000lPdj3IAC",
+        "orderProtocol": "31072026-8572624",
+        "characteristic": [ { "@type": "Characteristic", "name": "Detail", "value": "REDE SATURADA;SA-1004" } ]
+      },
+      { "@type": "WorkOrderPendency", "context": "TRIAGEM" }
+    ],
+    "workOrderItem": [
+      {
+        "@type": "WorkOrderItem",
+        "id": "AL_WO20261021_1100:1",
+        "place": {
+          "@type": "GeographicAddress",
+          "cnl": "41000",
+          "cnlAcronym": "CTA",
+          "city": "Curitiba",
+          "neighborhood": "{{neighborhood}}",
+          "postcode": "{{postcode}}",
+          "stateOrProvince": "PR",
+          "streetCode": "{{streetCode}}",
+          "streetName": "{{streetName}}",
+          "streetNr": "{{streetNr}}",
+          "networkOwner": "VIVO2",
+          "accessTechnology": "GPON",
+          "centralOffice": "",
+          "telephonicArea": "",
+          "geographicLocation": { "@type": "GeographicLocation", "bbox": [ "{{longitude}}", "{{latitude}}" ] },
+          "geographicSite": { "@type": "Cabinet", "id": "PRCTA_G1D23" },
+          "geographicSubAddress": { "@type": "GeographicSubAddress", "name": "{{complemento}}" }
+        },
+        "relatedEntity": [
+          {
+            "@type": "ProductEntity", "id": "0QLOt000003UxfGOAS", "name": "Banda Larga", "action": "Ativo", "status": "Ativo",
+            "characteristic": [
+              { "@type": "Characteristic", "name": "Code", "value": "21000" },
+              { "@type": "Characteristic", "name": "Designator", "value": "CTA-WFM116145-013" },
+              { "@type": "Characteristic", "name": "Technology", "value": "GPON" }
+            ]
+          },
+          {
+            "@type": "ProductEntity", "id": "0QLOt000003UxfHOAS", "name": "ACESSO", "status": "Ativo", "action": "Ativo",
+            "characteristic": [ { "@type": "Characteristic", "name": "Designator", "value": "CTA-WFMTT1161001-069" } ]
+          },
+          { "@type": "ProductEntity", "id": "Banda Larga-VEL", "name": "500 Mbps", "action": "Ativo", "status": "Ativo" },
+          { "@type": "ProductEntity", "id": "Banda Larga-IPFIXO", "name": "IP Fixo", "action": "Ativo", "status": "Ativo" },
+          { "@type": "ProductEntity", "id": "Roteador", "name": "HGU", "status": "Ativo", "action": "Ativo" }
+        ],
+        "specification": {
+          "acronym": "TT_B",
+          "type": "TROUBLETICKET",
+          "specificationDescription": [
+            { "name": "PRODUTO", "value": "Banda" },
+            { "name": "TIPO", "value": "Defeito" },
+            { "name": "DETALHE", "value": "Autenticação" },
+            { "name": "SEQUENCIA", "value": "1/1" }
+          ]
+        }
+      }
+    ]
+  },
+  "Appointment_Create": {
+    "description": "Agendamento da atividade",
+    "category": "CORPORATE",
+    "canBeAntecipated": true,
+    "externalId": "AL_WO20261021_1100:1",
+    "scheduleDate": "2026-10-22",
+    "relatedParty": [
+      { "@type": "Attendant", "id": "Cliente via Vivo Empresa", "role": "" },
+      {
+        "@type": "TimeSlot",
+        "id": "15:30-17:30",
+        "resourceId": "BKT_GRUPO_02_NV_FB",
+        "resourceName": "Bucket - Bucket_Curitiba Vivo",
+        "validFor": { "startDateTime": "2026-10-22T15:30:00.000-03:00", "endDateTime": "2026-10-22T17:30:00.000-03:00" }
+      }
+    ],
+    "note": [
+      { "id": "CRM_NOTES", "text": "Agendamento realizado pelo cliente no fluxo de aceite de proposta no Vivo Empresas" },
+      { "id": "ADDRESS_REFERENCE", "text": "{{referenciaEndereco}}" }
+    ]
+  }
+}'</code></pre>
+        </details>
+        <details class="exemplo">
+          <summary>Reagendamento · POST /appointment (não usado pela jornada hoje)</summary>
+<pre><code>curl --request POST \
+  --url http://esteira2.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1/appointment \
+  --header 'Authorization: Bearer ' \
+  --header 'Content-Type: application/json' \
+  --header 'X-Vivo-Correlation-Id: 222' \
+  --header 'X-Vivo-Transaction-Id: 111' \
+  --header 'flow: B2B_MASSIVO' \
+  --header 'requestSystem: MVE' \
+  --data '{
+  "description": "Agendamento da atividade",
+  "category": "CORPORATE",
+  "canBeAntecipated": true,
+  "externalId": "AL_WO20261021_1100:1",
+  "scheduleDate": "2026-10-23",
+  "relatedParty": [
+    { "@type": "Attendant", "id": "Cliente via Vivo Empresa", "role": "" },
+    {
+      "@type": "TimeSlot",
+      "id": "15:30-17:30",
+      "resourceId": "BKT_GRUPO_02_NV_FB",
+      "resourceName": "Bucket - Bucket_Curitiba Vivo",
+      "validFor": { "startDateTime": "2026-10-23T15:30:00.000-03:00", "endDateTime": "2026-10-23T17:30:00.000-03:00" }
+    }
+  ],
+  "note": [
+    { "id": "CRM_NOTES", "text": "Agendamento realizado pelo cliente no fluxo de aceite de proposta no Vivo Empresas" },
+    { "id": "ADDRESS_REFERENCE", "text": "{{referenciaEndereco}}" }
+  ]
+}'</code></pre>
+        </details>
+        <details class="exemplo">
+          <summary>Cancelar workorder · DELETE /workOrder/{id} (INT16)</summary>
+<pre><code>curl --request DELETE \
+  --url 'http://esteira2.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1/workOrder/AL_WO20261021_1100?reason=CHUVA&amp;context=CLIENTE' \
+  --header 'Authorization: Bearer ' \
+  --header 'Content-Type: application/json' \
+  --header 'X-Vivo-Correlation-Id: 222' \
+  --header 'X-Vivo-Transaction-Id: 111' \
+  --header 'flow: B2B_MASSIVO' \
+  --header 'requestSystem: MVE'</code></pre>
+        </details>
+      </section>
+
+      <section id="perguntas">
+        <h2>Decisões (P01–P07, A–D)</h2>
+        <p>Respostas recebidas em 07 nov 2026. A–D detalham P01, P03 e P04 e a forma de aplicar na jornada.</p>
+        <ol class="questions">
+          <li><strong>Token oficial dos testes</strong>A collection deve usar o endpoint OAM do arquivo <code>token</code> ou o <code>ms_oauth/…/tokens</code> da collection anterior? O mesmo token vale para o gateway do HPSD?<p class="state"><b>Respondida</b> · usar o token já configurado na collection (OAM VE) para todos os endpoints. <b>B:</b> na jornada, o token é enviado no header <code>Authorization</code> da chamada; não é declarado como variável de entrada.</p></li>
+          <li><strong>Formato dos IDs de rastreio</strong>Seguir o padrão <code>TID_…</code>/<code>CID_…</code> dos mappings (exceto HPSD, que exige UUID) ou manter GUID na collection?<p class="state"><b>Respondida</b> · seguir o padrão dos mappings. Na jornada: <code>X-Vivo-Transaction-Id = TID_ELJY_FTAT933&lt;INT do mapping&gt;_{{requestTimestamp}}</code> e <code>X-Vivo-Correlation-Id = {{correlationId}}</code> enviado pelo VE; HPSD sem mapping mantém UUID v4 (OpenAPI).</p></li>
+          <li><strong>Operação do INT01</strong>Manter <code>GET /incidents</code> (validado) ou incluir também <code>GET /customers/{customerId}/customerProblems</code>? Qual campo é o protocolo da US-02?<p class="state"><b>Respondida parcialmente</b> · manter <code>GET /incidents</code> e incluir <code>customerProblems</code> na collection. <b>Campo protocolo: aguardando resposta.</b> · Q03 do dossiê funcional</p></li>
+          <li><strong>INT03/INT18 = MS Trouble Ticket</strong>Confirmar que o endpoint “TBD” do DFT é o próprio <code>spmg-*/troubleTicketManagement/v1</code>, com <code>GET</code> para consulta e <code>POST</code> para abertura.<p class="state"><b>Respondida</b> · confirmado o MS Trouble Ticket, prioridade ao DFT. <b>A:</b> a consulta (INT03) fica em <code>GET</code>, conforme OpenAPI e mapping Consulta BD v2.0 — no contrato atual, <code>POST /troubleTicket</code> cria ticket. A abertura (INT18) é <code>POST</code>.</p></li>
+          <li><strong>URLs da WFM Orchestration</strong>Base PREPROD do <code>ms-ooap-tlf-wfm-journey-v1</code> para INT11, INT14 e INT16, e mappings de criação/cancelamento de WO.<p class="state"><b>Parcialmente respondida em 12 nov 2026</b> · recebidos a URL PREPROD e exemplos de request (ver <a href="#wfm-12nov">WFM: recebido em 12 nov 2026</a>). Seguem abertas a origem dos dados (P08), o swagger (P09) e a URL de DEV · time WFM (Alcemir, Gustavo) · relacionada às Q04/Q05</p></li>
+          <li><strong>IDs do TMF653</strong>Origem dos valores de <code>relatedService.id</code>, <code>testSpecification.id</code> e ExternalId (PreDataMapping de Diagnóstico).<p class="state"><b>Aguardando resposta</b> · time HPSD (Frank Mendes) · relacionada à Q07</p></li>
+          <li><strong>Request auxiliar de diagnóstico</strong>Incluir <code>GET /serviceTest/{id}</code> na collection para acompanhar o teste enquanto o Kafka não estiver disponível?<p class="state"><b>Aguardando resposta</b></p></li>
+          <li><strong>C — Telas de Massiva e BD</strong>Retirar previsão/protocolo das telas enquanto os campos estão pendentes?<p class="state"><b>Respondida</b> · não. As telas ficam como no Figma; a pendência fica registrada na nota associada à etapa (ver <a href="#notas">Notas de pendência</a>).</p></li>
+          <li><strong>D — Onde ajustar a jornada</strong>Editar o script atual ou criar um novo?<p class="state"><b>Respondida</b> · criar um novo. Criado <code>skills/jornada_abertura_bd_ve_integracoes.mjs</code>; <code>jornada_abertura_bd_ve.mjs</code> ficou intacto.</p></li>
+        </ol>
+      </section>
+
+      <section id="jornada">
+        <h2>Ajustes aplicados na jornada</h2>
+        <div class="callout green"><strong>Jornada vigente (08 nov 2026): “Fenix - Abertura de BD”</strong>, v1 PUBLISHED no Journey Admin local (ID no admin <code>d7ca10d6-655c-4585-afa5-39147e068349</code>, gerado pelo sistema), criada por <code>skills/jornada_fenix_abertura_bd.mjs</code>. BPMN organizado em <code>fenix-ve-abertura-bd.bpmn</code>, com id de processo <code>fenix-ve-abertura-bd</code> (no motor local o processo publicado continua <code>Journey_d7ca10d6655c4585afa539147e068349</code>; alinhar no deploy do motor customizado, Q12).
+          <br><strong>Variáveis de entrada (START):</strong> somente <code>designador</code>, <code>productStatus</code>, <code>correlationId</code> e <code>requestTimestamp</code> — no motor, <code>data_designador</code>, <code>data_productStatus</code>, <code>data_correlationId</code> e <code>data_requestTimestamp</code>. Os campos dos mappings que dependiam de outras entradas (headers UUID e IDs do TMF653, dados WFM e dados do BD) ficam vazios nos bodies até a origem ser definida.
+          <br>A jornada “Abertura de BD pelo VE” (<code>d580235c…</code>), descrita abaixo, foi mantida como estava.</div>
+        <p>Jornada <code>d580235c-4362-4c73-9eb7-252bed23113c</code> (“Abertura de BD pelo VE”, produto Vivo empresas - VE) no Journey Admin local. O script grava o fluxo completo, gera a versão e tenta publicar.</p>
+        <div class="callout"><strong>Resultado da execução (07 nov 2026 02:04):</strong> fluxo salvo com 54 etapas, 68 ligações, 6 seções e 15 notas; a versão v3 DRAFT foi reaproveitada. A publicação foi bloqueada (422) apenas por <code>Aguarda resultado do diagnóstico</code> sem cluster, tópico e credencial de mensageria (INT10) — nenhuma outra violação foi apontada.</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Etapa</th><th>Antes</th><th>Agora</th><th>Decisão</th></tr></thead>
+            <tbody>
+              <tr><td>Início</td><td>7 variáveis (inclui <code>transactionId</code>)</td><td>59 variáveis: asset, <code>correlationId</code>, <code>requestTimestamp</code>, IDs do TMF653 (<code>hpsdTransactionId</code>/<code>hpsdCorrelationId</code> em UUID), <code>wfm_*</code> e <code>bd_*</code>. <strong>Em “Fenix - Abertura de BD”: 4 variáveis</strong> (<code>designador</code>, <code>productStatus</code>, <code>correlationId</code>, <code>requestTimestamp</code>).</td><td>P02, PreDataMappings; decisão de 08/11</td></tr>
+              <tr><td>Consulta Massiva (INT01)</td><td><code>POST …/customer-problem-management/v1</code>; decisão por HTTP 200</td><td><code>GET https://cssp-preprod.redecorp.br/customer-problem-management/v1/incidents?serviceDesignator={{data_designador}}</code>; decisão por <code>totalResults &gt; 0</code></td><td>P03</td></tr>
+              <tr><td>Consulta BD (INT03)</td><td>URL TBD, <code>POST</code></td><td><code>GET https://spmg-preprod.redecorp.azr/troubleTicketManagement/v1/troubleTicket?filter=designatorId:…;status:Active;ticketType:Case</code> + TID INT003 + CID</td><td>P04 / A</td></tr>
+              <tr><td>Solicita diagnóstico (INT06)</td><td>Headers com <code>transactionId</code>/<code>correlationId</code></td><td>Headers com <code>hpsdTransactionId</code>/<code>hpsdCorrelationId</code> (UUID v4); URL <code>https://api-hml.telefonica.com.br/gtw-redes/serviceTestManagement/v1/serviceTest</code></td><td>P02</td></tr>
+              <tr><td>Consulta horários (INT11)</td><td>URL TBD, sem body</td><td>URL TBD; headers <code>flow</code>, <code>requestSystem</code>, TID INT005, CID; body VIVO1 do mapping v2.2</td><td>P05 pendente</td></tr>
+              <tr><td>Cria WO (INT14) / Cancela WO (INT16)</td><td>URL TBD</td><td>URL TBD; header CID (sem prefixo TID no mapping)</td><td>P05 pendente</td></tr>
+              <tr><td>Cria BD (INT18)</td><td>URL TBD, sem body</td><td><code>POST https://spmg-preprod.redecorp.azr/troubleTicketManagement/v1/troubleTicket</code> + TID INT009 + CID; body do mapping v2.1; saídas <code>bdCriadoId</code> e <code>bdCriadoNumero</code> (<code>externalIdentifier.id</code>)</td><td>P04</td></tr>
+              <tr><td>Aguarda diagnóstico (INT10)</td><td colspan="2">Sem alteração</td><td>P07 / Q07 pendentes</td></tr>
+              <tr><td>Telas</td><td colspan="2">Sem alteração</td><td>C</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small">Nenhum conector recebe o token como variável: o header <code>Authorization</code> é responsabilidade de quem executa a chamada (decisão B). Os hosts são os de PREPROD; os de produção estão em <a href="#ambientes">URLs por ambiente</a>.</p>
+      </section>
+
+      <section id="notas">
+        <h2>Notas de pendência por etapa</h2>
+        <p>Verificado no canvas: toda etapa com integração tem uma nota ligada informando decisão e pendências. Antes do ajuste, a Consulta BD dividia uma nota genérica com WFM/BD e as telas de impedimento não tinham nota sobre previsão/protocolo.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Etapa(s)</th><th>Pendências registradas na nota</th></tr></thead>
+            <tbody>
+              <tr><td>Início</td><td>Entradas: <code>designador</code>, <code>productStatus</code>, <code>correlationId</code>, <code>requestTimestamp</code>. Origem dos demais dados exigidos pelos mappings (IDs do TMF653, WFM, BD) — campos vazios nos bodies (Q01/P06).</td></tr>
+              <tr><td>Todas as integrações REST</td><td>Token no header <code>Authorization</code> (B); formato TID/CID (P02).</td></tr>
+              <tr><td>Consulta Massiva</td><td>Campo protocolo da US-02 (P03) — <code>massivaProtocolo</code> com jsonPath provisório; <code>massivaPrevisaoConclusao</code> lê <code>incidents[0]</code> e falha com lista vazia — ajustar antes de executar.</td></tr>
+              <tr><td>Consulta BD</td><td>Resposta é lista e não traz previsão; <code>bdProtocoloAtendimento</code> e <code>bdPrevisaoConclusao</code> com jsonPath provisório (Q08).</td></tr>
+              <tr><td>Telas de impedimento (Massiva + atraso, Massiva + visita, Massiva, Visita)</td><td>Previsão e protocolo dependem dos campos pendentes de Massiva (P03) e BD (Q08); podem aparecer vazios.</td></tr>
+              <tr><td>Solicita diagnóstico</td><td>Headers <code>X-Vivo-*</code> (UUID v4), <code>relatedService.id</code>, <code>testSpecification.id</code> e ExternalId vazios — origem não definida (P06).</td></tr>
+              <tr><td>Aguarda diagnóstico</td><td>Cluster local de laboratório (mesma configuração da publicação anterior), não é o broker de PREPROD; schema e correlação do callback (Q07); <code>GET /serviceTest/{id}</code> (P07).</td></tr>
+              <tr><td>Consulta horários</td><td>URL interna (P05); attendant, janela de datas e dados de rede/endereço vazios até definir a origem; variante VIVO2; response mapping provisório.</td></tr>
+              <tr><td>Cria WO / Cancela WO</td><td>Base URL, mappings e prefixo TID (P05); saídas de WO provisórias.</td></tr>
+              <tr><td>Cria BD</td><td>Preenchidos: <code>designadorAcesso</code>, <code>WorkOrder</code> e <code>previsaoAtendimento</code> (data + período, inferido). Demais campos do ticket, cliente, contato e características vazios até definir a origem; <code>WorkOrderItem</code>, <code>idAppointment</code> e <code>payloadDiagnostico</code> dependem do mapping do INT14 (P05) e do callback (Q07); <code>@type</code> dos itens de <code>relatedEntity</code> a confirmar; protocolo exibido (Q08).</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="qa-contrato-entrada-20261117">
+        <h2>Contrato de entrada e comparações QA — 17 nov 2026</h2>
+        <p><strong>Decisão confirmada pelo usuário:</strong> o VE consulta o Asset antes de iniciar a jornada. A INT00 no QA representa essa etapa externa; o BPMN deverá receber as informações necessárias como variáveis de início. Não incluir uma consulta obrigatória de Asset dentro do BPMN por inferência. Os ajustes futuros no BPMN e no Postman dependem de aprovação explícita.</p>
+        <p>Este registro consolida a rodada de QA desta conversa. As seções anteriores mantêm o histórico; não significam que todas as propostas foram implantadas. Nesta rodada foram alterados o HTML de QA, seu servidor local e testes, não o BPMN nem a coleção exportada.</p>
+        <h3>Fontes e evidências</h3>
+        <ul>
+          <li>Resposta real da INT00: HTTP 200, dois itens em <code>content[]</code>. Seleção pelo índice do Asset; não misturar cliente, produto e rede de acessos distintos.</li>
+          <li>Planilha <a href="../PreDataMapping%20FTAT-933%20-%20Abertura%20de%20BD%20-%20v2.1.xlsx">PreDataMapping Abertura de BD v2.1</a>, aba <code>Camunda x MS Trouble Ticket Req</code>, extraída diretamente. Não foi localizada uma versão v1.</li>
+          <li>Comparação com <a href="../fenix-ve-abertura-bd-v1/fenix-ve-abertura-bd.bpmn">BPMN local</a>, gerador e <a href="../qa-integracoes/fenix-ve-integracoes.html">QA</a>. A tabela e o exemplo JSON da planilha divergem; não declarar o conflito homologado.</li>
+        </ul>
+        <h3>Entradas candidatas para o início da instância</h3>
+        <p>Nomes sem prefixo abaixo representam entradas em <code>variables</code> na fachada; o motor usa os nomes correspondentes com <code>data_</code>. Validar o contrato real de início, as declarações START e o registry antes de implementar. Não enviar credenciais nem substituir <code>Authorization</code> por variável de negócio.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Entradas</th><th>Origem comprovada ou pendência</th><th>Uso</th></tr></thead>
+          <tbody>
+            <tr><td><code>designador</code>, <code>productStatus</code></td><td>Asset selecionado: característica <code>idDesignador</code> e <code>status</code>. Confirmar normalização para a regra de bloqueio financeiro; não equiparar estados diferentes automaticamente.</td><td>INT01, INT03, INT06 e avaliação de impedimentos.</td></tr>
+            <tr><td><code>wo_productId</code>, <code>wo_customerId</code>, <code>wo_customerName</code>, <code>wo_documentNumber</code></td><td><code>content[i].id</code>; <code>relatedParty[0].partyOrPartyRole.id/name</code>; característica <code>documentNumber</code> do cliente.</td><td>INT14. Não presumir que os IDs sejam os identificadores Salesforce/ServiceNow exigidos pela INT18.</td></tr>
+            <tr><td><code>wfmPostcode</code>, <code>wo_city</code>, <code>wo_stateOrProvince</code>, <code>wo_streetName</code>, <code>wo_streetNr</code></td><td><code>content[i].place[0].place</code>: <code>postcode</code>, <code>city</code>, <code>stateOrProvince</code>, <code>streetName</code>, <code>streetNr</code>.</td><td>INT11/INT14 e campos equivalentes da INT18 quando a semântica for compatível. UF não comprova descrição por extenso.</td></tr>
+            <tr><td><code>wfmCnl</code>, <code>wfmNetworkOwner</code>, <code>wfmMediaType</code>, <code>wfmTelephonicArea</code>, <code>wfmCentralOffice</code>, <code>wfmMicroArea</code>, <code>wfmGeographicSiteId</code></td><td>Origem exata ainda a confirmar no Asset/VE. Valores 11000/CB/VM/SP, VIVO1 e GPON usados no QA são massa de laboratório, não mapeamento certificado para todo Asset.</td><td>INT11 e INT14.</td></tr>
+            <tr><td><code>wo_*</code> adicionais e <code>bd_*</code>: contato, classificação, pedido, coordenadas, serviço, cliente Salesforce/ServiceNow e diagnóstico</td><td>Completar contrato do VE e caminhos de origem; manter entrada manual no QA onde não há fonte comprovada. Não inventar IDs, contatos ou resultados de diagnóstico.</td><td>INT14 e INT18. A INT18 do QA expõe os campos da tabela e reaproveita os dados disponíveis.</td></tr>
+            <tr><td><code>correlationId</code>, <code>requestTimestamp</code>, <code>hpsdTestSpecificationId</code>, <code>issServiceNow</code></td><td>Metadados/configuração do chamador, não inferidos do Asset. Usuário confirmou <code>spec-ftth-gpon-basico</code> para testes da INT06. O iss fixo no QA não decide por si só a configuração produtiva.</td><td>Rastreio, INT06 e INT03.</td></tr>
+          </tbody>
+        </table></div>
+        <h3>Pendências para aprovação do BPMN e Postman</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>ID</th><th>Comparação</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>QA-BPMN-01</td><td>INT03: 200/206 = consulta concluída; HTTP 404 com <code>code=60</code> = consulta concluída sem BD aberto, conforme decisão confirmada em 19/11 e exemplo da aba “MS T T x ServiceNow - Resp ERRO” do PreDataMapping Consulta BD v2.0. Outros 404 são falha. RUN-003 observou o caso no endpoint temporário ServiceNow. A INT01 é diferente: 404 permanece falha conforme OpenAPI do CPM.</td><td>Regra observada na jornada; homologar INT03 pelo MS.</td></tr>
+            <tr><td>QA-BPMN-02</td><td>INT06: QA usa a especificação informada pelo usuário. O BPMN depende da entrada de início; conferir preenchimento no chamador, sem hardcode universal.</td><td>Contrato de início pendente.</td></tr>
+            <tr><td>QA-BPMN-03</td><td>INT11: resposta real do WFM passou de 200 para 500 durante a janela instável. Horário manual no QA é simulado, não aprovação da integração nem fallback produtivo autorizado.</td><td>Retestar em ambiente estável.</td></tr>
+            <tr><td>QA-BPMN-04</td><td>INT14: QA lê idWorkOrder/idWorkOrderItem/idWork e usa INT007 no rastreio, como o gerador/BPMN. Não equiparar idWork a idAppointment. Cliente/endereço/contato/pedido devem vir das entradas ou de fontes confirmadas.</td><td>Homologação e massa pendentes.</td></tr>
+            <tr><td>QA-BPMN-05</td><td>INT18: tabela exige raiz TroubleTicket e channel.@type ServiceProblemCase; BPMN usa raiz ServiceProblemCase e canal sem @type. Comparar relatedEntity e dados de cliente. O QA segue a tabela; o exemplo da planilha tem divergências.</td><td>BPMN alinhado à tabela em 18 nov; divergência tabela × exemplo em QA-BPMN-13.</td></tr>
+            <tr><td>QA-BPMN-06</td><td>INT18: WorkOrder e WorkOrderItem vêm da INT14; idAppointment requer origem confirmada. payloadDiagnostico deve vir do diagnóstico final, não do simples aceite 201 da INT06. Consulta e criação de BD não têm necessariamente a mesma base temporária.</td><td>Origem dos IDs, resultado e endpoint de criação a homologar.</td></tr>
+            <tr><td>QA-BPMN-07</td><td>INT16: não cancelar automaticamente WO após BD criado. QA impede essa sequência; cancelamento é caso separado. Parâmetros padrão de laboratório: PROBLEMAS SISTEMICOS/SISTEMICO, rastreio INT008.</td><td>Validar os ramos de falha/abandono com a jornada real.</td></tr>
+            <tr><td>QA-BPMN-08</td><td>Atualizar coordenadamente contrato de início, START/snapshot/registry, BPMN e gerador, testes e a coleção exportada aprovada. Não trocar artefatos ou versões implantadas automaticamente.</td><td>Aguardando aprovação e implementação.</td></tr>
+            <tr><td>QA-BPMN-09</td><td>INT16: primeira aba <code>Camunda x WFM Journey - Request</code> do <a href="../PreDataMapping%20FTAT-933%20-%20Cancelamento%20%20de%20WO%20e%20agendamento%20-%20v1.1.xlsx">PreDataMapping Cancelamento de WO e agendamento v1.1</a> extraída diretamente. Headers obrigatórios: Authorization, flow=B2B_MASSIVO, requestSystem=MVE e transação INT008; correlação opcional. DELETE /workOrder/{idWorkOrder}, reason=PROBLEMAS SISTEMICOS e context=SISTEMICO obrigatórios. QA passa a mostrar os padrões nos campos e validar ID, parâmetros e headers mesmo em edição avançada. Manter Bearer correto: a planilha escreve Baerer. Body tem ocorrência máxima zero, embora exemplo mostre {}; mantido sem payload. BPMN/gerador já montam esse path e defaults. A primeira aba não especifica responses; aceitação atual de 202/204 no QA não comprova cancelamento concluído e precisa homologação separada.</td><td>Request ajustado e validado offline; sem DELETE real. BPMN e Postman não alterados.</td></tr>
+            <tr><td>QA-BPMN-10</td><td><strong>Divergência — qual designador cada integração usa.</strong> Decisão: a jornada recebe <strong>um único</strong> <code>designador</code> no início. Os data mappings, porém, indicam designadores diferentes:
+              <ul>
+                <li><strong>INT01 Massiva</strong> — <a href="../PreDataMapping%20FTAT-933%20-%20Consulta%20de%20Massivas%20-%20v2.1.xlsx">Consulta de Massivas v2.1</a>, aba <code>Camunda x MS Request</code>: <code>serviceDesignator</code> obrigatório, domínio “Designador do serviço (<strong>final 013</strong>)”.</li>
+                <li><strong>INT03 Consulta BD</strong> — <a href="../PreDataMapping%20FTAT-933%20-%20Consulta%20de%20BD%20-%20v2.0.xlsx">Consulta de BD v2.0</a>, aba <code>Camunda x MS Trouble Ticket Req</code>: exemplo <code>designatorId:SPO-SF703229-<strong>069</strong></code> (acesso).</li>
+                <li><strong>INT06 HPSD</strong> — <a href="../PreDataMapping%20FTAT-933%20-%20Diagn%C3%B3stico%20Autom%C3%A1tico%20-%20v2.0.xlsx">Diagnóstico Automático v2.0</a>, aba <code>Camunda x HPSD - Request</code>: <code>relatedParty</code> role <code>AccessDesignator</code> e <code>relatedService.id</code>, exemplo <code>SPO-SF123456-<strong>069</strong></code> (acesso).</li>
+                <li><strong>INT18 Abertura BD</strong> — <a href="../PreDataMapping%20FTAT-933%20-%20Abertura%20de%20BD%20-%20v2.1.xlsx">Abertura de BD v2.1</a>, aba <code>Camunda x MS Trouble Ticket Req</code>: característica <code>designadorAcesso</code>, exemplo <code>SPO-SF703229-<strong>069</strong></code> (acesso).</li>
+                <li><strong>Início da jornada</strong> — Consulta de Massivas v2.1, aba <code>VE x Camunda - Request</code>: <code>externalIdentifier</code> = “id designador”, sem dizer qual.</li>
+              </ul>
+              O Asset devolve os dois para o mesmo cliente: item <code>productFamily=Internet</code> (<code>SPO-SF897657-013</code>) e item <code>productFamily=Acesso</code> (<code>SPO-SF897658-069</code>). Hoje o BPMN usa o mesmo <code>designador</code> em INT01, INT03, INT06 e INT18.
+              <br><strong>Perguntas aos times:</strong> (1) CPM/SIGITM: a INT01 aceita o designador de acesso (-069) ou só o de serviço (-013)? (2) Trouble Ticket/ServiceNow: INT03 e INT18 usam o de acesso? (3) HPSD: confirma o de acesso? (4) VE: qual designador será enviado em <code>externalIdentifier</code>/<code>designador</code>?</td><td>Pendente — questionar times. Sem alteração no BPMN até a resposta.</td></tr>
+            <tr><td>QA-BPMN-11</td><td><strong>Exceção temporária — URL da Consulta BD (INT03).</strong> No preprod, <code>FENIX_VE_TT_BASE_URL</code> está temporariamente em <code>https://api-hml.telefonica.com.br/serviceNowTroubleTicket/v1</code> apenas para não travar os testes de início de jornada. A URL correta é a do MS <code>https://spmg-preprod.redecorp.azr/troubleTicketManagement/v1</code>, usada também pela INT18. Decisão (18 nov): <strong>não</strong> separar a variável no BPMN; INT03 e INT18 continuam compartilhando <code>FENIX_VE_TT_BASE_URL</code>.
+              <br><strong>Atenção:</strong> enquanto a exceção estiver ativa, o <code>POST /troubleTicket</code> da INT18 executado pelo motor também vai para o endereço temporário, sem passar pelo MS que orquestra TMF629/TMF621. Não considerar teste da INT18 pelo motor como válido nesse período. A página de QA e o Postman já usam a URL do MS para a INT18.</td><td>Temporário — voltar <code>FENIX_VE_TT_BASE_URL</code> para a URL do MS quando a consulta funcionar por ele.</td></tr>
+            <tr><td>QA-BPMN-12</td><td><strong>Divergência — formato dos headers <code>X-Vivo-*</code> da INT06 (HPSD).</strong>
+              <ul>
+                <li><a href="../PreDataMapping%20FTAT-933%20-%20Diagn%C3%B3stico%20Autom%C3%A1tico%20-%20v2.0.xlsx">Diagnóstico Automático v2.0</a>, aba <code>Camunda x HPSD - Request</code>: <code>X-Vivo-Transaction-Id</code> = <code>TID_ELJY_FTAT933INT004_YYYY-MM-DDTHH24:MI:SS.FFFZ</code> (gerado pelo Camunda) e <code>X-Vivo-Correlation-Id</code> = <code>CID_VE_FTAT933INT001_…</code> (gerado pelo VE, ou seja, o <code>correlationId</code> da jornada).</li>
+                <li><a href="../Gtw%20Redes%20Service%20Test%20Management-V1.0.0-API.json">OpenAPI GTW Redes Service Test Management v1.0.0</a>, <code>POST /serviceTest</code>: os dois headers são obrigatórios com <code>format: uuid</code> (“Should be a UUID v4”); o <code>X-Vivo-Correlation-Id</code> “must be echoed back in the callback event body field 'correlationId'”.</li>
+                <li>BPMN, QA e Postman hoje enviam UUID v4 aleatório nos dois headers; a INT06 recebeu 201 assim no teste real (RUN-QA-20261117-01).</li>
+              </ul>
+              <strong>Pergunta ao time HPSD/GTW:</strong> o gateway aceita o formato do mapping (<code>TID_…</code>/<code>CID_VE_…</code>) ou exige UUID v4? Se exigir UUID, o mapping precisa ser corrigido; se aceitar o formato do mapping, o BPMN passa a usar o TID INT004 e o <code>correlationId</code> da jornada. A INT06 (<code>Node_SolicitaDiagnostico</code>) e o GET do resultado (<code>Node_ConsultaResultadoDiagnostico</code>) usam a mesma regra.</td><td>Pendente — questionar time. BPMN mantém UUID v4 até a resposta.</td></tr>
+            <tr><td>QA-BPMN-13</td><td><strong>Divergência — INT18: tabela × exemplo JSON da mesma aba.</strong> Na aba <code>Camunda x MS Trouble Ticket Req</code> do <a href="../PreDataMapping%20FTAT-933%20-%20Abertura%20de%20BD%20-%20v2.1.xlsx">PreDataMapping Abertura de BD v2.1</a>, a tabela de campos e o exemplo JSON no fim da aba não batem:
+              <ul>
+                <li><strong>Raiz:</strong> tabela <code>@type = TroubleTicket</code> (obrigatório); exemplo <code>"@type": "ServiceProblemCase"</code>.</li>
+                <li><strong>Canal:</strong> tabela exige <code>channel.@type = ServiceProblemCase</code>; exemplo traz só <code>channel.name = Alert</code>.</li>
+                <li><strong>Cliente:</strong> tabela <code>relatedParty[].role = Digital</code>; exemplo <code>role = Fênix</code>.</li>
+                <li><strong>Entidades:</strong> tabela <code>entity.@type = ServiceTest</code> para ProductInventory e testSpecification; exemplo <code>entity.@type = ProductInventory</code> e <code>name = relatedEntity</code>.</li>
+              </ul>
+              Decisão provisória (18 nov): BPMN, QA e Postman seguem a <strong>tabela</strong> (raiz TroubleTicket, channel.@type ServiceProblemCase, role Digital, entity.@type ServiceTest). Também aplicado: as 36 características sempre enviadas (nome obrigatório; valor vazio quando não houver, como no exemplo), endereço/cliente/contato reaproveitados de <code>wo_*</code>/<code>wfm*</code> com <code>bd_&lt;campo&gt;</code> como sobrescrita, <code>partyOrPartyRole.id</code> = <code>wo_customerId</code> (ID Salesforce; <code>bd_customerId</code> saiu das entradas obrigatórias) e <code>previsaoAtendimento</code> no formato do exemplo (<code>dd/MM/yyyy HH:mm-HH:mm</code>).
+              <br><strong>Pergunta ao time Trouble Ticket:</strong> qual estrutura o MS aceita — a da tabela ou a do exemplo?</td><td>Pendente — questionar time. BPMN segue a tabela até a resposta.</td></tr>
+            <tr><td>QA-BPMN-14</td><td><strong>Pendência — INT18: característica <code>estadoDescricao</code>.</strong> O exemplo do mapping traz o estado por extenso (<code>"São Paulo"</code>), mas a entrada disponível na jornada, <code>wo_stateOrProvince</code>, é a UF (<code>"SP"</code>), formato exigido pelo WFM na INT14. Hoje o BPMN envia a UF, com <code>bd_estadoDescricao</code> como sobrescrita opcional.
+              <br><strong>Perguntas:</strong> (1) Time Trouble Ticket: a característica aceita a UF ou exige o nome por extenso? (2) Se exigir por extenso: o VE envia <code>bd_estadoDescricao</code> no início da jornada (passaria a ser obrigatória) ou a jornada converte a UF?</td><td>Pendente — questionar times. BPMN envia a UF até a resposta.</td></tr>
+            <tr><td><strong>QA-BPMN-15</strong></td><td><strong>⚠ Pendência crítica — INT14 não cria WO pela jornada.</strong> Corpo do BPMN e da Postman diverge do curl oficial do WFM (<code>sourceSystem</code>, Attendant, <code>Code</code>, produtos, <code>Detail</code>/<code>ADDRESS_REFERENCE</code>, UF e campos <code>null</code>) e 22 campos não têm origem definida. Curl do WFM e página de QA ajustada criaram WO com 200 em preprod (18 nov). Detalhes em <a href="#pendencia-critica">Pendência crítica</a>.</td><td><span class="tag red">Urgente</span> Aguardando times WFM/VE definirem a origem dos dados; BPMN e Postman sem alteração até lá.</td></tr>
+          </tbody>
+        </table></div>
+        <h3>Rodada de testes</h3>
+        <p><strong>RUN-QA-20261117-01 — QA local, sem publicação BPMN:</strong> INT00 200; INT01 200 após timeout; INT03 206; INT06 201. INT11 e uma tentativa de INT14 receberam 500 do WFM. Ambiente instável por horário informado pelo usuário. WO enviada <code>VEf3cc44b0-39a7-4767-9415-4a240f1918c2</code>, transação <code>TID_ELJY_FTAT933INT007_2026-11-18T00:47:52.133Z</code>: criação sem confirmação; reconciliar antes de repetir ou cancelar. INT18/INT16 não executadas. Não registrar tokens neste dossiê.</p>
+        <p><strong>RUN-QA-20261118-02 — QA local, “Percorrer a jornada” com a INT14 ajustada ao curl do WFM:</strong> INT00 200; INT01 200; INT03 404 code 60 (sem BD aberto); INT06 201; INT11 200 com horários; INT14 200 (WO <code>VE1002285c-8bc4-4988-a65d-fdbcfe4c9e5b</code>, <code>idWork</code> 319140298); INT18 500 esperado (serviço de criação de BD ainda não existe: <code>/customtokensfa/servicenow/token</code>); INT16 200 (WO cancelada). A INT16 passou a rodar no fluxo da página independentemente do resultado da INT18 (só depende da WO da INT14).</p>
+        <p><strong>RUN-QA-20261119-05 — QA local, “Percorrer a jornada” (23:18 UTC):</strong> INT00 200; INT01 200; INT03 404 code 60 (sem BD aberto); INT06 500; INT11 200 com 60 horários; INT14 200 (WO <code>VE226f3fc6-a02f-4323-82ca-99188fc51698</code>); INT18 500; INT16 200 (WO cancelada). Respostas sanitizadas e uso nos cenários em <a href="../qa-integracoes/evidencias/2026-11-19-rodada-completa/README.md">RUN-005</a>.</p>
+      </section>
+
+      <section id="acoes">
+        <h2>Ações propostas na collection</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Ação</th><th>Requests</th><th>Depende de</th></tr></thead>
+            <tbody>
+              <tr><td>Adicionar <code>X-Vivo-Correlation-Id</code></td><td>02, 06</td><td><span class="tag green">Pode ser feito agora</span></td></tr>
+              <tr><td>Adicionar <code>X-Vivo-Transaction-Id</code> e <code>X-Vivo-Correlation-Id</code></td><td>04, 05, 07</td><td><span class="tag green">Pode ser feito agora</span></td></tr>
+              <tr><td>Adicionar headers <code>flow</code> e <code>requestSystem</code> e body VIVO1 parametrizado</td><td>04</td><td><span class="tag green">Pode ser feito agora</span>; envio depende da URL</td></tr>
+              <tr><td>Montar body parametrizado do mapping v2.1</td><td>06</td><td><span class="tag amber">Confirmar nomes das propriedades-pai</span></td></tr>
+              <tr><td>Ajustar formato dos IDs de rastreio</td><td>02, 04, 06</td><td>Pergunta P02</td></tr>
+              <tr><td>Incluir <code>GET /serviceTest/{id}</code></td><td>novo</td><td>Pergunta P07</td></tr>
+              <tr><td>Preencher URLs WFM</td><td>04, 05, 07</td><td>Pergunta P05</td></tr>
+              <tr><td>Migrar credenciais para <code>secret</code>/Vault e remover <code>postman/token</code></td><td>collection</td><td><span class="tag red">Recomendado antes de compartilhar</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="footer">Este dossiê registra o estado das integrações em 07 nov 2026, com as informações do WFM recebidas em 12 nov 2026. Atualizar as tabelas e perguntas diretamente nesta página quando houver respostas.</div>
+      </section>
+      <section id="qa-cenarios-20261117">
+        <h2>Cenários de validação da rodada QA</h2>
+        <div class="table-wrap"><table>
+          <thead><tr><th>ID</th><th>Cenário</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>QA-C01</td><td>Consultar Asset e reaproveitar os campos comprovados na mesma sessão.</td><td>Passou no QA; contrato de início ainda a implementar/aprovar.</td></tr>
+            <tr><td>QA-C02</td><td>INT01/INT03/INT06 recebem respostas válidas.</td><td>Passou na rodada; não comprova disponibilidade contínua.</td></tr>
+            <tr><td>QA-C03</td><td>INT11 confirma slot real.</td><td>Bloqueado na rodada final por 500; houve sucesso anterior.</td></tr>
+            <tr><td>QA-C04</td><td>Escolher amanhã ao meio-dia manualmente após falha da INT11 e preparar INT14.</td><td>Passou em teste local; disponibilidade não confirmada.</td></tr>
+            <tr><td>QA-C05</td><td>Criar WO e agendamento com sucesso confirmado.</td><td>Falhou: HTTP 500; reconciliar tentativa antes de nova escrita.</td></tr>
+            <tr><td>QA-C06</td><td>Montar INT18 conforme tabela do mapping, com fontes e campos manuais.</td><td>Passou em testes offline; sem homologação real.</td></tr>
+            <tr><td>QA-C07</td><td>Abrir BD e testar cancelamento com política de vínculo correta.</td><td>Bloqueado: sem WO confirmada; INT18/INT16 não executadas.</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+    </main>
+  </div>
+  <script>
+    const themeButtons = document.querySelectorAll('[data-theme-choice]');
+
+    function setTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+      themeButtons.forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.themeChoice === theme));
+      });
+      try { localStorage.setItem('fenix-dossie-theme', theme); } catch {}
+    }
+
+    themeButtons.forEach((button) => {
+      button.addEventListener('click', () => setTheme(button.dataset.themeChoice));
+    });
+    setTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+  </script>
+</body>
+</html>

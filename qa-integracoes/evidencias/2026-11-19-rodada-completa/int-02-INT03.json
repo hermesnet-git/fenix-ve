@@ -1,0 +1,34 @@
+{
+  "integracao": "INT03",
+  "estado": "Operacional",
+  "motivo": null,
+  "verificacoes": [
+    {
+      "ok": true,
+      "texto": "HTTP esperado (200/206/404) recebido 404"
+    },
+    {
+      "ok": true,
+      "texto": "404 com code 60 (No Record found) = sem BD aberto"
+    }
+  ],
+  "requisicao": {
+    "linha_e_headers": "GET https://api-hml.telefonica.com.br/serviceNowTroubleTicket/v1/troubleTicket?ticketType=Case&sys_class_name=sn_sprb_mgmt_case&active=true&correlation_display=[DESIGNADOR SUPRIMIDO]",
+    "corpo": "Accept: application/json\nX-Vivo-Transaction-Id: TID_ELJY_FTAT933INT003_2026-11-19T23:18:34.128Z\nX-Vivo-Correlation-Id: CID_VE_FTAT933_QA_1794958245367\niss: 3912e8705df940629d040c63cad9c0bc\nAuthorization: Bearer [REMOVIDO]"
+  },
+  "resposta": {
+    "status": "HTTP 404 · 550 ms",
+    "headers": "content-type: application/json\ndate: Thu, 19 Nov 2026 23:18:34 GMT\nmax-forwards: 20\nserver-timing: t;desc=\"eace0f17fb20\", sem_wait;dur=0, sesh_wait;dur=0\nx-content-type-options: nosniff\nx-correlationid: Id-ca83ff6a90cf7a84866fdf53 0\nx-is-logged-in: true\nx-qa-transport: local\nx-transaction-id: eace0f17fb20",
+    "corpo": {
+      "code": 60,
+      "reason": "Resource not found",
+      "message": "No Record found for given filter criteria",
+      "details": [
+        {
+          "message": "No Record found for given filter criteria",
+          "datapath": ""
+        }
+      ]
+    }
+  }
+}

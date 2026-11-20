@@ -1,0 +1,169 @@
+// BODY DO REQUEST DO WO
+{
+ "WorkOrder_Create": {
+  "@type": "WorkOrder",
+  "id": "c5ddd0aa-cf9b-42e4-bb21-d3b61aa79b9e",
+  "relatedParty": [
+   {
+    "@type": "CustomerValue",  
+    "id": "001Ot000t6ChyIAEFG",  
+    "name": "PANIFICADORA SUPERPAO",
+    "documentNumber": "80902352000171",
+    "category": "ONE",
+    "contactMedium": [
+     {
+      "@type": "ContactMediumValue",
+      "name": "João da Silva",
+      "characteristic": [
+       {
+        "@type": "ContactMediumValueCharacteristic",
+        "emailAddress": "gustavo.souza.ext@telefonica.com",
+        "mobileNumber": "11920001000",
+        "phoneNumber": "1120001000",
+        "workNumber": "1130002000"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "@type": "CustomerOrderValue",
+    "id": "500W400000lPdj3IAC",
+    "dateOfSale": "2026-11-12T23:35:14.000Z",
+    "orderProtocol": "31072026-8572624",
+    "characteristic": [
+     {
+      "@type": "Characteristic",
+      "name": "Detail",
+      "value": "REDE SATURADA;SA-1004"
+     }
+    ]
+   },
+   {
+    "@type": "WorkOrderPendency",
+    "context": "TRIAGEM"
+   }
+  ],
+  "workOrderItem": [
+   {
+    "@type": "WorkOrderItem",
+    "id": "c5ddd0aa-cf9b-42e4-bb21-d3b61aa79b9e:1",
+    "relatedEntity": [
+     {
+      "@type": "ProductEntity",
+      "id": "Banda Larga-IPFIXO",
+      "name": "Banda Larga",
+      "action": "Ativo",
+      "status": "Ativo",
+      "characteristic": [
+       {
+        "@type": "Characteristic",
+        "name": "Designator",
+        "value": "CTA-SF716278-013"
+       },
+       {
+        "@type": "Characteristic",
+        "name": "Technology",
+        "value": "GPON"
+       }
+      ]
+     }
+    ],
+    "place": {
+     "@type": "GeographicAddress",
+     "postcode": "04612070",
+     "stateOrProvince": "SP",
+     "streetNr": "184",
+     "geographicSubAddress": {
+      "@type": "GeographicSubAddress",
+      "@type": "GeographicSubAddress",
+      "name": ""
+     },
+     "city": "São Paulo",
+     "streetName": "Rua Álvaro Nunes",
+     "streetCode": "13277",
+     "cnl": "11000",
+     "cnlAcronym": "11000",
+     "neighborhood": "Vila Congonhas",
+     "accessTechnology": "GPON",
+     "networkOwner": "VIVO1",
+     "centralOffice": "VM",
+     "telephonicArea": "CB",
+     "geographicLocation": {
+      "@type": "GeographicLocation",
+      "bbox": [
+       -49.32869,
+       -25.44258
+      ]
+     },
+     "geographicSite": {
+      "@type": "Cabinet",
+      "id": ""
+     }
+    },
+    "specification": {
+     "@type": "Specification",
+     "acronym": "TT_B",
+     "type": "TROUBLETICKET",
+     "specificationDescription": [
+      {
+       "@type": "SpecificationDescription",
+       "name": "PRODUTO",
+       "value": "Banda"
+      },
+      {
+       "@type": "SpecificationDescription",
+       "name": "TIPO",
+       "value": "Defeito"
+      },
+      {
+       "@type": "SpecificationDescription",
+       "name": "DETALHE",
+       "value": ""
+      },
+      {
+       "@type": "SpecificationDescription",
+       "name": "SEQUENCIA",
+       "value": "1/1"
+      }
+     ]
+    }
+   }
+  ],
+  "sourceSystem": "MVE"
+ },
+ "Appointment_Create": {
+  "category": "CORPORATE",
+  "description": "Agendamento da atividade",
+  "externalId": "c5ddd0aa-cf9b-42e4-bb21-d3b61aa79b9e:1",
+  "canBeAntecipated": false,
+  "note": [
+   {
+    "id": "CRM_NOTES",
+    "text": "Agendamento realizado pelo cliente na jornada Fenix - Abertura de BD (VE)"
+   },
+   {
+    "id": "ADDRESS_REFERENCE",
+    "text": ""
+   }
+  ],
+  "relatedParty": [
+   {
+    "@type": "Attendant",
+    "id": "",
+    "role": ""
+   },
+   {
+    "id": "10:00-10:30",
+    "resourceId": "BKT_CURITIBA_RS_FB",
+    "resourceName": "Bucket - Bucket_Curitiba Rs",
+    "validFor": {
+     "endDateTime": "2026-11-16T10:30:00.000-03:00",
+     "startDateTime": "2026-11-16T10:00:00.000-03:00"
+    },
+    "@type": "TimeSlot"
+   }
+  ],
+  "scheduleDate": "2026-11-14"
+ }
+}

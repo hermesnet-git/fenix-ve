@@ -1,0 +1,164 @@
+{
+  "cenario": "B-05/B-09",
+  "etapa": "verifica_bloqueio",
+  "quando": "2026-11-19T22:47:49.319Z",
+  "http": 200,
+  "observacoes": {
+    "massivaErro": "request timed out"
+  },
+  "resposta": {
+    "processInstanceId": "2d4adb84-e46b-11f1-8248-06dfec022e82",
+    "previousActivityId": "Node_Inicio",
+    "activityId": "Node_FalhaConsulta",
+    "activityType": "userTask",
+    "executionId": "2d4adb84-e46b-11f1-8248-06dfec022e82",
+    "taskId": "Node_FalhaConsulta",
+    "status": "ACTIVE",
+    "activeProcessInstanceId": "2d4adb84-e46b-11f1-8248-06dfec022e82",
+    "variables": {
+      "data_requestTimestamp": "2026-11-19T22:47:19.280Z",
+      "data_wo_customerCategory": "[DADO SUPRIMIDO]",
+      "channel": "MOBILE",
+      "data_wo_streetName": "[DADO SUPRIMIDO]",
+      "data_wo_workNumber": "[DADO SUPRIMIDO]",
+      "data_wo_orderDetail": "[DADO SUPRIMIDO]",
+      "data_temMassiva": false,
+      "data_wfmCentralOffice": "[DADO SUPRIMIDO]",
+      "data_wo_phoneNumber": "[DADO SUPRIMIDO]",
+      "data_wo_longitude": "[DADO SUPRIMIDO]",
+      "data_correlationId": "CID_VE_FTAT933_QA_1795128439280",
+      "data_wo_acessoId": "[DADO SUPRIMIDO]",
+      "data_wo_streetCode": "[DADO SUPRIMIDO]",
+      "data_designador": "[DADO SUPRIMIDO]",
+      "_lastAnswerKeys": "[DADO SUPRIMIDO]",
+      "data_wo_documentNumber": "[DADO SUPRIMIDO]",
+      "data_massivaPrevisaoConclusao": "[DADO SUPRIMIDO]",
+      "data_wo_customerName": "[DADO SUPRIMIDO]",
+      "data_wo_latitude": "[DADO SUPRIMIDO]",
+      "data_wo_productId": "[DADO SUPRIMIDO]",
+      "data_wo_orderProtocol": "[DADO SUPRIMIDO]",
+      "assignee": "ve-app",
+      "data_wo_addressReference": "[DADO SUPRIMIDO]",
+      "data_wo_detail": "[DADO SUPRIMIDO]",
+      "Node_ConsultaMassiva-status": null,
+      "data_wo_dateOfSale": "[DADO SUPRIMIDO]",
+      "data_wo_mobileNumber": "[DADO SUPRIMIDO]",
+      "data_wo_cnlAcronym": "[DADO SUPRIMIDO]",
+      "data_wfmTelephonicArea": "[DADO SUPRIMIDO]",
+      "data_bd_relatedServiceId": "[DADO SUPRIMIDO]",
+      "data_wo_acessoDesignador": "[DADO SUPRIMIDO]",
+      "Node_ConsultaMassiva-response": "[DADO SUPRIMIDO]",
+      "data_wo_contactName": "[DADO SUPRIMIDO]",
+      "data_bd_relatedServiceSpecificationId": "[DADO SUPRIMIDO]",
+      "data_issServiceNow": "[DADO SUPRIMIDO]",
+      "data_wo_neighborhood": "[DADO SUPRIMIDO]",
+      "data_wfmMediaType": "[DADO SUPRIMIDO]",
+      "data_wfmAttendantId": "[DADO SUPRIMIDO]",
+      "data_wo_stateOrProvince": "[DADO SUPRIMIDO]",
+      "data_wfmGeographicSiteId": "[DADO SUPRIMIDO]",
+      "data_wo_streetNr": "[DADO SUPRIMIDO]",
+      "data_wfmNetworkOwner": "[DADO SUPRIMIDO]",
+      "data_productStatus": "bloqueio",
+      "trigger": "[DADO SUPRIMIDO]",
+      "data_massivaProtocolo": "[DADO SUPRIMIDO]",
+      "data_bd_productInventoryId": "[DADO SUPRIMIDO]",
+      "data_wo_orderId": "[DADO SUPRIMIDO]",
+      "data_wfmPostcode": "[DADO SUPRIMIDO]",
+      "data_wo_complement": "[DADO SUPRIMIDO]",
+      "data_wfmCnl": "[DADO SUPRIMIDO]",
+      "data_wo_city": "[DADO SUPRIMIDO]",
+      "data_wo_emailAddress": "[DADO SUPRIMIDO]",
+      "data_consultaMassivaOk": false,
+      "data_wo_customerId": "[DADO SUPRIMIDO]"
+    },
+    "matchedTransition": {
+      "kind": "linear",
+      "label": null,
+      "eventName": null
+    },
+    "form": {
+      "id": null,
+      "name": "Não conseguimos verificar",
+      "description": null,
+      "sdui": {
+        "schemaVersion": "1.0.0",
+        "catalogVersion": "1.0.0",
+        "journeyId": "a33acd94-31d3-401e-b8cd-f50506e45667",
+        "journeyVersion": 1,
+        "uiStepId": "Node_FalhaConsulta",
+        "status": "published",
+        "publishedAt": "2026-11-09T12:00:00Z",
+        "supportedTargets": [
+          "react.mobile",
+          "flutter.mobile"
+        ],
+        "minRendererVersion": {
+          "react.mobile": "[DADO SUPRIMIDO]",
+          "flutter.mobile": "[DADO SUPRIMIDO]"
+        },
+        "dataSources": {},
+        "data": [
+          "ui.screen",
+          {
+            "id": "screen_falhaconsulta",
+            "title": "Suporte técnico",
+            "version": "1.0.0",
+            "scrollable": true,
+            "paddingToken": "[DADO SUPRIMIDO]",
+            "backgroundToken": "[DADO SUPRIMIDO]"
+          },
+          [
+            [
+              "ui.stack",
+              {
+                "id": "stack_falhaconsulta",
+                "version": "1.0.0",
+                "alignment": "stretch",
+                "direction": "vertical",
+                "spacingToken": "[DADO SUPRIMIDO]"
+              },
+              [
+                [
+                  "ui.alert",
+                  {
+                    "id": "fc_alerta",
+                    "title": "Não conseguimos verificar agora",
+                    "message": "Tivemos um problema para consultar as informações do seu serviço. Fale com o atendimento Vivo.",
+                    "version": "1.0.0",
+                    "severity": "warning",
+                    "dismissible": false
+                  }
+                ],
+                [
+                  "ui.button",
+                  {
+                    "id": "fc_btn",
+                    "size": "medium",
+                    "label": "Ir para o início",
+                    "$events": {
+                      "onPress": {
+                        "action": "action.navigate",
+                        "params": {
+                          "target": "HOME_APP"
+                        }
+                      }
+                    },
+                    "loading": false,
+                    "variant": "primary",
+                    "version": "1.0.0",
+                    "disabled": false,
+                    "fullWidth": true
+                  }
+                ]
+              ]
+            ]
+          ]
+        ]
+      },
+      "context": {
+        "form": {},
+        "data": "[DADOS SUPRIMIDOS]"
+      }
+    }
+  }
+}

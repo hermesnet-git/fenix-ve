@@ -1,0 +1,20 @@
+{
+  "integracao": "INT16",
+  "estado": "Operacional",
+  "motivo": null,
+  "verificacoes": [
+    {
+      "ok": true,
+      "texto": "HTTP esperado (200/202/204) recebido 200"
+    }
+  ],
+  "requisicao": {
+    "linha_e_headers": "DELETE http://preprod.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1/workOrder/VE226f3fc6-a02f-4323-82ca-99188fc51698?reason=PROBLEMAS%20SISTEMICOS&context=SISTEMICO",
+    "corpo": "Accept: application/json\nX-Vivo-Transaction-Id: TID_ELJY_FTAT933INT008_2026-11-19T23:18:38.216Z\nflow: B2B_MASSIVO\nrequestSystem: MVE\nX-Vivo-Correlation-Id: CID_VE_FTAT933_QA_1794958245367\nAuthorization: Bearer [REMOVIDO]"
+  },
+  "resposta": {
+    "status": "HTTP 200 · 1297 ms",
+    "headers": "date: Thu, 19 Nov 2026 23:18:39 GMT\nserver: istio-envoy\nx-envoy-upstream-service-time: 1254\nx-qa-transport: local\nx-vivo-correlation-id: CID_VE_FTAT933_QA_1794958245367\nx-vivo-transaction-id: TID_ELJY_FTAT933INT008_2026-11-19T23:18:38.216Z",
+    "corpo": "(corpo vazio)"
+  }
+}

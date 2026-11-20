@@ -1,0 +1,206 @@
+{
+    "modalidade": "hibrida: scripts e gateways do BPMN com respostas reais da rodada e simuladas para servi\u00e7os fora",
+    "limites": "Sem Camunda, fachada, Kafka ou telas. Spin de slots substitu\u00eddo por string JSON.",
+    "resultados": [
+        {
+            "cenario": "B-11",
+            "origem": "simulado",
+            "entrada": {
+                "http": 500
+            },
+            "esperado": "Node_FalhaConsulta",
+            "observado": "Node_FalhaConsulta",
+            "passou": true
+        },
+        {
+            "cenario": "B-01 (INT03 404/code 60)",
+            "origem": "real",
+            "entrada": {
+                "http": 404
+            },
+            "esperado": "Node_AvaliaImpedimentos",
+            "observado": "Node_AvaliaImpedimentos",
+            "passou": true
+        },
+        {
+            "cenario": "T-04/H-01",
+            "origem": "real",
+            "entrada": {
+                "http": 500
+            },
+            "esperado": "Node_FalhaConsulta",
+            "observado": "Node_FalhaConsulta",
+            "passou": true
+        },
+        {
+            "cenario": "T-04/H-01",
+            "origem": "simulado",
+            "entrada": {
+                "http": 201
+            },
+            "esperado": "Node_AguardaDiagnostico",
+            "observado": "Node_AguardaDiagnostico",
+            "passou": true
+        },
+        {
+            "cenario": "W-01",
+            "origem": "real",
+            "entrada": {
+                "http": 200,
+                "horarios": 60
+            },
+            "esperado": "DISPONIVEL",
+            "observado": "DISPONIVEL",
+            "passou": true
+        },
+        {
+            "cenario": "W-01-rota",
+            "origem": "real",
+            "entrada": {
+                "http": 200
+            },
+            "esperado": "Node_EscolheHorario",
+            "observado": "Node_EscolheHorario",
+            "passou": true
+        },
+        {
+            "cenario": "W-06",
+            "origem": "simulado (HTTP 204 visto em execu\u00e7\u00e3o do usu\u00e1rio; resposta n\u00e3o salva)",
+            "entrada": {
+                "http": 204
+            },
+            "esperado": "SEM_SLOT",
+            "observado": "SEM_SLOT",
+            "passou": true
+        },
+        {
+            "cenario": "W-06-rota",
+            "origem": "simulado (HTTP 204 visto em execu\u00e7\u00e3o do usu\u00e1rio; resposta n\u00e3o salva)",
+            "entrada": {
+                "http": 204
+            },
+            "esperado": "Node_SemHorarios",
+            "observado": "Node_SemHorarios",
+            "passou": true
+        },
+        {
+            "cenario": "W-04",
+            "origem": "simulado",
+            "entrada": {
+                "http": 500
+            },
+            "esperado": "Node_FalhaConsulta",
+            "observado": "Node_FalhaConsulta",
+            "passou": true
+        },
+        {
+            "cenario": "W-02",
+            "origem": "real",
+            "entrada": {
+                "http": 200
+            },
+            "esperado": true,
+            "observado": true,
+            "passou": true
+        },
+        {
+            "cenario": "W-02-rota",
+            "origem": "real",
+            "entrada": {
+                "http": 200
+            },
+            "esperado": "Node_CriaBD",
+            "observado": "Node_CriaBD",
+            "passou": true
+        },
+        {
+            "cenario": "W-05",
+            "origem": "simulado",
+            "entrada": {
+                "http": 500,
+                "woNumero": "VE-SIMULADO"
+            },
+            "esperado": "Node_CancelaWOAgendamento",
+            "observado": "Node_CancelaWOAgendamento",
+            "passou": true
+        },
+        {
+            "cenario": "BD-02",
+            "origem": "real (INT18 500)",
+            "entrada": {
+                "statuses": [
+                    500
+                ]
+            },
+            "esperado": "Node_RetentarBD",
+            "observado": "Node_RetentarBD",
+            "passou": true
+        },
+        {
+            "cenario": "BD-03",
+            "origem": "real 500 + simulado 201",
+            "entrada": {
+                "statuses": [
+                    500,
+                    201
+                ]
+            },
+            "esperado": "Node_VisitaAgendada",
+            "observado": "Node_VisitaAgendada",
+            "passou": true
+        },
+        {
+            "cenario": "BD-04",
+            "origem": "real 500 + simulado",
+            "entrada": {
+                "statuses": [
+                    500,
+                    500,
+                    201
+                ]
+            },
+            "esperado": "Node_VisitaAgendada",
+            "observado": "Node_VisitaAgendada",
+            "passou": true
+        },
+        {
+            "cenario": "BD-05",
+            "origem": "real 500 + simulado",
+            "entrada": {
+                "statuses": [
+                    500,
+                    500,
+                    500
+                ]
+            },
+            "esperado": "Node_CancelaWO",
+            "observado": "Node_CancelaWO",
+            "passou": true
+        },
+        {
+            "cenario": "BD-06",
+            "origem": "real (INT18 500) + recusa",
+            "entrada": {
+                "statuses": [
+                    500
+                ],
+                "resposta": "nao"
+            },
+            "esperado": "Node_CancelaWO",
+            "observado": "Node_CancelaWO",
+            "passou": true
+        },
+        {
+            "cenario": "BD-01",
+            "origem": "simulado 201",
+            "entrada": {
+                "statuses": [
+                    201
+                ]
+            },
+            "esperado": "Node_VisitaAgendada",
+            "observado": "Node_VisitaAgendada",
+            "passou": true
+        }
+    ]
+}

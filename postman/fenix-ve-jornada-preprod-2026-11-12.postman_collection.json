@@ -1,0 +1,2895 @@
+{
+  "info": {
+    "name": "Fenix - VE - Jornada fenix-ve-abertura-bd (preprod) - 2026-11-12",
+    "description": "Jornada FTAT-933 ponta a ponta pela fachada ms-journey-v1 em preprod (processDefinitionKey fenix-ve-abertura-bd, v1). Preencha usuário, senha e credencial Basic do OAM uma vez; o token é obtido e renovado automaticamente. Fluxo: 01 - Iniciar jornada e, a cada tela, o request de resposta da pasta \"03 - Respostas por tela\" correspondente ao taskId registrado no console. Requer rede interna (VPN).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{fenix_access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (pm.info.requestName !== '00 - Obter token VE') {",
+          "  const v = n => pm.variables.get(n);",
+          "  const token = v('fenix_access_token');",
+          "  const expiresAt = Number(v('fenix_token_expires_at') || 0);",
+          "  if (!token || Date.now() >= expiresAt - 60000) {",
+          "    const faltando = ['fenix_auth_token_url', 'fenix_auth_domain', 'fenix_auth_basic_credentials',",
+          "      'fenix_auth_username', 'fenix_auth_password', 'fenix_auth_scope'].filter(n => !v(n));",
+          "    if (faltando.length) {",
+          "      pm.execution.skipRequest();",
+          "      throw new Error('FENIX VE: preencha ' + faltando.join(', ') + ' nas variáveis da collection.');",
+          "    }",
+          "    pm.sendRequest({",
+          "      url: v('fenix_auth_token_url'), method: 'POST',",
+          "      header: { 'x-oauthidentity-domain-name': v('fenix_auth_domain'),",
+          "        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',",
+          "        Authorization: 'Basic ' + v('fenix_auth_basic_credentials') },",
+          "      body: { mode: 'urlencoded', urlencoded: [",
+          "        { key: 'grant_type', value: 'password' },",
+          "        { key: 'username', value: v('fenix_auth_username') },",
+          "        { key: 'password', value: v('fenix_auth_password') },",
+          "        { key: 'scope', value: v('fenix_auth_scope') }] }",
+          "    }, (err, res) => {",
+          "      if (err || res.code !== 200) {",
+          "        console.error('FENIX VE: token não obtido: ' + (err ? err.message : 'HTTP ' + res.code));",
+          "        return;",
+          "      }",
+          "      const payload = res.json();",
+          "      const ttl = Number(payload.expires_in);",
+          "      const expiry = String(Date.now() + (Number.isFinite(ttl) ? ttl : 300) * 1000);",
+          "      pm.collectionVariables.set('fenix_access_token', payload.access_token);",
+          "      pm.collectionVariables.set('fenix_token_expires_at', expiry);",
+          "      pm.request.headers.upsert({ key: 'Authorization', value: 'Bearer ' + payload.access_token });",
+          "    });",
+          "  }",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "(() => {",
+          "if (!pm.request.url.getPath().startsWith('/process-instance')) return;",
+          "pm.test('Fachada respondeu 2xx', () => pm.expect(pm.response.code).to.be.within(200, 299));",
+          "let body; try { body = pm.response.json(); } catch (e) { return; }",
+          "if (!body || Array.isArray(body)) return;",
+          "if (body.processInstanceId) pm.collectionVariables.set('processInstanceId', body.processInstanceId);",
+          "pm.collectionVariables.set('taskId', body.taskId || '');",
+          "pm.collectionVariables.set('activityType', body.activityType || '');",
+          "const tela = body.form ? (body.form.name || '') : '';",
+          "const sdui = body.form && body.form.sdui ? body.form.sdui.uiStepId : null;",
+          "console.log('Instância ' + (body.processInstanceId || pm.variables.get('processInstanceId')) + ' | status ' + (body.status || '-') + ' | atividade ' + (body.activityType || '-') + ' | tela ' + (body.taskId || '-') + (tela ? ' (' + tela + ')' : ''));",
+          "if (body.activityType === 'userTask') pm.test('Tela SDUI veio no form', () => pm.expect(sdui).to.eql(body.taskId));",
+          "const vars = body.variables || {};",
+          "['data_impedimento', 'data_resultadoDiagnostico', 'data_resultadoSlots', 'data_bdCriadoNumero', 'data_woNumero'].forEach(k => { if (vars[k] !== undefined) console.log('  ' + k + ' = ' + JSON.stringify(vars[k])); });",
+          "})();"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "journey_base_url",
+      "value": "https://eljy-preprod.redecorp.azr/journey/v1",
+      "type": "string",
+      "description": "Fachada ms-journey-v1 em preprod (dev: https://eljy-dev.redecorp.azr/journey/v1)."
+    },
+    {
+      "key": "processDefinitionKey",
+      "value": "fenix-ve-abertura-bd",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "assignee",
+      "value": "ve-app",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "channelType",
+      "value": "MOBILE",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "designador",
+      "value": "",
+      "type": "string",
+      "description": "Designador do circuito a testar (obrigatório)."
+    },
+    {
+      "key": "productStatus",
+      "value": "ativo",
+      "type": "string",
+      "description": "Use \"bloqueio\" para simular fatura em aberto."
+    },
+    {
+      "key": "dataVisita",
+      "value": "",
+      "type": "string",
+      "description": "Data escolhida em Node_EscolheHorario (ex.: 2026-11-21)."
+    },
+    {
+      "key": "horarioVisita",
+      "value": "0",
+      "type": "string",
+      "description": "value do item escolhido na lista eh_horarios."
+    },
+    {
+      "key": "avisarHorarioMaisCedo",
+      "value": "false",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "businessKey",
+      "value": "",
+      "type": "string",
+      "description": "Gerado em 01 - Iniciar jornada."
+    },
+    {
+      "key": "correlationId",
+      "value": "",
+      "type": "string",
+      "description": "Gerado em 01 - Iniciar jornada."
+    },
+    {
+      "key": "requestTimestamp",
+      "value": "",
+      "type": "string",
+      "description": "Gerado em 01 - Iniciar jornada."
+    },
+    {
+      "key": "processInstanceId",
+      "value": "",
+      "type": "string",
+      "description": "Preenchido pela resposta da fachada."
+    },
+    {
+      "key": "taskId",
+      "value": "",
+      "type": "string",
+      "description": "Tela atual (User Task), preenchida pela resposta da fachada."
+    },
+    {
+      "key": "activityType",
+      "value": "",
+      "type": "string",
+      "description": "Preenchido pela resposta da fachada."
+    },
+    {
+      "key": "cpm_base_url",
+      "value": "https://cssp-preprod.redecorp.br/customer-problem-management/v1",
+      "type": "string",
+      "description": "FENIX_VE_CPM_BASE_URL do motor em preprod."
+    },
+    {
+      "key": "tt_base_url",
+      "value": "https://spmg-preprod.redecorp.azr/troubleTicketManagement/v1",
+      "type": "string",
+      "description": "FENIX_VE_TT_BASE_URL do motor em preprod."
+    },
+    {
+      "key": "hpsd_base_url",
+      "value": "https://api-hml.telefonica.com.br/gtw-redes/serviceTestManagement/v1",
+      "type": "string",
+      "description": "FENIX_VE_HPSD_BASE_URL do motor em preprod (o contrato não publica preprod; hml)."
+    },
+    {
+      "key": "wfm_base_url",
+      "value": "http://preprod.oss.vivo.com.br/tlf-api/workforceManagementJourney/v1",
+      "type": "string",
+      "description": "FENIX_VE_WFM_BASE_URL do motor em preprod (recebida do WFM em 12/11/2026)."
+    },
+    {
+      "key": "motor_base_url",
+      "value": "https://eljy-preprod.redecorp.azr/journey-motor/v1",
+      "type": "string",
+      "description": "wf-journey-motor-v1 em preprod."
+    },
+    {
+      "key": "hpsdTopic",
+      "value": "telco.service.servicetestmanagement.servicetestresult",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "hpsdRelatedServiceId",
+      "value": "",
+      "type": "string",
+      "description": "relatedService.id do INT06; vazio = designador (como o BPMN)."
+    },
+    {
+      "key": "hpsdTestSpecificationId",
+      "value": "",
+      "type": "string",
+      "description": "testSpecification.id do INT06 (pendência P06)."
+    },
+    {
+      "key": "serviceTestId",
+      "value": "",
+      "type": "string",
+      "description": "Preenchido pelo INT06."
+    },
+    {
+      "key": "hpsdExternalId",
+      "value": "",
+      "type": "string",
+      "description": "Gerado pelo INT06: processInstanceId da jornada ou um id de teste."
+    },
+    {
+      "key": "inboundEventId",
+      "value": "",
+      "type": "string",
+      "description": "Gerado pelo INT10."
+    },
+    {
+      "key": "inboundOffset",
+      "value": "",
+      "type": "string",
+      "description": "Gerado pelo INT10."
+    },
+    {
+      "key": "wfmNetworkOwner",
+      "value": "VIVO1",
+      "type": "string",
+      "description": "VIVO1 ou VIVO2."
+    },
+    {
+      "key": "wfmMediaType",
+      "value": "GPON",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "wfmTelephonicArea",
+      "value": "",
+      "type": "string",
+      "description": "Só VIVO1."
+    },
+    {
+      "key": "wfmCnl",
+      "value": "",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "wfmCentralOffice",
+      "value": "",
+      "type": "string",
+      "description": "Só VIVO1."
+    },
+    {
+      "key": "wfmGeographicSiteId",
+      "value": "",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "wfmAttendantId",
+      "value": "",
+      "type": "string",
+      "description": "Attendant.id do agendamento (INT14)."
+    },
+    {
+      "key": "wfmPostcode",
+      "value": "",
+      "type": "string",
+      "description": "CEP (INT11 e INT14)."
+    },
+    {
+      "key": "wfmMicroArea",
+      "value": "",
+      "type": "string",
+      "description": "Só VIVO1 (INT11)."
+    },
+    {
+      "key": "wfmCancelReason",
+      "value": "",
+      "type": "string",
+      "description": "reason do INT16 (ex. do WFM: CHUVA); valores pendentes (P08)."
+    },
+    {
+      "key": "wfmCancelContext",
+      "value": "",
+      "type": "string",
+      "description": "context do INT16 (ex. do WFM: CLIENTE); valores pendentes (P08)."
+    },
+    {
+      "key": "woCustomerCategory",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woDocumentNumber",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woCustomerId",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woCustomerName",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woContactName",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woEmailAddress",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woMobileNumber",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woPhoneNumber",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woWorkNumber",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woDateOfSale",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woOrderId",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woOrderProtocol",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woOrderDetail",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woCnlAcronym",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woCity",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woNeighborhood",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woStateOrProvince",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woStreetCode",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woStreetName",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woStreetNr",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woLongitude",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woLatitude",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woComplement",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woProductId",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woDetail",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "woAddressReference",
+      "value": "",
+      "type": "string",
+      "description": "INT14: dado do caso de teste (origem na jornada pendente, P08)."
+    },
+    {
+      "key": "slotBuscaInicio",
+      "value": "",
+      "type": "string",
+      "description": "Gerado pelo INT11."
+    },
+    {
+      "key": "slotBuscaFim",
+      "value": "",
+      "type": "string",
+      "description": "Gerado pelo INT11."
+    },
+    {
+      "key": "slotInicio",
+      "value": "",
+      "type": "string",
+      "description": "Primeiro horário do INT11 (ou preencha à mão)."
+    },
+    {
+      "key": "slotFim",
+      "value": "",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "slotTimeslot",
+      "value": "",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "slotResourceId",
+      "value": "",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "slotResourceName",
+      "value": "",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "slotScheduleDate",
+      "value": "",
+      "type": "string",
+      "description": "Data do primeiro horário (aaaa-mm-dd), usada em scheduleDate do INT14."
+    },
+    {
+      "key": "slotData",
+      "value": "",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "woIdJornada",
+      "value": "",
+      "type": "string",
+      "description": "Gerado pelo INT14."
+    },
+    {
+      "key": "woNumero",
+      "value": "",
+      "type": "string",
+      "description": "Id da WO devolvido pelo INT14 (usado no INT18 e no INT16)."
+    },
+    {
+      "key": "fenix_auth_token_url",
+      "value": "https://authhml.vivo.com.br/oauth2/rest/token",
+      "type": "string",
+      "description": "Mesmo token da collection Fenix - VE. A fachada e o motor validam com o JWKS do OAM interno (autenticainthml.redecorp.br); se a fachada responder 401, use o endpoint https://autenticainthml.redecorp.br/ms_oauth/oauth2/endpoints/vivooauthservice/tokens."
+    },
+    {
+      "key": "fenix_auth_domain",
+      "value": "VivoCustomerDomain",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "fenix_auth_basic_credentials",
+      "value": "",
+      "type": "string",
+      "description": "Copie o valor da collection Fenix - VE (client_id:secret em base64)."
+    },
+    {
+      "key": "fenix_auth_username",
+      "value": "",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "fenix_auth_password",
+      "value": "",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "fenix_auth_scope",
+      "value": "openid Customer.Profile",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "fenix_access_token",
+      "value": "",
+      "type": "string",
+      "description": ""
+    },
+    {
+      "key": "fenix_token_expires_at",
+      "value": "0",
+      "type": "string",
+      "description": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "00 - Autenticacao",
+      "item": [
+        {
+          "name": "00 - Obter token VE",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "x-oauthidentity-domain-name",
+                "value": "{{fenix_auth_domain}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded;charset=UTF-8",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Basic {{fenix_auth_basic_credentials}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "{{fenix_auth_username}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{fenix_auth_password}}",
+                  "type": "text"
+                },
+                {
+                  "key": "scope",
+                  "value": "{{fenix_auth_scope}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{fenix_auth_token_url}}",
+              "host": [
+                "{{fenix_auth_token_url}}"
+              ]
+            },
+            "description": "Token VE por password grant. Execute para obter token explicitamente ou chame um endpoint FTAT-933 para obtencao/renovacao automatica."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('OAM VE retornou HTTP 200', () => pm.response.to.have.status(200));",
+                  "const payload = pm.response.json();",
+                  "pm.test('access_token presente', () => pm.expect(payload.access_token).to.be.a('string').and.not.empty);",
+                  "const ttl = Number(payload.expires_in);",
+                  "pm.test('expires_in valido', () => pm.expect(ttl).to.be.a('number').and.above(0));",
+                  "const expiry = String(Date.now() + ttl * 1000);",
+                  "pm.collectionVariables.set('fenix_access_token', payload.access_token);",
+                  "pm.collectionVariables.set('fenix_token_expires_at', expiry);",
+                  "if (pm.environment.name) { pm.environment.set('fenix_access_token', payload.access_token); pm.environment.set('fenix_token_expires_at', expiry); }"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "01 - Jornada",
+      "item": [
+        {
+          "name": "01 - Iniciar jornada",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const agora = new Date();",
+                  "pm.collectionVariables.set('businessKey', 'FTAT933-' + agora.getTime());",
+                  "pm.collectionVariables.set('correlationId', 'CID_VE_FTAT933_' + agora.getTime());",
+                  "pm.collectionVariables.set('requestTimestamp', agora.toISOString());",
+                  "pm.collectionVariables.set('processInstanceId', '');",
+                  "pm.collectionVariables.set('taskId', '');",
+                  "if (!pm.variables.get('designador')) { pm.execution.skipRequest(); throw new Error('Preencha a variável designador.'); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance"
+              ]
+            },
+            "description": "Cria a instância de fenix-ve-abertura-bd. A fachada converte as variáveis para data_* e devolve a tela Node_Inicio no campo form. Gera businessKey, correlationId e requestTimestamp a cada execução.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"processDefinitionKey\": \"{{processDefinitionKey}}\",\n  \"businessKey\": \"{{businessKey}}\",\n  \"assignee\": \"{{assignee}}\",\n  \"channelType\": \"{{channelType}}\",\n  \"variables\": {\n    \"designador\": \"{{designador}}\",\n    \"productStatus\": \"{{productStatus}}\",\n    \"correlationId\": \"{{correlationId}}\",\n    \"requestTimestamp\": \"{{requestTimestamp}}\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "02 - Consultar instância (tela atual)",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}"
+              ]
+            },
+            "description": "Relê a instância e a tela atual. Útil depois da espera do diagnóstico."
+          }
+        },
+        {
+          "name": "03 - Voltar uma tela",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/return",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "return"
+              ]
+            },
+            "description": "Volta para a tela anterior (pilha de navegação do motor).",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "04 - Variáveis da instância",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/variables",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "variables"
+              ]
+            },
+            "description": "Variáveis data_* e form_* gravadas pelo fluxo."
+          }
+        },
+        {
+          "name": "05 - Cancelar instância",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/cancel",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "cancel"
+              ]
+            },
+            "description": "Encerra a instância de teste.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"teste postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Responder tela atual (genérico)",
+      "item": [
+        {
+          "name": "Avançar com answers livres",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Edite answers com os campos da tela atual (sem o prefixo form_).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Respostas por tela",
+      "item": [
+        {
+          "name": "01 - Node_Inicio | Continuar",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_Inicio\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Depois do Continuar a jornada consulta Massiva (CPM) e BD aberto (TT) e decide o impedimento.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "02 - Node_Reinicie | Já reiniciei",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_Reinicie\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Tela Node_Reinicie: envia {\"acaoReinicio\": \"reiniciei\"}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"acaoReinicio\": \"reiniciei\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "02 - Node_Reinicie | Não consigo reiniciar",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_Reinicie\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Tela Node_Reinicie: envia {\"acaoReinicio\": \"nao_consigo\"}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"acaoReinicio\": \"nao_consigo\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "03 - Node_VoltouReinicio | Sim",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_VoltouReinicio\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Tela Node_VoltouReinicio: envia {\"voltouReinicio\": \"sim\"}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"voltouReinicio\": \"sim\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "03 - Node_VoltouReinicio | Não",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_VoltouReinicio\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Tela Node_VoltouReinicio: envia {\"voltouReinicio\": \"nao\"}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"voltouReinicio\": \"nao\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "04 - Node_TesteConexao | Continuar",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_TesteConexao\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Continuar solicita o diagnóstico ao HPSD e aguarda o retorno (timeout padrão de 3 min).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"acaoTeste\": \"continuar\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "04 - Node_TesteConexao | Ir para o início",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_TesteConexao\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Continuar solicita o diagnóstico ao HPSD e aguarda o retorno (timeout padrão de 3 min).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"acaoTeste\": \"inicio\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "05 - Node_ReinicieNovamente | Já reiniciei",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_ReinicieNovamente\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Tela Node_ReinicieNovamente: envia {}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "06 - Node_VoltouNovamente | Sim",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_VoltouNovamente\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Tela Node_VoltouNovamente: envia {\"voltouNovamente\": \"sim\"}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"voltouNovamente\": \"sim\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "06 - Node_VoltouNovamente | Não",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_VoltouNovamente\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Tela Node_VoltouNovamente: envia {\"voltouNovamente\": \"nao\"}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"voltouNovamente\": \"nao\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "07 - Node_SemEnergia | Já verifiquei",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_SemEnergia\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Tela Node_SemEnergia: envia {\"acaoEnergia\": \"verifiquei\"}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"acaoEnergia\": \"verifiquei\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "07 - Node_SemEnergia | Não consigo verificar",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_SemEnergia\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Tela Node_SemEnergia: envia {\"acaoEnergia\": \"nao_consigo\"}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"acaoEnergia\": \"nao_consigo\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "08 - Node_VoltouEnergia | Sim",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_VoltouEnergia\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Tela Node_VoltouEnergia: envia {\"voltouEnergia\": \"sim\"}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"voltouEnergia\": \"sim\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "08 - Node_VoltouEnergia | Não",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_VoltouEnergia\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Tela Node_VoltouEnergia: envia {\"voltouEnergia\": \"nao\"}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"voltouEnergia\": \"nao\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "09 - Node_TemEnergia | Sim",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_TemEnergia\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Tela Node_TemEnergia: envia {\"temEnergia\": \"sim\"}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"temEnergia\": \"sim\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "09 - Node_TemEnergia | Não",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_TemEnergia\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Tela Node_TemEnergia: envia {\"temEnergia\": \"nao\"}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"temEnergia\": \"nao\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "10 - Node_AgendarVisita | Agendar visita",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_AgendarVisita\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Agendar consulta horários no WFM (INT11) e, ao confirmar o horário, a jornada cria a WO (INT14).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"acaoAgendar\": \"agendar\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "10 - Node_AgendarVisita | Ir para o início",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_AgendarVisita\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Agendar consulta horários no WFM (INT11) e, ao confirmar o horário, a jornada cria a WO (INT14).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"acaoAgendar\": \"inicio\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "11 - Node_EscolheHorario | Confirmar agendamento",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_EscolheHorario\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "horarioVisita é o value de um item da lista eh_horarios da tela; ajuste as variáveis antes de enviar.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"dataVisita\": \"{{dataVisita}}\",\n    \"horarioVisita\": \"{{horarioVisita}}\",\n    \"avisarHorarioMaisCedo\": \"{{avisarHorarioMaisCedo}}\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "12 - Node_RetentarBD | Tentar de novo",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_RetentarBD\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Tela Node_RetentarBD: envia {\"retentarBD\": \"sim\"}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"retentarBD\": \"sim\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "12 - Node_RetentarBD | Não, encerrar",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_RetentarBD\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Tela Node_RetentarBD: envia {\"retentarBD\": \"nao\"}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"retentarBD\": \"nao\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "13 - Node_VisitaAgendada | Ir para o início",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_VisitaAgendada\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Tela Node_VisitaAgendada: envia {\"acaoFinal\": \"inicio\"}.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {\n    \"acaoFinal\": \"inicio\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "99 - Telas finais | Ir para o início",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const esperadas = [\"Node_StatusMassivaAtraso\", \"Node_StatusMassivaVisita\", \"Node_StatusMassiva\", \"Node_StatusAtraso\", \"Node_StatusVisita\", \"Node_InternetVoltou\", \"Node_RedeEletrica\", \"Node_SemHorarios\", \"Node_AgendamentoNaoRealizado\", \"Node_BDNaoCriado\", \"Node_FalhaConsulta\"];",
+                  "const atual = pm.variables.get('taskId');",
+                  "if (!pm.variables.get('processInstanceId')) { pm.execution.skipRequest(); throw new Error('Inicie a jornada antes (01 - Iniciar jornada).'); }",
+                  "if (atual && !esperadas.includes(atual)) console.warn('Tela atual é ' + atual + '; esta resposta é para ' + esperadas.join(' ou ') + '.');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{journey_base_url}}/process-instance/{{processInstanceId}}/advance",
+              "host": [
+                "{{journey_base_url}}"
+              ],
+              "path": [
+                "process-instance",
+                "{{processInstanceId}}",
+                "advance"
+              ]
+            },
+            "description": "Encerra a jornada a partir de qualquer tela final (status, falha ou resultado).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trigger\": \"user-action\",\n  \"answers\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - Integrações da jornada (chamadas diretas)",
+      "description": "As mesmas chamadas que o motor faz em cada etapa (método, path, headers e corpo), com as URLs de preprod e o token da collection. INT14, INT18 e INT16 criam ou cancelam registros reais. Ordem sugerida: INT01, INT03, INT06, INT11, INT14, INT18, INT16. TMF653 e INT10 são de apoio: o retorno do diagnóstico se valida no Kafka (tópico telco.service.servicetestmanagement.servicetestresult).",
+      "item": [
+        {
+          "name": "INT01 - Consulta Massiva/Manutenção (CPM)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('correlationId')) pm.collectionVariables.set('correlationId', 'CID_VE_FTAT933_' + Date.now());",
+                  "if (!pm.variables.get('designador')) { pm.execution.skipRequest(); throw new Error('Preencha a variável designador.'); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(() => {",
+                  "let body = null; try { body = pm.response.json(); } catch (e) { }",
+                  "pm.test('CPM respondeu 200 ou 404', () => pm.expect([200, 404]).to.include(pm.response.code));",
+                  "if (![200, 404].includes(pm.response.code)) return console.warn('CPM: HTTP ' + pm.response.code + ' (a jornada iria para Node_FalhaConsulta)');",
+                  "const abertas = (body && Array.isArray(body.incidents) ? body.incidents : []).filter(i => String(i.status).toUpperCase() !== 'CLOSED');",
+                  "console.log('Massiva aberta: ' + (abertas.length ? 'sim, incidentId ' + abertas[0].incidentId + ', previsão ' + abertas[0].expectedResolutionDate : 'não'));",
+                  "})();"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Vivo-Correlation-Id",
+                "value": "{{correlationId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{cpm_base_url}}/incidents?serviceDesignator={{designador}}",
+              "host": [
+                "{{cpm_base_url}}"
+              ],
+              "path": [
+                "incidents"
+              ],
+              "query": [
+                {
+                  "key": "serviceDesignator",
+                  "value": "{{designador}}"
+                }
+              ]
+            },
+            "description": "Node_ConsultaMassiva. 200: massiva aberta se algum incidente tiver status != CLOSED; 404 = sem massiva. Qualquer outro status leva a jornada para Node_FalhaConsulta."
+          }
+        },
+        {
+          "name": "INT03 - Consulta BD aberto (Trouble Ticket)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('correlationId')) pm.collectionVariables.set('correlationId', 'CID_VE_FTAT933_' + Date.now());",
+                  "if (!pm.variables.get('designador')) { pm.execution.skipRequest(); throw new Error('Preencha a variável designador.'); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(() => {",
+                  "let body = null; try { body = pm.response.json(); } catch (e) { }",
+                  "pm.test('TT respondeu 200 ou 404', () => pm.expect([200, 404]).to.include(pm.response.code));",
+                  "if (![200, 404].includes(pm.response.code)) return console.warn('TT: HTTP ' + pm.response.code + ' (a jornada iria para Node_FalhaConsulta)');",
+                  "const ativo = (Array.isArray(body) ? body : []).find(t => !['closed', 'cancelled', 'canceled', 'resolved'].includes(String(t.status).toLowerCase()));",
+                  "console.log('BD ativo: ' + (ativo ? 'sim, id ' + ativo.id : 'não'));",
+                  "})();"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Vivo-Transaction-Id",
+                "value": "TID_ELJY_FTAT933INT003_{{$isoTimestamp}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Vivo-Correlation-Id",
+                "value": "{{correlationId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{tt_base_url}}/troubleTicket?filter=designatorId:{{designador}};status:Active;ticketType:Case&offset=0&limit=5",
+              "host": [
+                "{{tt_base_url}}"
+              ],
+              "path": [
+                "troubleTicket"
+              ],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "designatorId:{{designador}};status:Active;ticketType:Case"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Node_ConsultaBD. 200 com lista: BD ativo = primeiro ticket fora de closed/cancelled/resolved; 404 = nenhum BD ativo."
+          }
+        },
+        {
+          "name": "INT06 - Solicita diagnóstico (HPSD POST /serviceTest)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('correlationId')) pm.collectionVariables.set('correlationId', 'CID_VE_FTAT933_' + Date.now());",
+                  "if (!pm.variables.get('designador')) { pm.execution.skipRequest(); throw new Error('Preencha a variável designador.'); }"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('hpsdRelatedServiceId')) pm.collectionVariables.set('hpsdRelatedServiceId', pm.variables.get('designador'));",
+                  "pm.collectionVariables.set('hpsdExternalId', pm.variables.get('processInstanceId') || 'teste-postman-' + Date.now());",
+                  "if (!pm.variables.get('hpsdTestSpecificationId')) console.warn('hpsdTestSpecificationId vazio: o BPMN também envia vazio até a pendência P06 ser resolvida.');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(() => {",
+                  "let body = null; try { body = pm.response.json(); } catch (e) { }",
+                  "pm.test('HPSD aceitou (200/201/202)', () => pm.expect([200, 201, 202]).to.include(pm.response.code));",
+                  "if (body && body.id) { pm.collectionVariables.set('serviceTestId', body.id); console.log('serviceTestId = ' + body.id); }",
+                  "})();"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Vivo-Transaction-Id",
+                "value": "{{$guid}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Vivo-Correlation-Id",
+                "value": "{{$guid}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hpsd_base_url}}/serviceTest",
+              "host": [
+                "{{hpsd_base_url}}"
+              ],
+              "path": [
+                "serviceTest"
+              ]
+            },
+            "description": "Node_SolicitaDiagnostico. Aceite = 200/201/202; guarda o id em serviceTestId. relatedParty ExternalId = processInstanceId da jornada (correlação do retorno Kafka); sem jornada iniciada, usa um id de teste. Depois de um aceite, valide no Kafka a mensagem no tópico telco.service.servicetestmanagement.servicetestresult.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Diagnóstico automático FTTH\",\n  \"relatedService\": {\n    \"id\": \"{{hpsdRelatedServiceId}}\"\n  },\n  \"testSpecification\": {\n    \"id\": \"{{hpsdTestSpecificationId}}\"\n  },\n  \"relatedParty\": [\n    {\n      \"id\": \"{{hpsdExternalId}}\",\n      \"role\": \"ExternalId\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TMF653 (apoio) - Consulta resultado do diagnóstico (HPSD GET /serviceTest/{id})",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const faltando = [\"serviceTestId\"].filter(n => !pm.variables.get(n));",
+                  "if (faltando.length) { pm.execution.skipRequest(); throw new Error('Preencha antes: ' + faltando.join(', ')); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(() => {",
+                  "let body = null; try { body = pm.response.json(); } catch (e) { }",
+                  "pm.test('HPSD respondeu 200', () => pm.response.to.have.status(200));",
+                  "const ext = v => { const m = /\\bID\\s*[:\\-]?\\s*0*(\\d{1,2})\\b/i.exec(String(v || '')); return m ? m[1].padStart(2, '0') : null; };",
+                  "let id = null;",
+                  "if (body) {",
+                  "  const c = (body.characteristic || []).find(x => String(x.name).toUpperCase() === 'RESULTADO_DIAGNOSTICO');",
+                  "  id = c ? ext(c.value) : null;",
+                  "  for (const m of (body.testMeasure || [])) { if (id) break; const v = m && m.value && m.value.value; if (v) id = ext(v.resultado_diagnostico); }",
+                  "}",
+                  "const r = ['06', '07', '10'].includes(id) ? 'RESOLVIDO' : (id === '09' ? 'SEM_ENERGIA' : 'PERSISTE');",
+                  "console.log('state ' + (body && body.state) + ' | ID ' + (id || '-') + ' -> ' + r);",
+                  "})();"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Vivo-Transaction-Id",
+                "value": "{{$guid}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Vivo-Correlation-Id",
+                "value": "{{$guid}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{hpsd_base_url}}/serviceTest/{{serviceTestId}}",
+              "host": [
+                "{{hpsd_base_url}}"
+              ],
+              "path": [
+                "serviceTest",
+                "{{serviceTestId}}"
+              ]
+            },
+            "description": "Node_ConsultaResultadoDiagnostico. Lê RESULTADO_DIAGNOSTICO em characteristic ou testMeasure: ID06/07/10 = resolvido, ID09 = sem energia, outros = persiste. No motor esta chamada roda sem token (asyncBefore); aqui vai com o token da collection."
+          }
+        },
+        {
+          "name": "INT10 (apoio) - Simula retorno do diagnóstico (motor /internal/v1/inbound-events)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const faltando = [\"processInstanceId\"].filter(n => !pm.variables.get(n));",
+                  "if (faltando.length) { pm.execution.skipRequest(); throw new Error('Preencha antes: ' + faltando.join(', ')); }"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const ts = Date.now();",
+                  "pm.collectionVariables.set('inboundOffset', String(ts));",
+                  "pm.collectionVariables.set('inboundEventId', pm.variables.get('hpsdTopic') + ':0:' + ts);",
+                  "if (!pm.variables.get('serviceTestId')) pm.collectionVariables.set('serviceTestId', 'st-teste');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(() => {",
+                  "let body = null; try { body = pm.response.json(); } catch (e) { }",
+                  "console.log('Motor: HTTP ' + pm.response.code + ' ' + (body ? body.status + ' ' + (body.reason || '') : ''));",
+                  "pm.test('Motor correlacionou', () => pm.expect(body && body.status).to.eql('CORRELATED'));",
+                  "})();"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Event-Id",
+                "value": "{{inboundEventId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{motor_base_url}}/internal/v1/inbound-events",
+              "host": [
+                "{{motor_base_url}}"
+              ],
+              "path": [
+                "internal",
+                "v1",
+                "inbound-events"
+              ]
+            },
+            "description": "Entrega ao motor o evento que o ms-journey-event-consumer-v1 repassaria do Kafka. 200 CORRELATED só quando a instância está em Node_AguardaDiagnostico; 409 NOT_CORRELATED = nenhuma espera ativa. Em preprod o motor exige token válido no JWKS do OAM interno.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"eventId\": \"{{inboundEventId}}\",\n  \"source\": {\n    \"channel\": \"KAFKA\",\n    \"topic\": \"{{hpsdTopic}}\",\n    \"partition\": 0,\n    \"offset\": {{inboundOffset}}\n  },\n  \"payload\": {\n    \"eventId\": \"{{inboundEventId}}\",\n    \"eventType\": \"ServiceTestAttributeValueChangeEvent\",\n    \"event\": {\n      \"serviceTest\": {\n        \"id\": \"{{serviceTestId}}\",\n        \"state\": \"completed\",\n        \"relatedParty\": [\n          {\n            \"id\": \"{{processInstanceId}}\",\n            \"role\": \"ExternalId\"\n          }\n        ]\n      }\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "INT11 - Consulta horários (WFM POST /searchTimeSlot)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const faltando = [\"wfm_base_url\"].filter(n => !pm.variables.get(n));",
+                  "if (faltando.length) { pm.execution.skipRequest(); throw new Error('Preencha antes: ' + faltando.join(', ')); }"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('correlationId')) pm.collectionVariables.set('correlationId', 'CID_VE_FTAT933_' + Date.now());",
+                  "if (!pm.variables.get('designador')) { pm.execution.skipRequest(); throw new Error('Preencha a variável designador.'); }"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Datas no fuso de Brasília (-03:00), como no exemplo do WFM.",
+                  "const dia = n => new Date(Date.now() - 3 * 3600000 + n * 86400000).toISOString().slice(0, 10) + 'T00:00:00.000-03:00';",
+                  "pm.collectionVariables.set('slotBuscaInicio', dia(1));",
+                  "pm.collectionVariables.set('slotBuscaFim', dia(8));",
+                  "if (pm.variables.get('wfmNetworkOwner') === 'VIVO2') console.warn('VIVO2: o BPMN não envia telephonicArea, centralOffice nem microArea; limpe essas variáveis.');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(() => {",
+                  "let body = null; try { body = pm.response.json(); } catch (e) { }",
+                  "pm.test('WFM respondeu 200 ou 204', () => pm.expect([200, 204]).to.include(pm.response.code));",
+                  "const slots = (body && Array.isArray(body.availableTimeSlot) ? body.availableTimeSlot : []).filter(s => s.validFor && s.validFor.startDateTime).sort((a, b) => String(a.validFor.startDateTime).localeCompare(String(b.validFor.startDateTime)));",
+                  "console.log(slots.length + ' horário(s)');",
+                  "if (slots.length) { const s = slots[0];",
+                  "  pm.collectionVariables.set('slotInicio', s.validFor.startDateTime);",
+                  "  pm.collectionVariables.set('slotFim', s.validFor.endDateTime || '');",
+                  "  pm.collectionVariables.set('slotTimeslot', String(s.validFor.timeslot || s.id || ''));",
+                  "  pm.collectionVariables.set('slotResourceId', String(s.resourceId || ''));",
+                  "  pm.collectionVariables.set('slotResourceName', String(s.resourceName || ''));",
+                  "  pm.collectionVariables.set('slotScheduleDate', new Date(s.validFor.startDateTime).toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' }));",
+                  "  pm.collectionVariables.set('slotData', new Date(s.validFor.startDateTime).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }));",
+                  "  console.log('Primeiro horário: ' + s.validFor.startDateTime + ' (' + (s.validFor.timeslot || s.id) + ')'); }",
+                  "})();"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "flow",
+                "value": "B2B_MASSIVO",
+                "type": "text"
+              },
+              {
+                "key": "requestSystem",
+                "value": "MVE",
+                "type": "text"
+              },
+              {
+                "key": "X-Vivo-Transaction-Id",
+                "value": "TID_ELJY_FTAT933INT005_{{$isoTimestamp}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Vivo-Correlation-Id",
+                "value": "{{correlationId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{wfm_base_url}}/searchTimeSlot",
+              "host": [
+                "{{wfm_base_url}}"
+              ],
+              "path": [
+                "searchTimeSlot"
+              ]
+            },
+            "description": "Node_ConsultaSlots. 200 com availableTimeSlot; 204 = sem horário. Busca de amanhã a +8 dias, como o BPMN. Guarda o primeiro horário em slot* para INT14 e INT18.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"relatedEntity\": [],\n  \"relatedParty\": {\n    \"name\": \"TT_B\",\n    \"role\": \"acronym\"\n  },\n  \"relatedPlace\": {\n    \"geographicAddress\": {\n      \"country\": \"BR\",\n      \"postcode\": \"{{wfmPostcode}}\",\n      \"cnl\": \"{{wfmCnl}}\",\n      \"networkOwner\": \"{{wfmNetworkOwner}}\",\n      \"telephonicArea\": \"{{wfmTelephonicArea}}\",\n      \"centralOffice\": \"{{wfmCentralOffice}}\",\n      \"microArea\": \"{{wfmMicroArea}}\",\n      \"placePhysicalResourceAssoc\": {\n        \"resourceSpecificationCharacteristic\": [\n          {\n            \"name\": \"mediaType\",\n            \"value\": \"{{wfmMediaType}}\"\n          }\n        ]\n      },\n      \"geographicSite\": {\n        \"@type\": \"Cabinet\",\n        \"id\": \"{{wfmGeographicSiteId}}\"\n      }\n    }\n  },\n  \"requestedTimeSlot\": [\n    {\n      \"validFor\": {\n        \"startDateTime\": \"{{slotBuscaInicio}}\",\n        \"endDateTime\": \"{{slotBuscaFim}}\"\n      }\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "INT14 - Cria WO e agendamento (WFM POST /workOrder/appointment)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const faltando = [\"wfm_base_url\", \"slotInicio\"].filter(n => !pm.variables.get(n));",
+                  "if (faltando.length) { pm.execution.skipRequest(); throw new Error('Preencha antes: ' + faltando.join(', ')); }"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('correlationId')) pm.collectionVariables.set('correlationId', 'CID_VE_FTAT933_' + Date.now());",
+                  "if (!pm.variables.get('designador')) { pm.execution.skipRequest(); throw new Error('Preencha a variável designador.'); }"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('woIdJornada', pm.variables.replaceIn('{{$guid}}'));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(() => {",
+                  "let body = null; try { body = pm.response.json(); } catch (e) { }",
+                  "pm.test('WO criada (200/201)', () => pm.expect([200, 201]).to.include(pm.response.code));",
+                  "if (![200, 201].includes(pm.response.code)) return;",
+                  "const wo = (body && (body.id || body.workOrderId || (body.workOrder && body.workOrder.id))) || pm.variables.get('woIdJornada');",
+                  "pm.collectionVariables.set('woNumero', String(wo)); console.log('woNumero = ' + wo);",
+                  "})();"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "flow",
+                "value": "B2B_MASSIVO",
+                "type": "text"
+              },
+              {
+                "key": "requestSystem",
+                "value": "MVE",
+                "type": "text"
+              },
+              {
+                "key": "X-Vivo-Transaction-Id",
+                "value": "TID_ELJY_FTAT933INT014_{{$isoTimestamp}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Vivo-Correlation-Id",
+                "value": "{{correlationId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{wfm_base_url}}/workOrder/appointment",
+              "host": [
+                "{{wfm_base_url}}"
+              ],
+              "path": [
+                "workOrder",
+                "appointment"
+              ]
+            },
+            "description": "Node_CriaWO, estrutura do exemplo do WFM de 12/11/2026 (WorkOrder_Create + Appointment_Create). Preencha as variáveis wo* com a massa do caso de teste (origem na jornada pendente, P08). Sucesso = 200/201; sem swagger da resposta (P09), woNumero = id devolvido ou o woIdJornada enviado. CRIA uma WO real em preprod.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"WorkOrder_Create\": {\n    \"@type\": \"WorkOrder\",\n    \"sourceSystem\": \"MVE\",\n    \"id\": \"{{woIdJornada}}\",\n    \"relatedParty\": [\n      {\n        \"@type\": \"CustomerValue\",\n        \"category\": \"{{woCustomerCategory}}\",\n        \"documentNumber\": \"{{woDocumentNumber}}\",\n        \"id\": \"{{woCustomerId}}\",\n        \"name\": \"{{woCustomerName}}\",\n        \"contactMedium\": [\n          {\n            \"@type\": \"ContactMediumValue\",\n            \"name\": \"{{woContactName}}\",\n            \"characteristic\": [\n              {\n                \"@type\": \"ContactMediumValueCharacteristic\",\n                \"emailAddress\": \"{{woEmailAddress}}\",\n                \"mobileNumber\": \"{{woMobileNumber}}\",\n                \"phoneNumber\": \"{{woPhoneNumber}}\",\n                \"workNumber\": \"{{woWorkNumber}}\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"@type\": \"CustomerOrderValue\",\n        \"dateOfSale\": \"{{woDateOfSale}}\",\n        \"id\": \"{{woOrderId}}\",\n        \"orderProtocol\": \"{{woOrderProtocol}}\",\n        \"characteristic\": [\n          {\n            \"@type\": \"Characteristic\",\n            \"name\": \"Detail\",\n            \"value\": \"{{woOrderDetail}}\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"WorkOrderPendency\",\n        \"context\": \"TRIAGEM\"\n      }\n    ],\n    \"workOrderItem\": [\n      {\n        \"@type\": \"WorkOrderItem\",\n        \"id\": \"{{woIdJornada}}:1\",\n        \"place\": {\n          \"@type\": \"GeographicAddress\",\n          \"cnl\": \"{{wfmCnl}}\",\n          \"cnlAcronym\": \"{{woCnlAcronym}}\",\n          \"city\": \"{{woCity}}\",\n          \"neighborhood\": \"{{woNeighborhood}}\",\n          \"postcode\": \"{{wfmPostcode}}\",\n          \"stateOrProvince\": \"{{woStateOrProvince}}\",\n          \"streetCode\": \"{{woStreetCode}}\",\n          \"streetName\": \"{{woStreetName}}\",\n          \"streetNr\": \"{{woStreetNr}}\",\n          \"networkOwner\": \"{{wfmNetworkOwner}}\",\n          \"accessTechnology\": \"{{wfmMediaType}}\",\n          \"centralOffice\": \"{{wfmCentralOffice}}\",\n          \"telephonicArea\": \"{{wfmTelephonicArea}}\",\n          \"geographicLocation\": {\n            \"@type\": \"GeographicLocation\",\n            \"bbox\": [\n              \"{{woLongitude}}\",\n              \"{{woLatitude}}\"\n            ]\n          },\n          \"geographicSite\": {\n            \"@type\": \"Cabinet\",\n            \"id\": \"{{wfmGeographicSiteId}}\"\n          },\n          \"geographicSubAddress\": {\n            \"@type\": \"GeographicSubAddress\",\n            \"name\": \"{{woComplement}}\"\n          }\n        },\n        \"relatedEntity\": [\n          {\n            \"@type\": \"ProductEntity\",\n            \"id\": \"{{woProductId}}\",\n            \"name\": \"Banda Larga\",\n            \"action\": \"Ativo\",\n            \"status\": \"Ativo\",\n            \"characteristic\": [\n              {\n                \"@type\": \"Characteristic\",\n                \"name\": \"Designator\",\n                \"value\": \"{{designador}}\"\n              },\n              {\n                \"@type\": \"Characteristic\",\n                \"name\": \"Technology\",\n                \"value\": \"{{wfmMediaType}}\"\n              }\n            ]\n          }\n        ],\n        \"specification\": {\n          \"acronym\": \"TT_B\",\n          \"type\": \"TROUBLETICKET\",\n          \"specificationDescription\": [\n            {\n              \"name\": \"PRODUTO\",\n              \"value\": \"Banda\"\n            },\n            {\n              \"name\": \"TIPO\",\n              \"value\": \"Defeito\"\n            },\n            {\n              \"name\": \"DETALHE\",\n              \"value\": \"{{woDetail}}\"\n            },\n            {\n              \"name\": \"SEQUENCIA\",\n              \"value\": \"1/1\"\n            }\n          ]\n        }\n      }\n    ]\n  },\n  \"Appointment_Create\": {\n    \"description\": \"Agendamento da atividade\",\n    \"category\": \"CORPORATE\",\n    \"canBeAntecipated\": {{avisarHorarioMaisCedo}},\n    \"externalId\": \"{{woIdJornada}}:1\",\n    \"scheduleDate\": \"{{slotScheduleDate}}\",\n    \"relatedParty\": [\n      {\n        \"@type\": \"Attendant\",\n        \"id\": \"{{wfmAttendantId}}\",\n        \"role\": \"\"\n      },\n      {\n        \"@type\": \"TimeSlot\",\n        \"id\": \"{{slotTimeslot}}\",\n        \"resourceId\": \"{{slotResourceId}}\",\n        \"resourceName\": \"{{slotResourceName}}\",\n        \"validFor\": {\n          \"startDateTime\": \"{{slotInicio}}\",\n          \"endDateTime\": \"{{slotFim}}\"\n        }\n      }\n    ],\n    \"note\": [\n      {\n        \"id\": \"CRM_NOTES\",\n        \"text\": \"Agendamento realizado pelo cliente na jornada Fenix - Abertura de BD (VE)\"\n      },\n      {\n        \"id\": \"ADDRESS_REFERENCE\",\n        \"text\": \"{{woAddressReference}}\"\n      }\n    ]\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "INT18 - Abre BD (Trouble Ticket POST /troubleTicket)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const faltando = [\"slotInicio\"].filter(n => !pm.variables.get(n));",
+                  "if (faltando.length) { pm.execution.skipRequest(); throw new Error('Preencha antes: ' + faltando.join(', ')); }"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('correlationId')) pm.collectionVariables.set('correlationId', 'CID_VE_FTAT933_' + Date.now());",
+                  "if (!pm.variables.get('designador')) { pm.execution.skipRequest(); throw new Error('Preencha a variável designador.'); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(() => {",
+                  "let body = null; try { body = pm.response.json(); } catch (e) { }",
+                  "pm.test('BD criado (200/201)', () => pm.expect([200, 201]).to.include(pm.response.code));",
+                  "if (body) console.log('BD id ' + body.id + ' | número ' + (body.externalIdentifier && body.externalIdentifier.id));",
+                  "})();"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Vivo-Transaction-Id",
+                "value": "TID_ELJY_FTAT933INT009_{{$isoTimestamp}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Vivo-Correlation-Id",
+                "value": "{{correlationId}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{tt_base_url}}/troubleTicket",
+              "host": [
+                "{{tt_base_url}}"
+              ],
+              "path": [
+                "troubleTicket"
+              ]
+            },
+            "description": "Node_CriaBD com os campos que o BPMN preenche sem os opcionais bd_<campo>. Sucesso = 200/201; número do BD = externalIdentifier.id. CRIA um BD real em preprod.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"@type\": \"ServiceProblemCase\",\n  \"ticketType\": \"Case\",\n  \"description\": \"Abertura de BD pelo VE (FTAT-933): diagnóstico automático não resolveu o problema\",\n  \"severity\": \"3\",\n  \"name\": \"Queda de Conexão\",\n  \"requestedResolutionDate\": \"{{slotInicio}}\",\n  \"expectedResolutionDate\": \"{{slotFim}}\",\n  \"channel\": {\n    \"name\": \"Alert\"\n  },\n  \"relatedEntity\": [\n    {\n      \"@type\": \"Service\",\n      \"entity\": {\n        \"@type\": \"ServiceTest\",\n        \"name\": \"testSpecification\",\n        \"id\": \"{{hpsdTestSpecificationId}}\"\n      }\n    },\n    {\n      \"@type\": \"Service\",\n      \"entity\": {\n        \"@type\": \"Service\",\n        \"name\": \"mode\",\n        \"id\": \"Proactive\"\n      }\n    }\n  ],\n  \"relatedParty\": [],\n  \"troubleTicketCharacteristic\": [\n    {\n      \"name\": \"designadorAcesso\",\n      \"value\": \"{{designador}}\"\n    },\n    {\n      \"name\": \"WorkOrder\",\n      \"value\": \"{{woNumero}}\"\n    },\n    {\n      \"name\": \"previsaoAtendimento\",\n      \"value\": \"{{slotData}} {{slotTimeslot}}\"\n    },\n    {\n      \"name\": \"etapa\",\n      \"value\": \"TRIAGEM\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "INT16 - Cancela WO (WFM DELETE /workOrder/{id})",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const faltando = [\"wfm_base_url\", \"woNumero\"].filter(n => !pm.variables.get(n));",
+                  "if (faltando.length) { pm.execution.skipRequest(); throw new Error('Preencha antes: ' + faltando.join(', ')); }"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('correlationId')) pm.collectionVariables.set('correlationId', 'CID_VE_FTAT933_' + Date.now());",
+                  "if (!pm.variables.get('designador')) { pm.execution.skipRequest(); throw new Error('Preencha a variável designador.'); }"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "(() => {",
+                  "let body = null; try { body = pm.response.json(); } catch (e) { }",
+                  "pm.test('WFM cancelou (2xx)', () => pm.expect(pm.response.code).to.be.within(200, 299));",
+                  "})();"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "flow",
+                "value": "B2B_MASSIVO",
+                "type": "text"
+              },
+              {
+                "key": "requestSystem",
+                "value": "MVE",
+                "type": "text"
+              },
+              {
+                "key": "X-Vivo-Transaction-Id",
+                "value": "TID_ELJY_FTAT933INT016_{{$isoTimestamp}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Vivo-Correlation-Id",
+                "value": "{{correlationId}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{wfm_base_url}}/workOrder/{{woNumero}}?reason={{wfmCancelReason}}&context={{wfmCancelContext}}",
+              "host": [
+                "{{wfm_base_url}}"
+              ],
+              "path": [
+                "workOrder",
+                "{{woNumero}}"
+              ],
+              "query": [
+                {
+                  "key": "reason",
+                  "value": "{{wfmCancelReason}}"
+                },
+                {
+                  "key": "context",
+                  "value": "{{wfmCancelContext}}"
+                }
+              ]
+            },
+            "description": "Node_CancelaWO / Node_CancelaWOAgendamento (exemplo do WFM de 12/11/2026). CANCELA a WO informada em woNumero; valores de reason/context pendentes (P08)."
+          }
+        }
+      ]
+    }
+  ]
+}

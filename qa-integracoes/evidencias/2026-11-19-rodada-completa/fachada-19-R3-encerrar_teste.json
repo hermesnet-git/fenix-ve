@@ -1,0 +1,23 @@
+{
+  "run": "R3",
+  "etapa": "encerrar_teste",
+  "quando": "2026-11-19T23:24:13.503Z",
+  "http": 200,
+  "observacoes": {},
+  "resposta": {
+    "processInstanceId": "50e79493-e470-11f1-8248-06dfec022e82",
+    "previousActivityId": "Node_FalhaConsulta",
+    "activityId": null,
+    "activityType": null,
+    "executionId": null,
+    "taskId": null,
+    "status": "COMPLETED",
+    "activeProcessInstanceId": null,
+    "variables": {},
+    "matchedTransition": {
+      "kind": "guarded",
+      "label": null,
+      "eventName": null
+    }
+  }
+}
