@@ -51,7 +51,7 @@ RAIOX.registrar({
       "nome": "curl",
       "curto": "CURL",
       "contrato": false,
-      "arquivo": "postman/curls/INT016.json",
+      "arquivo": "postman/curls/INT016.sh",
       "detalhe": "Só a requisição DELETE (WO de teste SFTESTE2832006A); o arquivo não traz resposta."
     },
     {

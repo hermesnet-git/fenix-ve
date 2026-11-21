@@ -52,7 +52,7 @@ RAIOX.registrar({
       "curto": "CURL",
       "contrato": false,
       "detalhe": "Só a requisição; o arquivo não traz resposta.",
-      "arquivo": "postman/curls/INT01.json"
+      "arquivo": "postman/curls/INT01.sh"
     },
     {
       "id": "PM",

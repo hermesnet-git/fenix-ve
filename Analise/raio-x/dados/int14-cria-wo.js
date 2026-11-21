@@ -52,8 +52,8 @@ RAIOX.registrar({
       "nome": "curl",
       "curto": "CURL",
       "contrato": false,
-      "arquivo": "postman/curls/INT14.json",
-      "detalhe": "Só a requisição, sem resposta. Host esteira2.oss.vivo.com.br. O body copia o exemplo do DM, não o BPMN (sourceSystem, Attendant, CRM_NOTES, produtos). INT08.json é o mesmo POST, idêntico byte a byte exceto pelo Bearer vazio."
+      "arquivo": "postman/curls/INT14.sh",
+      "detalhe": "Só a requisição, sem resposta. Host esteira2.oss.vivo.com.br. O body copia o exemplo do DM, não o BPMN (sourceSystem, Attendant, CRM_NOTES, produtos). INT08.sh é o mesmo POST, idêntico byte a byte exceto pelo Bearer vazio."
     },
     {
       "id": "QA",
@@ -154,7 +154,7 @@ RAIOX.registrar({
           "r": "igual"
         },
         "CURL": {
-          "v": "Authorization: Bearer <token> (espaço duplo após Bearer). No INT08.json o Bearer vem vazio",
+          "v": "Authorization: Bearer <token> (espaço duplo após Bearer). No INT08.sh o Bearer vem vazio",
           "r": "igual"
         },
         "QA": {
@@ -162,7 +162,7 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
-      "leitura": "O DM exige o token. O BPMN usa o Bearer do usuário e segue sem ele se faltar. O erro 401 de exemplo mostra que o WFM valida o JWT. O INT08.json repete o mesmo POST com o Bearer vazio.",
+      "leitura": "O DM exige o token. O BPMN usa o Bearer do usuário e segue sem ele se faltar. O erro 401 de exemplo mostra que o WFM valida o JWT. O INT08.sh repete o mesmo POST com o Bearer vazio.",
       "acao": "decidir",
       "acaoTexto": "Definir se o token é do usuário ou sistêmico e tornar obrigatório."
     },

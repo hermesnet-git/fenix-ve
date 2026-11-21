@@ -2,7 +2,9 @@
 
 Abra `comparativo.html` direto no navegador. Não precisa de servidor.
 
-Uma planilha por integração (INT01 a INT18). A coluna BPMN (`fenix-ve-abertura-bd-v1/fenix-ve-abertura-bd.bpmn`) é a referência; DM, Postman (coleção de 18/11), curl (`postman/curls/`) e a tela de QA (`qa-integracoes/fenix-ve-integracoes.html`) são comparados contra ela. Clique numa célula ou use as setas: o texto completo, a análise e a nota aparecem na faixa de baixo. O endereço guarda o campo (`#int=INT14&campo=R10`).
+Uma planilha por integração (INT01 a INT18). A coluna BPMN (`fenix-ve-abertura-bd-v1/fenix-ve-abertura-bd.bpmn`) é a referência; DM, Postman (coleção de 18/11), curl (`postman/curls/`) e a tela de QA (`qa-integracoes/fenix-ve-integracoes.html`) são comparados contra ela. Clique numa célula ou use as setas: o texto completo, a análise, os links para as fontes e a nota aparecem no painel de detalhe. O painel fica embaixo ou na lateral (em telas com mais de 900px) e pode ser recolhido; a escolha fica salva no navegador. O endereço guarda o campo (`#int=INT14&campo=R10`).
+
+Os links das fontes são relativos à raiz do repositório (`../../`). Três nomes com acento estão gravados no disco com caracteres trocados ("Histo╠ürias", "Diagno╠üstico", "Revalidac╠ºa╠âo"). A função `disco()` da página refaz essa troca. Se os arquivos forem renomeados, apague a troca.
 
 ## Cores
 
@@ -20,7 +22,7 @@ Células: vermelho = não consta na fonte ou não implementado no BPMN; amarelo 
 
 `dados/intNN-*.js` chamam `RAIOX.registrar({ id, nome, endpoint, fontes, grupos, campos })`. Cada campo tem `bpmn` (null = não implementado), `valor`, `fontes: { DM, PM, CURL, QA: { v, r } }` (`r`: igual | parcial | diverge | so-fonte; sem chave = não consta), `leitura`, `acao`, `acaoTexto`. Os arquivos também guardam US, DFT, OAS e TELA, que a página não mostra.
 
-Sem curl: INT10 e INT18. `curls/INT11.json` não é curl: é uma resposta de consulta de troubleTicket (INT03). `curls/INT08.json` é igual ao INT14.json, com o Bearer vazio.
+Sem curl: INT10 e INT18. `curls/INT11.json` não é curl: é uma resposta de consulta de troubleTicket (INT03). `curls/INT08.sh` é igual ao INT14.sh, com o Bearer vazio.
 
 Os ids dos campos são a chave das notas. Não renomeie ids já anotados. Nunca copie tokens, `iss`, senhas ou dados pessoais dos curls para cá.
 

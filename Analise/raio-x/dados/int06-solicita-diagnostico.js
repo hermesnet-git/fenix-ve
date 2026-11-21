@@ -51,7 +51,7 @@ RAIOX.registrar({
       "nome": "curl",
       "curto": "CURL",
       "contrato": false,
-      "arquivo": "postman/curls/INT06.json",
+      "arquivo": "postman/curls/INT06.sh",
       "detalhe": "Só a requisição (texto de curl, apesar da extensão .json); o arquivo não traz resposta."
     },
     {

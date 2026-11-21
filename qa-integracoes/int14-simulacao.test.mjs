@@ -112,7 +112,7 @@ test('corpo gerado segue a estrutura do curl do WFM (18/11) e usa padroes sem or
     wfmCnl: '11000', wfmPostcode: '04582030',
   });
   const body = qa.montarRequest(spec, ctx).body;
-  const curl = readFileSync(new URL('../postman/curls/INT14.json', import.meta.url), 'utf8');
+  const curl = readFileSync(new URL('../postman/curls/INT14.sh', import.meta.url), 'utf8');
   const referencia = JSON.parse(curl.slice(curl.indexOf("--data '") + 8, curl.lastIndexOf("'")));
   const caminhos = (o, p = '') => o && typeof o === 'object'
     ? Object.entries(o).flatMap(([k, v]) => caminhos(v, p + (Array.isArray(o) ? '[]' : '.' + k))) : [p];

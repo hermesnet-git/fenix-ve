@@ -1,0 +1,306 @@
+{
+  "content": [
+    {
+      "id": "02iW4000009kblmIAA",
+      "name": "Internet Básica",
+      "status": "Ativo",
+      "productOffering": {
+        "id": "BAN_LARGA_500_MEGA_EMPRESAS_NACI_ONAL",
+        "name": "Banda Larga 500MB",
+        "@type": "productOfferingRef",
+        "@referredType": "ProductOffering"
+      },
+      "productCharacteristic": [
+        {
+          "name": "idDesignador",
+          "valueType": "string",
+          "value": "SPO-SF897657-013",
+          "@type": "StringCharacteristic"
+        },
+        {
+          "name": "rootItemId",
+          "valueType": "string",
+          "value": "5c7a0189-7e4f-a934-b611-7d5a49970bc3",
+          "@type": "StringCharacteristic"
+        },
+        {
+          "name": "systemOrigin",
+          "valueType": "string",
+          "value": "Salesforce",
+          "@type": "StringCharacteristic"
+        },
+        {
+          "name": "parentIdBRM",
+          "valueType": "string",
+          "value": "3457203206",
+          "@type": "StringCharacteristic"
+        },
+        {
+          "name": "productFamily",
+          "valueType": "string",
+          "value": "Internet",
+          "@type": "StringCharacteristic"
+        },
+        {
+          "name": "networkOwnerId",
+          "valueType": "string",
+          "value": "N/A",
+          "@type": "StringCharacteristic"
+        },
+        {
+          "name": "technology",
+          "valueType": "string",
+          "value": "FIBRA",
+          "@type": "StringCharacteristic"
+        },
+        {
+          "name": "serviceInventory",
+          "valueType": "string",
+          "value": "{\"velocidade_maxima\":\"400Mb\",\"inventory\":{\"ID_BUSCA\":2,\"centralOffice\":\"VM\",\"city\":\"SAO PAULO\",\"cnl\":\"11000\",\"cnlAcronym\":\"SPO\",\"endCompleto\":\"RUA GODOI COLACO, 586, - SAO PAULO - SP, 04582030, Brasil\",\"id\":\"OSB7:04582030:11000:117625:586:::::::::0:20261106100550\",\"identificador\":\"117625-1\",\"locality\":\"VL CORDEIRO\",\"microArea\":\"IOC6\",\"networkOwner\":\"VIVO1\",\"origem\":\"OSB7\",\"postcode\":\"04582030\",\"stateOrProvince\":\"SP\",\"streetCode\":\"117625\",\"streetName\":\"GODOI COLACO\",\"streetNr\":\"586\",\"telephonicArea\":\"CB\",\"geographicSubAddress\":{},\"complemento\":\"\",\"endComposto\":\"\",\"externalSystem\":\"\",\"externalSystemId\":\"\",\"geographicSubAddressComplement\":null,\"idArmario\":\"\",\"streetNrLast\":\"\",\"streetNrSide\":\"\",\"strretType\":\"\",\"type\":\"\"},\"tecnologia\":\"GPON\",\"tecnologiaQualificada\":\"GPON\",\"double_coverage\":false}",
+          "@type": "StringCharacteristic",
+          
+          /*Este atributo nao faz parte do contrato, mas foi adicionado para facilitar a leitura do inventario (serviceInventory)*/
+          "serviceInventoryFormatado": {  
+            "velocidade_maxima": "400Mb",
+            "inventory": {
+              "ID_BUSCA": 2,
+              "centralOffice": "VM",
+              "city": "SAO PAULO",
+              "cnl": "11000",
+              "cnlAcronym": "SPO",
+              "endCompleto": "RUA GODOI COLACO, 586, - SAO PAULO - SP, 04582030, Brasil",
+              "id": "OSB7:04582030:11000:117625:586:::::::::0:20261106100550",
+              "identificador": "117625-1",
+              "locality": "VL CORDEIRO",
+              "microArea": "IOC6",
+              "networkOwner": "VIVO1",
+              "origem": "OSB7",
+              "postcode": "04582030",
+              "stateOrProvince": "SP",
+              "streetCode": "117625",
+              "streetName": "GODOI COLACO",
+              "streetNr": "586",
+              "telephonicArea": "CB",
+              "geographicSubAddress": {},
+              "complemento": "",
+              "endComposto": "",
+              "externalSystem": "",
+              "externalSystemId": "",
+              "geographicSubAddressComplement": null,
+              "idArmario": "",
+              "streetNrLast": "",
+              "streetNrSide": "",
+              "strretType": "",
+              "type": ""
+            },
+            "tecnologia": "GPON",
+            "tecnologiaQualificada": "GPON",
+            "double_coverage": false
+          }
+        },
+        {
+          "name": "productInventorySom",
+          "valueType": "string",
+          "value": "ba779b438718d7d0aacb42630cbb353e",
+          "@type": "StringCharacteristic"
+        }
+      ],
+      "relatedParty": [
+        {
+          "partyOrPartyRole": {
+            "id": "001W40000177WzdIAE",
+            "name": "FTTH_0611_id01",
+            "partyCharacteristic": [
+              {
+                "name": "documentType",
+                "valueType": "string",
+                "value": "CNPJ",
+                "@type": "StringCharacteristic"
+              },
+              {
+                "name": "documentNumber",
+                "valueType": "string",
+                "value": "78392757000165",
+                "@type": "StringCharacteristic"
+              },
+              {
+                "name": "idClienteSom",
+                "valueType": "string",
+                "value": "b5e74acf879c57d0aacb42630cbb35bd",
+                "@type": "StringCharacteristic"
+              }
+            ],
+            "@type": "Organization"
+          }
+        }
+      ],
+      "place": [
+        {
+          "role": "installationAddress",
+          "place": {
+            "streetNr": "586",
+            "streetName": "Rua Godói Colaço",
+            "stateOrProvince": "São Paulo",
+            "postcode": "04582030",
+            "locality": "Vila Cordeiro",
+            "country": "Brasil",
+            "city": "São Paulo",
+            "geographicSubAddress": [],
+            "@type": "GeographicAddress"
+          },
+          "@type": "RelatedPlaceRefOrValue"
+        }
+      ]
+    },
+    {
+      "id": "02iW4000009kblnIAA",
+      "name": "Acesso",
+      "status": "Ativo",
+      "productOffering": {
+        "id": "BAN_LARGA_500_MEGA_EMPRESAS_NACI_ONAL",
+        "name": "Banda Larga 500MB",
+        "@type": "productOfferingRef",
+        "@referredType": "ProductOffering"
+      },
+      "productCharacteristic": [
+        {
+          "name": "type",
+          "valueType": "string",
+          "value": "Óptico GPON",
+          "@type": "StringCharacteristic"
+        },
+        {
+          "name": "idDesignador",
+          "valueType": "string",
+          "value": "SPO-SF897658-069",
+          "@type": "StringCharacteristic"
+        },
+        {
+          "name": "rootItemId",
+          "valueType": "string",
+          "value": "5c7a0189-7e4f-a934-b611-7d5a49970bc3",
+          "@type": "StringCharacteristic"
+        },
+        {
+          "name": "systemOrigin",
+          "valueType": "string",
+          "value": "Salesforce",
+          "@type": "StringCharacteristic"
+        },
+        {
+          "name": "parentIdBRM",
+          "valueType": "string",
+          "value": "3457203206",
+          "@type": "StringCharacteristic"
+        },
+        {
+          "name": "productFamily",
+          "valueType": "string",
+          "value": "Acesso",
+          "@type": "StringCharacteristic"
+        },
+        {
+          "name": "technology",
+          "valueType": "string",
+          "value": "FIBRA",
+          "@type": "StringCharacteristic"
+        },
+        {
+          "name": "serviceInventory",
+          "valueType": "string",
+          "value": "{\"velocidade_maxima\":\"400Mb\",\"inventory\":{\"ID_BUSCA\":2,\"centralOffice\":\"VM\",\"city\":\"SAO PAULO\",\"cnl\":\"11000\",\"cnlAcronym\":\"SPO\",\"endCompleto\":\"RUA GODOI COLACO, 586, - SAO PAULO - SP, 04582030, Brasil\",\"id\":\"OSB7:04582030:11000:117625:586:::::::::0:20261106100550\",\"identificador\":\"117625-1\",\"locality\":\"VL CORDEIRO\",\"microArea\":\"IOC6\",\"networkOwner\":\"VIVO1\",\"origem\":\"OSB7\",\"postcode\":\"04582030\",\"stateOrProvince\":\"SP\",\"streetCode\":\"117625\",\"streetName\":\"GODOI COLACO\",\"streetNr\":\"586\",\"telephonicArea\":\"CB\",\"geographicSubAddress\":{},\"complemento\":\"\",\"endComposto\":\"\",\"externalSystem\":\"\",\"externalSystemId\":\"\",\"geographicSubAddressComplement\":null,\"idArmario\":\"\",\"streetNrLast\":\"\",\"streetNrSide\":\"\",\"strretType\":\"\",\"type\":\"\"},\"tecnologia\":\"GPON\",\"tecnologiaQualificada\":\"GPON\",\"double_coverage\":false}",
+          "@type": "StringCharacteristic",
+          "serviceInventoryFormatado": {
+            "velocidade_maxima": "400Mb",
+            "inventory": {
+              "ID_BUSCA": 2,
+              "centralOffice": "VM",
+              "city": "SAO PAULO",
+              "cnl": "11000",
+              "cnlAcronym": "SPO",
+              "endCompleto": "RUA GODOI COLACO, 586, - SAO PAULO - SP, 04582030, Brasil",
+              "id": "OSB7:04582030:11000:117625:586:::::::::0:20261106100550",
+              "identificador": "117625-1",
+              "locality": "VL CORDEIRO",
+              "microArea": "IOC6",
+              "networkOwner": "VIVO1",
+              "origem": "OSB7",
+              "postcode": "04582030",
+              "stateOrProvince": "SP",
+              "streetCode": "117625",
+              "streetName": "GODOI COLACO",
+              "streetNr": "586",
+              "telephonicArea": "CB",
+              "geographicSubAddress": {},
+              "complemento": "",
+              "endComposto": "",
+              "externalSystem": "",
+              "externalSystemId": "",
+              "geographicSubAddressComplement": null,
+              "idArmario": "",
+              "streetNrLast": "",
+              "streetNrSide": "",
+              "strretType": "",
+              "type": ""
+            },
+            "tecnologia": "GPON",
+            "tecnologiaQualificada": "GPON",
+            "double_coverage": false
+          }
+        },
+        {
+          "name": "productInventorySom",
+          "valueType": "string",
+          "value": "ba779b438718d7d0aacb42630cbb353e",
+          "@type": "StringCharacteristic"
+        }
+      ],
+      "relatedParty": [
+        {
+          "partyOrPartyRole": {
+            "id": "001W40000177WzdIAE",
+            "name": "FTTH_0611_id01",
+            "partyCharacteristic": [
+              {
+                "name": "documentType",
+                "valueType": "string",
+                "value": "CNPJ",
+                "@type": "StringCharacteristic"
+              },
+              {
+                "name": "documentNumber",
+                "valueType": "string",
+                "value": "78392757000165",
+                "@type": "StringCharacteristic"
+              },
+              {
+                "name": "idClienteSom",
+                "valueType": "string",
+                "value": "b5e74acf879c57d0aacb42630cbb35bd",
+                "@type": "StringCharacteristic"
+              }
+            ],
+            "@type": "Organization"
+          }
+        }
+      ],
+      "place": [
+        {
+          "role": "installationAddress",
+          "place": {
+            "streetNr": "586",
+            "streetName": "Rua Godói Colaço",
+            "stateOrProvince": "São Paulo",
+            "postcode": "04582030",
+            "locality": "Vila Cordeiro",
+            "country": "Brasil",
+            "city": "São Paulo",
+            "geographicSubAddress": [],
+            "@type": "GeographicAddress"
+          },
+          "@type": "RelatedPlaceRefOrValue"
+        }
+      ]
+    }
+  ]
+}

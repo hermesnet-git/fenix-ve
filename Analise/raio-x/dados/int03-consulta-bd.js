@@ -51,8 +51,8 @@ RAIOX.registrar({
       "nome": "curl",
       "curto": "CURL",
       "contrato": false,
-      "detalhe": "postman/curls/INT03.json (versão antiga + \"URL CORRETA\"). A resposta de exemplo do ServiceNow está, por engano, em INT11.json",
-      "arquivo": "postman/curls/INT03.json"
+      "detalhe": "postman/curls/INT03.sh (versão antiga + \"URL CORRETA\"). A resposta de exemplo do ServiceNow está, por engano, em INT11.json",
+      "arquivo": "postman/curls/INT03.sh"
     },
     {
       "id": "PM",
