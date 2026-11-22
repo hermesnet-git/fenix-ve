@@ -16,10 +16,10 @@ RAIOX.registrar({
   "fontes": [
     {
       "id": "US",
-      "nome": "Histórias",
+      "nome": "Histórias (US)",
       "curto": "US",
       "contrato": false,
-      "detalhe": "US09 Visita não agendada · US10 BD não criado (3ª falha ou recusa)",
+      "detalhe": "US09 Visita não agendada (Req01, CA001) · US10 BD não criado (Req03 3ª falha, Req04 recusa; CA003, CA004) · US08–US11 (workflow: \"gerar o ID do WO\")",
       "arquivo": "Histórias de usuário V2 04-11-2026 Elastic Journey FTAT-933/"
     },
     {
@@ -78,6 +78,11 @@ RAIOX.registrar({
       "id": "fluxo",
       "nome": "Quando cancela",
       "sub": "Gateways que levam ao DELETE"
+    },
+    {
+      "id": "us",
+      "nome": "Regras das histórias (US)",
+      "sub": "regras declaradas nas US sem linha própria"
     }
   ],
   "campos": [
@@ -94,7 +99,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US10: camada wfm-journey-orchestration-v1 solicitando o cancelamento",
+          "v": "US10 Req03/Req04: \"chamar o WFM via camada de Integração 'wfm-journey-orchestration-v1' solicitando o cancelamento da WO\" · US09 Req01: \"chamar o WFM para cancelar a WO criada\"",
           "r": "igual"
         },
         "DFT": {
@@ -118,6 +123,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey - Request",
+          "linha": 20
+        }
+      ],
       "leitura": "Alinhado com o DM. O DFT ainda não tem o endpoint da INT16.",
       "acao": "fonte",
       "acaoTexto": "Preencher o endpoint da INT16 no inventário do DFT."
@@ -151,6 +162,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey - Request",
+          "linha": 5
+        },
+        {
+          "aba": "Camunda x WFM Journey -Res ERRO",
+          "linha": 18
+        }
+      ],
       "leitura": "O cancelamento roda logo após falhas, às vezes minutos depois do último /advance. Um Bearer expirado faz o DELETE falhar com 401 sem ninguém saber.",
       "acao": "decidir",
       "acaoTexto": "Usar token sistêmico no cancelamento."
@@ -184,6 +205,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey - Request",
+          "linha": 6
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -217,6 +244,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey - Request",
+          "linha": 7
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -250,6 +283,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey - Request",
+          "linha": 8
+        }
+      ],
       "leitura": "Igual ao DM.",
       "acao": "nada",
       "acaoTexto": ""
@@ -281,8 +320,18 @@ RAIOX.registrar({
         "QA": {
           "v": "correlationId do formulário; vazio, gera CID_VE_FTAT933_QA_<timestamp>",
           "r": "igual"
+        },
+        "US": {
+          "v": "US09 e US10 Req01: VE inicia o workflow \"com ID único por workflow\" (não diz o nome do campo)",
+          "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey - Request",
+          "linha": 9
+        }
+      ],
       "leitura": "O BPMN repassa o correlationId do canal (CID_VE_…). A máscara do DM diz ELJY e INT002, que não batem com a jornada.",
       "acao": "fonte",
       "acaoTexto": "Corrigir a máscara do correlationId no DM."
@@ -329,7 +378,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US09/US10: cancelar \"a WO criada\"",
+          "v": "US09 Req01 e US10 Req03/Req04: cancelar \"a WO criada\" · US08–US11 (workflow): \"Elastic Journey deve gerar o ID do WO para usar a frente no fluxo sistêmico\"",
           "r": "igual"
         },
         "DM": {
@@ -349,7 +398,13 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
-      "leitura": "Usa o id devolvido pela INT14; se não veio, usa o VE+UUID enviado. Só funciona se o WFM aceitar o id da jornada (ver INT14 S02).",
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey - Request",
+          "linha": 11
+        }
+      ],
+      "leitura": "Usa o id devolvido pela INT14; se não veio, usa o VE+UUID enviado. Só funciona se o WFM aceitar o id da jornada (ver INT14 S02). A US manda a jornada gerar o id da WO, o que apoia o uso do VE+UUID quando a INT14 não devolve id.",
       "acao": "decidir",
       "acaoTexto": "Confirmar com o WFM que o DELETE aceita o VE+UUID."
     },
@@ -380,8 +435,18 @@ RAIOX.registrar({
         "QA": {
           "v": "wfmCancelReason do formulário, padrão PROBLEMAS SISTEMICOS (enviado como %20); vazio bloqueia",
           "r": "igual"
+        },
+        "US": {
+          "v": "US09 Req01: cancela após erro sistêmico na WO · US10 Req04: cancela depois que o cliente \"optou por NÃO tentar novamente\"; nenhuma US informa o motivo (reason)",
+          "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey - Request",
+          "linha": 13
+        }
+      ],
       "leitura": "Valor igual. Na US10 com recusa do cliente o motivo real não é sistêmico, mas o DM só prevê um valor. O curl do WFM usa reason=CANCELADO SISTEMICO, diferente do DM e do BPMN.",
       "acao": "decidir",
       "acaoTexto": "Confirmar se a recusa do cliente (US10) pede outro reason."
@@ -415,6 +480,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey - Request",
+          "linha": 14
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -448,6 +519,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey - Request",
+          "linha": 15
+        },
+        {
+          "aba": "Camunda x WFM Journey - Request",
+          "linha": 18
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -506,6 +587,20 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey - Resp OK",
+          "linha": 7
+        },
+        {
+          "aba": "Camunda x WFM Journey - Resp OK",
+          "linha": 12
+        },
+        {
+          "aba": "Camunda x WFM Journey - Resp OK",
+          "linha": 14
+        }
+      ],
       "leitura": "O DFT diz que o status atualiza a jornada. O BPMN ignora: sucesso e erro dão no mesmo. O Postman admite 202/204 como possíveis retornos, que o DM não lista.",
       "acao": "decidir",
       "acaoTexto": "Decidir se o resultado do cancelamento precisa ser registrado ou alertado."
@@ -535,6 +630,32 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey -Res ERRO",
+          "linha": 7
+        },
+        {
+          "aba": "Camunda x WFM Journey -Res ERRO",
+          "linha": 8
+        },
+        {
+          "aba": "Camunda x WFM Journey -Res ERRO",
+          "linha": 9
+        },
+        {
+          "aba": "Camunda x WFM Journey -Res ERRO",
+          "linha": 10
+        },
+        {
+          "aba": "Camunda x WFM Journey -Res ERRO",
+          "linha": 11
+        },
+        {
+          "aba": "Camunda x WFM Journey -Res ERRO",
+          "linha": 18
+        }
+      ],
       "leitura": "Uma WO que não foi cancelada fica com técnico agendado. Nada avisa.",
       "acao": "decidir",
       "acaoTexto": "Ver S01."
@@ -577,6 +698,24 @@ RAIOX.registrar({
           "r": "so-fonte"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey - Resp OK",
+          "linha": 5
+        },
+        {
+          "aba": "Camunda x WFM Journey - Resp OK",
+          "linha": 6
+        },
+        {
+          "aba": "Camunda x WFM Journey -Res ERRO",
+          "linha": 5
+        },
+        {
+          "aba": "Camunda x WFM Journey -Res ERRO",
+          "linha": 6
+        }
+      ],
       "leitura": "Só rastreabilidade.",
       "acao": "nada",
       "acaoTexto": ""
@@ -594,7 +733,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US09: WFM não cria a WO; informa ao VE; \"posteriormente\" cancela a WO criada",
+          "v": "US09 Req01: WO \"não foi criado (por exemplo, algum erro sistêmico qualquer)\" → SDUI \"que a criação da WO não foi bem-sucedida\" → \"Posteriormente Elastic Journey deve chamar o WFM para cancelar a WO criada\" · US09 CA001: informa o VE e \"encerra o processo\", sem citar o cancelamento",
           "r": "parcial"
         },
         "DFT": {
@@ -602,7 +741,7 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
-      "leitura": "A US informa o cliente antes; o BPMN cancela antes. E cancela mesmo quando a WO talvez nem exista (ver D03).",
+      "leitura": "A US informa o cliente antes; o BPMN cancela antes. E cancela mesmo quando a WO talvez nem exista (ver D03). A própria US09 cancela uma WO que diz não ter sido criada, e o CA001 nem cita o cancelamento.",
       "acao": "decidir",
       "acaoTexto": "Ver INT14 D04."
     },
@@ -619,11 +758,11 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US10: retentar 3 vezes ao todo; na 3ª falha, cancelar a WO",
-          "r": "igual"
+          "v": "US10 workflow: \"retentar o processo 3 vezes ao todo\" · US10 Req03 e CA003: na 3ª falha, SDUI \"que a criação do BD falhou\" e depois \"chamar o WFM ... solicitando o cancelamento da WO\"",
+          "r": "parcial"
         }
       },
-      "leitura": "Alinhado.",
+      "leitura": "Alinhado. A ordem difere, como em D03: a US informa o cliente e depois cancela; o BPMN cancela antes, e a tela já diz que \"a visita foi cancelada\".",
       "acao": "nada",
       "acaoTexto": ""
     },
@@ -640,7 +779,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US10: NÃO → Elastic Journey manda encerrar; \"posteriormente\" cancela a WO",
+          "v": "US10 Req04 e CA004: NÃO → SDUI para \"encerrar a chamada junto ao cliente\" e \"chamar o WFM ... solicitando o cancelamento da WO\"; o workflow diz \"Posteriormente\"",
           "r": "parcial"
         }
       },
@@ -667,11 +806,57 @@ RAIOX.registrar({
         "QA": {
           "v": "Pula a INT16 sem woNumero, que vem só do idWorkOrder da INT14 ou do campo manual; não usa id gerado",
           "r": "diverge"
+        },
+        "US": {
+          "v": "US09 Req01: WO \"não foi criado\" e, \"posteriormente\", cancelar \"a WO criada\" (cancela sempre, sem condição)",
+          "r": "igual"
         }
       },
-      "leitura": "Os caminhos \"Não\" dos dois gateways nunca rodam. Após 401 ou timeout na INT14, o DELETE vai para uma WO que talvez não exista. A tela de QA só cancela com o idWorkOrder devolvido pela INT14 (ou digitado).",
+      "leitura": "Os caminhos \"Não\" dos dois gateways nunca rodam. Após 401 ou timeout na INT14, o DELETE vai para uma WO que talvez não exista. A tela de QA só cancela com o idWorkOrder devolvido pela INT14 (ou digitado). A US09 cancela sem condicionar à existência da WO, o que apoia a opção de DELETE sempre, tolerando 404.",
       "acao": "decidir",
       "acaoTexto": "Aceitar o DELETE sempre (e tolerar 404) ou só cancelar quando o WFM confirmou a WO."
+    },
+    {
+      "id": "U01",
+      "grupo": "us",
+      "nome": "Tela após a falha da WO",
+      "tipo": "tela",
+      "linha": "US",
+      "bpmn": "Node_AgendamentoNaoRealizado: \"Não foi possível agendar\" / \"Não conseguimos agendar a visita técnica no horário escolhido…\" / CTA \"Ir para o início\" → fim. Vem depois do DELETE, com sucesso ou falha.",
+      "valor": {
+        "t": "nenhum",
+        "de": "tela fixa"
+      },
+      "fontes": {
+        "US": {
+          "v": "US09 Req01: SDUI \"(via pooling na fila do Redis) que a criação da WO não foi bem-sucedida, e o VE informa o resultado ao cliente\" · US09 CA001: o agendamento \"não foi feito realizado\"; \"Fim do processo\"",
+          "r": "igual"
+        }
+      },
+      "leitura": "Igual à US09. A ordem entre tela e cancelamento está em D01.",
+      "acao": "nada",
+      "acaoTexto": ""
+    },
+    {
+      "id": "U02",
+      "grupo": "us",
+      "nome": "Tela final do BD não criado",
+      "tipo": "tela",
+      "linha": "US",
+      "bpmn": "Node_BDNaoCriado: \"Não foi possível concluir\" / \"Não conseguimos registrar a sua solicitação e a visita foi cancelada…\" / CTA \"Ir para o início\" → fim. Mesma tela na 3ª falha e na recusa.",
+      "valor": {
+        "t": "nenhum",
+        "de": "tela fixa"
+      },
+      "fontes": {
+        "US": {
+          "v": "US10 Req03 e CA003: SDUI \"que a criação do BD falhou\" e fim · US10 Req04 e CA004: SDUI para o VE \"encerrar a chamada junto ao cliente\"",
+          "r": "igual"
+        }
+      },
+      "leitura": "Uma tela atende às duas US. Ela diz que \"a visita foi cancelada\" mesmo quando o DELETE falha (S02 e S03).",
+      "acao": "nada",
+      "acaoTexto": ""
     }
   ]
 });

@@ -17,10 +17,10 @@ RAIOX.registrar({
   "fontes": [
     {
       "id": "US",
-      "nome": "Histórias",
+      "nome": "Histórias (US)",
       "curto": "US",
       "contrato": false,
-      "detalhe": "US07 Persiste → slot WFM · US12 Resolvido (ID06/07/10) · US13 Sem energia (ID09)",
+      "detalhe": "US07 Persiste → slot WFM · US12 Resolvido (Req01: ID06/07/10 e tela pós-reset) · US13 Sem energia (Req01–04: ID09 e telas de energia) · US08–US11 (workflow: \"não foi solucionado\" → WFM)",
       "arquivo": "Histórias de usuário V2 04-11-2026 Elastic Journey FTAT-933/"
     },
     {
@@ -89,6 +89,11 @@ RAIOX.registrar({
       "id": "regra",
       "nome": "Decisão",
       "sub": "ID de retorno → próximo passo"
+    },
+    {
+      "id": "us",
+      "nome": "Regras das histórias (US)",
+      "sub": "regras declaradas nas US sem linha própria"
     }
   ],
   "campos": [
@@ -105,7 +110,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US12/US07: HPSD informa via API GTW / MS Service Test Result / Kafka, modo assíncrono",
+          "v": "US12 Req01 e US07 Req01: o HPSD informa \"através do API GTW / Microserviço Service Test Result / EVENT BROKER/Kafka – modo assíncrono\" · US12 Req01: a tela seguinte vai ao VE \"através de pooling em fila do Redis\"",
           "r": "igual"
         },
         "DFT": {
@@ -117,7 +122,7 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
-      "leitura": "Alinhado.",
+      "leitura": "Alinhado. A entrega das telas por polling (Redis) é da plataforma, fora do BPMN.",
       "acao": "nada",
       "acaoTexto": ""
     },
@@ -155,7 +160,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "EVENT BROKER/Kafka, sem nome de tópico",
+          "v": "US12 Req01 e workflow das US07–US13: \"EVENT BROKER/Kafka\", sem nome de tópico",
           "r": "parcial"
         },
         "DFT": {
@@ -192,6 +197,20 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 33
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 34
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 83
+        }
+      ],
       "leitura": "O DM indica que o evento devolve o ExternalId enviado, mas oscila na grafia do role e mostra um correlationId na raiz que não está na tabela. A regra de correlação não aparece no BPMN.",
       "acao": "decidir",
       "acaoTexto": "Fixar o JSONPath (relatedParty[role=ExternalId].id) e documentá-lo no DM."
@@ -213,6 +232,16 @@ RAIOX.registrar({
           "r": "so-fonte"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 5
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 6
+        }
+      ],
       "leitura": "O HPSD só pode devolver o CID do VE se a INT06 enviar. Hoje a INT06 manda um UUID novo (ver INT06 R04).",
       "acao": "bpmn",
       "acaoTexto": "Enviar data_correlationId na INT06."
@@ -230,7 +259,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US12: HPSD informa pelo Kafka que o problema foi solucionado",
+          "v": "US12 Req01: o HPSD \"informa ao Elastic Journey ... (EVENT BROKER/Kafka – modo assíncrono)\" o resultado, com o ID de retorno · US12 CA002 (logs): \"MS Test Result V1 > EVENT BROKER/KAFKA > Integração Elastic Journey\"",
           "r": "parcial"
         },
         "DFT": {
@@ -242,7 +271,25 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
-      "leitura": "As fontes esperam ler o resultado no próprio evento. O BPMN faz uma chamada a mais (GET), que não está em nenhuma fonte.",
+      "dm": [
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 13
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 29
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 44
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 83
+        }
+      ],
+      "leitura": "As fontes esperam ler o resultado no próprio evento. O BPMN faz uma chamada a mais (GET), que não está em nenhuma fonte. Nenhuma US cita o GET.",
       "acao": "decidir",
       "acaoTexto": "Escolher: ler o resultado do evento, ou documentar o GET /serviceTest/{id} no DFT e no DM."
     },
@@ -263,6 +310,24 @@ RAIOX.registrar({
           "r": "so-fonte"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 10
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 11
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 19
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 83
+        }
+      ],
       "leitura": "O BPMN não filtra tipo nem state: o primeiro evento correlacionado retoma a instância. Um evento intermediário levaria a um GET sem resultado final, que vira \"problema persiste\".",
       "acao": "decidir",
       "acaoTexto": "Confirmar se o HPSD publica só o evento final; senão, filtrar state = completed."
@@ -284,6 +349,28 @@ RAIOX.registrar({
           "r": "so-fonte"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 29
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 33
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 45
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 69
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 83
+        }
+      ],
       "leitura": "Informativos para a jornada. A tabela e o exemplo do DM se contradizem em vários pontos.",
       "acao": "fonte",
       "acaoTexto": "Alinhar tabela e exemplo da aba Callback."
@@ -321,6 +408,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 5
+        }
+      ],
       "leitura": "Na prática o GET sai sem token. Se o gateway exigir o mesmo token da INT06, a consulta falha e o resultado vira \"persiste\".",
       "acao": "decidir",
       "acaoTexto": "Definir a autenticação do GET (token sistêmico)."
@@ -386,7 +479,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US12/US13: \"IDs de Retorno HPSD > Elastic Journey\" (ID06, ID07, ID09, ID10)",
+          "v": "US12 Req01: \"IDs de Retorno HPSD >Elastic Journey\": ID06, ID07, ID10 · US13 Req01–04: ID09",
           "r": "igual"
         },
         "DM": {
@@ -394,6 +487,16 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 29
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 83
+        }
+      ],
       "leitura": "Formato ID01 compatível com o regex. O DM documenta o campo no evento, não no GET; o BPMN supõe que o GET devolve o mesmo serviceTest. data_idRetorno não é usado depois.",
       "acao": "decidir",
       "acaoTexto": "Confirmar que o GET devolve o mesmo characteristic do evento."
@@ -415,6 +518,16 @@ RAIOX.registrar({
           "r": "diverge"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 66
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 83
+        }
+      ],
       "leitura": "No exemplo do DM, a reserva pegaria ID06 (resolvido) num diagnóstico cujo resultado final é ID01 (abre BD). O resultado por teste não é o consolidado.",
       "acao": "bpmn",
       "acaoTexto": "Remover a reserva por testMeasure; sem RESULTADO_DIAGNOSTICO, tratar como sem resultado."
@@ -436,6 +549,16 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 19
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 83
+        }
+      ],
       "leitura": "Se o GET vier com o teste ainda em andamento, não há ID e o BPMN agenda visita.",
       "acao": "decidir",
       "acaoTexto": "Tratar state diferente de completed (esperar mais ou tratar como sem resposta)."
@@ -457,6 +580,16 @@ RAIOX.registrar({
           "r": "so-fonte"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 29
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 83
+        }
+      ],
       "leitura": "O HPSD já diz se deve abrir BD, a fila e a mensagem para o técnico. O BPMN decide só pelo ID e não repassa nada disso ao BD.",
       "acao": "decidir",
       "acaoTexto": "Avaliar usar ABRE_BD/FILA_BD na decisão e MENSAGEM_TECNICO na abertura do BD (INT18)."
@@ -490,11 +623,11 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US12: ID06 falha corrigida, ID07 sem falha técnica, ID10 reset do modem; VE pede para resetar o modem e checar",
+          "v": "US12 Req01: \"Retorno de falha corrigida (ID06)\", \"sem falha técnica (ID07)\", \"Reset do modem (ID10)\" = problema solucionado; o VE \"deve pedir para o cliente resetar modem e checar se a falha foi resolvida\"",
           "r": "igual"
         }
       },
-      "leitura": "Igual à US12.",
+      "leitura": "Igual à US12. As telas estão na U01.",
       "acao": "nada",
       "acaoTexto": ""
     },
@@ -511,11 +644,11 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US13: ID09 = possível falta de energia → tela \"modem sem energia\"",
+          "v": "US13 Req01–04: \"Retorno de possibilidade de falta de energia elétrica na empresa do cliente (ID09)\" → \"Tela informando que o modem não está recebendo energia elétrica\"",
           "r": "igual"
         }
       },
-      "leitura": "Igual à US13.",
+      "leitura": "Igual à US13. As telas estão nas U02 a U05.",
       "acao": "nada",
       "acaoTexto": ""
     },
@@ -532,13 +665,13 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US12: qualquer outro ID = não resolveu. US07: problema persiste → consulta de slot no WFM",
-          "r": "igual"
+          "v": "US12 Req01: \"Qualquer outro ID diferente dos três acima significa que o diagnóstico automático não conseguiu resolver\" · US07 Req01 (e US08–US11): problema persiste → \"Elastic Journey deve acionar o WFM para consulta de slot\"",
+          "r": "parcial"
         }
       },
-      "leitura": "Igual às US. Sem resultado (ID ausente ou erro no GET) também cai aqui.",
-      "acao": "nada",
-      "acaoTexto": ""
+      "leitura": "Igual às US. Sem resultado (ID ausente ou erro no GET) também cai aqui. Antes da consulta de slot o BPMN mostra \"Vamos agendar uma visita técnica\", com \"Ir para o início\", que encerra sem BD. As US mandam chamar o WFM direto.",
+      "acao": "decidir",
+      "acaoTexto": "Confirmar com UX e negócio se o cliente pode sair sem agendar (\"Ir para o início\" em \"Vamos agendar uma visita técnica\"); as US mandam consultar o slot direto."
     },
     {
       "id": "D04",
@@ -553,7 +686,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "Cita só ID06, ID07, ID09 e ID10",
+          "v": "US12 Req01 e US13: citam só ID06, ID07, ID09 e ID10; \"qualquer outro ID\" = não resolveu",
           "r": "parcial"
         },
         "DM": {
@@ -561,9 +694,128 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 29
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 66
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 83
+        }
+      ],
       "leitura": "Nenhuma fonte traz a tabela completa de IDs. O BPMN cita ID01, 02 e 08 (Figma) como abertura de BD.",
       "acao": "fonte",
       "acaoTexto": "Pedir ao HPSD a tabela completa de IDs e incluí-la no DM."
+    },
+    {
+      "id": "U01",
+      "grupo": "us",
+      "nome": "Tela após diagnóstico resolvido (ID06/07/10)",
+      "tipo": "tela",
+      "linha": "US",
+      "bpmn": "Node_ReinicieNovamente (\"Vamos reiniciar o modem de novo\", \"Já reiniciei\") → Node_VoltouNovamente: \"Depois de reiniciar o modem, a internet voltou a funcionar?\" / \"Aguarde as luzes pararem de piscar antes de testar\" / Sim · Não. Sim → Node_InternetVoltou → fim; Não → Node_AgendarVisita.",
+      "valor": {
+        "t": "tela",
+        "de": "resposta de Node_VoltouNovamente"
+      },
+      "fontes": {
+        "US": {
+          "v": "US12 Req01: SDUI \"que o cliente deve resetar o modem e checar se a falha foi resolvida\": TÍTULO \"Depois de reiniciar o modem, a internet voltou a funcionar?\", SUBTÍTULO \"Aguarde as luzes pararem de piscar antes de testar\", CTA 1 \"Sim\", CTA 2 \"Não\"; o cliente \"confirma a resolução no VE\" → SDUI \"que o problema foi solucionado\" → fim",
+          "r": "igual"
+        }
+      },
+      "leitura": "Textos iguais aos da US12. O BPMN mostra antes a tela \"Reinicie de novo\". A US12 não diz o que fazer se o cliente responder \"Não\"; o BPMN segue para o agendamento de visita.",
+      "acao": "nada",
+      "acaoTexto": ""
+    },
+    {
+      "id": "U02",
+      "grupo": "us",
+      "nome": "Tela \"modem sem energia\" (ID09)",
+      "tipo": "tela",
+      "linha": "US",
+      "bpmn": "Node_SemEnergia: \"O modem não está recebendo energia\", com dicas de tomada e cabo; CTAs \"Já verifiquei\" e \"Não consigo verificar\". \"Não consigo verificar\" → Node_AgendarVisita → consulta de slot.",
+      "valor": {
+        "t": "tela",
+        "de": "resposta de Node_SemEnergia"
+      },
+      "fontes": {
+        "US": {
+          "v": "US13 Req01–04: \"Tela informando que o modem não está recebendo energia elétrica\", CTA \"Já verifiquei\" e CTA \"Não consigo verificar\" · US13 Req02: \"Não consigo verificar\" → \"direcionar o processo sistêmico para o WFM, consulta de slot para visita técnica\"",
+          "r": "parcial"
+        }
+      },
+      "leitura": "Tela igual à US13. \"Não consigo verificar\" passa pela tela \"Vamos agendar uma visita técnica\" antes do WFM (ver D03).",
+      "acao": "nada",
+      "acaoTexto": ""
+    },
+    {
+      "id": "U03",
+      "grupo": "us",
+      "nome": "Já verifiquei: a internet voltou?",
+      "tipo": "tela",
+      "linha": "US",
+      "bpmn": "Node_VoltouEnergia: \"Depois de testar a tomada e o cabo, sua internet voltou a funcionar?\" / \"Aguarde as luzes do modem pararem de piscar antes de testar a conexão\" / Sim · Não. Sim → Node_InternetVoltou → fim; Não → Node_TemEnergia.",
+      "valor": {
+        "t": "tela",
+        "de": "resposta de Node_VoltouEnergia"
+      },
+      "fontes": {
+        "US": {
+          "v": "US13 Req01/Req03: após \"Já verifiquei\", TÍTULO \"Depois de testar a tomada e o cabo, sua internet voltou a funcionar?\", SUBTÍTULO \"Aguarde as luzes do modem pararem de piscar antes de testar a conexão\", CTA \"Sim\" / \"Não\"; \"Sim\" → tela \"informando que o problema foi sanado\" e \"o processo se encerra\"",
+          "r": "igual"
+        }
+      },
+      "leitura": "Igual à US13.",
+      "acao": "nada",
+      "acaoTexto": ""
+    },
+    {
+      "id": "U04",
+      "grupo": "us",
+      "nome": "Tem energia elétrica no endereço?",
+      "tipo": "tela",
+      "linha": "US",
+      "bpmn": "Node_TemEnergia: \"Tem energia elétrica no seu endereço?\" / \"Pode ser que o problema esteja na rede elétrica…\" / Sim · Não. Sim → Node_AgendarVisita → consulta de slot; Não → Node_RedeEletrica.",
+      "valor": {
+        "t": "tela",
+        "de": "resposta de Node_TemEnergia"
+      },
+      "fontes": {
+        "US": {
+          "v": "US13 Req03: após \"Não\", TÍTULO \"Tem energia elétrica no seu endereço?\", SUBTÍTULO \"Pode ser que o problema esteja na rede elétrica. As luzes e outros aparelhos estão funcionando normalmente?\", CTA \"Sim\" / \"Não\"; \"Sim\" → \"direcionar o processo sistêmico para o WFM, consulta de slot para visita técnica\"",
+          "r": "parcial"
+        }
+      },
+      "leitura": "Tela igual à US13. O \"Sim\" passa pela tela \"Vamos agendar uma visita técnica\" antes do WFM (ver D03).",
+      "acao": "nada",
+      "acaoTexto": ""
+    },
+    {
+      "id": "U05",
+      "grupo": "us",
+      "nome": "Sem energia no endereço",
+      "tipo": "tela",
+      "linha": "US",
+      "bpmn": "Node_RedeEletrica: \"O problema pode estar na rede elétrica\" / \"Pode ser que algo não esteja funcionando bem na rede elétrica…\" / CTA \"Ir para o início\" → fim.",
+      "valor": {
+        "t": "tela",
+        "de": "resposta de Node_TemEnergia = não"
+      },
+      "fontes": {
+        "US": {
+          "v": "US13 Req04: após \"Não\", TÍTULO \"O problema pode estar na rede elétrica\", SUBTÍTULO \"Pode ser que algo não esteja funcionando bem na rede elétrica. Assim que tudo estiver normalizado, você pode fazer um novo teste\", CTA \"Ir para o início\"",
+          "r": "igual"
+        }
+      },
+      "leitura": "Igual à US13.",
+      "acao": "nada",
+      "acaoTexto": ""
     }
   ]
 });

@@ -16,10 +16,10 @@ RAIOX.registrar({
   "fontes": [
     {
       "id": "US",
-      "nome": "Histórias",
+      "nome": "Histórias (US)",
       "curto": "US",
       "contrato": false,
-      "detalhe": "US05 Não consegue reiniciar · US06 Problema persiste · US12 Diagnóstico resolvido (Req. 01)",
+      "detalhe": "US04 Pré-diagnóstico, problema resolvido · US05 Não consegue reiniciar · US06 Problema persiste · US07–US13 CA001 (cliente pronto para o diagnóstico) · US12 Req01 e US07 Req01 (chamada TMF 653)",
       "arquivo": "Histórias de usuário V2 04-11-2026 Elastic Journey FTAT-933/"
     },
     {
@@ -78,6 +78,11 @@ RAIOX.registrar({
       "id": "response",
       "nome": "Resposta",
       "sub": "HPSD → Camunda (aceite síncrono)"
+    },
+    {
+      "id": "us",
+      "nome": "Regras das histórias (US)",
+      "sub": "regras declaradas nas US sem linha própria"
     }
   ],
   "campos": [
@@ -94,7 +99,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US05: não consegue reiniciar → aciona HPSD. US06: reiniciou e persiste → aciona HPSD. US12 CA001: cliente informa que está pronto",
+          "v": "US05 Req01 e CA001: cliente \"não consegue reiniciar\" → \"o Elastic Journey deverá acionar o HPSD\" · US06 Req01 e CA001: \"reiniciou ... mas o problema técnico persiste\" → aciona o HPSD · US07–US13 CA001: \"o VE consultar junto ao cliente se ele está pronto para um diagnóstico automático\" e o cliente confirma",
           "r": "igual"
         },
         "DFT": {
@@ -106,7 +111,7 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
-      "leitura": "Os dois caminhos das US levam ao teste. O BPMN acrescenta a tela de confirmação, que a US12 descreve como \"cliente pronto para o diagnóstico\".",
+      "leitura": "Os dois caminhos das US levam ao teste. O BPMN acrescenta a tela de confirmação, que a US12 descreve como \"cliente pronto para o diagnóstico\". O \"Ir para o início\" da tela de teste (fim sem diagnóstico) não aparece nas US.",
       "acao": "nada",
       "acaoTexto": ""
     },
@@ -123,7 +128,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US12: chamar o HPSD via API GTW \"TMF 653\"",
+          "v": "US12 Req01 e US07 Req01: chamar o HPSD \"via API GTW 'TMF 653'\" (DM Diagnóstico Automático) · US13 CA001–CA004 (logs): \"Elastic Journey> INTEGRAÇÃO> HPSD\"",
           "r": "igual"
         },
         "DFT": {
@@ -147,7 +152,13 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
-      "leitura": "Todos batem no método. O DFT traz só a base do gateway; o recurso /serviceTest vem do DM.",
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 28
+        }
+      ],
+      "leitura": "Todos batem no método. O DFT traz só a base do gateway; o recurso /serviceTest vem do DM. Só a US13 fala em camada de Integração; a US12 e o BPMN vão direto ao API GTW.",
       "acao": "nada",
       "acaoTexto": ""
     },
@@ -180,6 +191,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 5
+        }
+      ],
       "leitura": "O DM pede um token OAM do Service Test Management, que parece sistêmico. O BPMN repassa o token do usuário VE e aceita ausência. Postman e curl usam o token VE do usuário, sem resposta salva: não provam que o gateway aceita esse token.",
       "acao": "decidir",
       "acaoTexto": "Confirmar se o gateway TMF653 aceita o token do usuário ou exige token sistêmico."
@@ -213,6 +230,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 6
+        }
+      ],
       "leitura": "O formato não segue a máscara do DM (as INT01/INT03 seguem). A máscara do DM usa INT004, mas no inventário do DFT esta integração é a INT06.",
       "acao": "bpmn",
       "acaoTexto": "Gerar TID_ELJY_FTAT933INT00x_<ISO UTC>; confirmar com o dono do DM se o sufixo é INT004 ou INT006."
@@ -244,9 +267,23 @@ RAIOX.registrar({
         "QA": {
           "v": "uuid() aleatório a cada chamada; não usa o correlationId do formulário",
           "r": "igual"
+        },
+        "US": {
+          "v": "US05/US06 Req01: VE inicia o workflow \"com ID único por workflow\"; o rastreio da US12 CA002 vai de \"Elastic Journey> API GTW TMF 653\" até o Kafka",
+          "r": "diverge"
         }
       },
-      "leitura": "O DM quer o CID que o VE criou no início, para rastrear a jornada até o callback. O BPMN cria outro, então o rastreio entre VE, HPSD e Kafka se perde.",
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 7
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 6
+        }
+      ],
+      "leitura": "O DM quer o CID que o VE criou no início, para rastrear a jornada até o callback. O BPMN cria outro, então o rastreio entre VE, HPSD e Kafka se perde. As US também falam em um ID único por workflow.",
       "acao": "bpmn",
       "acaoTexto": "Enviar data_correlationId (START), como nas INT01/INT03."
     },
@@ -279,6 +316,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 5
+        }
+      ],
       "leitura": "Padrão de API JSON. Falta só a linha na aba Request.",
       "acao": "nada",
       "acaoTexto": ""
@@ -312,6 +355,28 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 9
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 28
+        },
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 12
+        },
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 68
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 16
+        }
+      ],
       "leitura": "O texto difere em um caractere: o DM usa travessão (U+2013) antes de \"Automatic\"; o BPMN, hífen. Se o HPSD validar o nome, a chamada falha.",
       "acao": "decidir",
       "acaoTexto": "Confirmar com o HPSD o valor exato do name (o travessão do DM parece erro de digitação)."
@@ -345,6 +410,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 10
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 28
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -362,7 +437,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "\"ID DO DESIGNADOR\" na lista de TAGs a confirmar",
+          "v": "US05/US06 CA001 (Postman): TAGs \"a confirmar\" incluem \"ID DO DESIGNADOR\", sem dizer qual (serviço 013 ou acesso 069)",
           "r": "parcial"
         },
         "DFT": {
@@ -386,6 +461,24 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 12
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 13
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 28
+        },
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 33
+        }
+      ],
       "leitura": "O DM pede o designador de acesso (069). O BPMN envia data_designador, que na INT01 é o designador de serviço (013). É o mesmo problema da INT03.",
       "acao": "bpmn",
       "acaoTexto": "Enviar o designador de acesso (069), de uma variável própria no START."
@@ -419,6 +512,36 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 12
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 13
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 28
+        },
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 38
+        },
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 68
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 33
+        },
+        {
+          "aba": "Camunda x Kafka - HPSD Callback",
+          "linha": 34
+        }
+      ],
       "leitura": "O BPMN segue o exemplo da Request. O próprio DM se contradiz entre abas (ServiceNow × SalesForce).",
       "acao": "fonte",
       "acaoTexto": "Corrigir no DM o sistema de origem (ServiceNow) nas abas Response e Callback."
@@ -450,8 +573,38 @@ RAIOX.registrar({
         "QA": {
           "v": "{role: ExternalId, id: processInstanceId do formulário}; vazio = qa-<timestamp>",
           "r": "parcial"
+        },
+        "US": {
+          "v": "US12 Req01: o resultado volta \"através do API GTW / Microserviço Service Test Result / EVENT BROKER/Kafka – modo assíncrono\"; não diz qual campo correlaciona",
+          "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 12
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 13
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 28
+        },
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 30
+        },
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 45
+        },
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 68
+        }
+      ],
       "leitura": "O DM não fecha nem o valor (correlationId × id do Camunda) nem a grafia do role. Como a correlação do Kafka depende deste campo, os dois lados precisam usar o mesmo valor e a mesma grafia.",
       "acao": "decidir",
       "acaoTexto": "Fechar com o HPSD: id = processInstanceId e role = ExternalId; incluir o role no domínio do DM."
@@ -485,6 +638,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 17
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 28
+        },
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 48
+        }
+      ],
       "leitura": "O DM não deixa claro se vai o designador de acesso (069, como no exemplo) ou o de serviço (como diz a aba Response). O BPMN depende de um campo opcional do START. No curl, relatedService.id (SPO-SF703229-069) e AccessDesignator (SPO-SF897657-013) são de circuitos diferentes.",
       "acao": "decidir",
       "acaoTexto": "Definir qual designador vai aqui e tornar a variável do START obrigatória."
@@ -518,6 +685,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 18
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 19
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 28
+        }
+      ],
       "leitura": "Alinhado com o exemplo.",
       "acao": "nada",
       "acaoTexto": ""
@@ -535,7 +716,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "Diagnóstico \"junto ao FTTH do cliente\"",
+          "v": "US05, US06 e US12: diagnóstico automático \"no FTTH do cliente\" (não cita a spec)",
           "r": "parcial"
         },
         "DM": {
@@ -555,6 +736,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 20
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 21
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 28
+        }
+      ],
       "leitura": "O valor veio do exemplo do DM. Nenhuma fonte diz se há outras specs (outra tecnologia, outro perfil).",
       "acao": "decidir",
       "acaoTexto": "Confirmar com o HPSD se a spec é única para todo FTTH B2B."
@@ -588,6 +783,24 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 23
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 24
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 25
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 28
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -621,6 +834,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 14
+        },
+        {
+          "aba": "Camunda x HPSD - Request",
+          "linha": 28
+        }
+      ],
       "leitura": "Opcional. Não faz falta.",
       "acao": "nada",
       "acaoTexto": ""
@@ -679,6 +902,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 68
+        }
+      ],
       "leitura": "O BPMN aceita qualquer 2XX comum. O DM não fixa o código.",
       "acao": "nada",
       "acaoTexto": ""
@@ -733,6 +962,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 10
+        },
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 68
+        }
+      ],
       "leitura": "Único campo lido. Se vier 2XX sem id, o GET da INT10 sai como /serviceTest/sem-id.",
       "acao": "nada",
       "acaoTexto": ""
@@ -754,6 +993,16 @@ RAIOX.registrar({
           "r": "so-fonte"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 15
+        },
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 68
+        }
+      ],
       "leitura": "O BPMN decide só pelo status HTTP. Um state de rejeição com 2XX passaria como aceite.",
       "acao": "nada",
       "acaoTexto": ""
@@ -775,6 +1024,24 @@ RAIOX.registrar({
           "r": "so-fonte"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 5
+        },
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 6
+        },
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 7
+        },
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 8
+        }
+      ],
       "leitura": "Authorization numa resposta não faz sentido; a lista parece copiada da Request.",
       "acao": "fonte",
       "acaoTexto": "Revisar os headers da aba Response no DM."
@@ -796,7 +1063,55 @@ RAIOX.registrar({
           "r": "so-fonte"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x HPSD - Response",
+          "linha": 68
+        }
+      ],
       "leitura": "Eco da requisição e metadados. A jornada não precisa.",
+      "acao": "nada",
+      "acaoTexto": ""
+    },
+    {
+      "id": "U01",
+      "grupo": "us",
+      "nome": "Perguntas pré-diagnóstico (reiniciar o modem)",
+      "tipo": "tela",
+      "linha": "US",
+      "bpmn": "Node_Reinicie (\"Já reiniciei\" / \"Não consigo reiniciar\") → Node_VoltouReinicio: \"Depois de reiniciar o modem, a internet voltou a funcionar?\" / \"Aguarde as luzes pararem de piscar antes de testar\" / Sim · Não.",
+      "valor": {
+        "t": "tela",
+        "de": "form_acaoReinicio, resposta de Node_VoltouReinicio"
+      },
+      "fontes": {
+        "US": {
+          "v": "US04, US05 e US06 Req01: SDUI com as perguntas pré-diagnóstico: TÍTULO \"Depois de reiniciar o modem, a internet voltou a funcionar?\", SUBTÍTULO \"Aguarde as luzes pararem de piscar antes de testar\", CTA 1 \"Sim\", CTA 2 \"Não\" · US05 Req01: o cliente \"informa no VE que não consegue reiniciar seu equipamento\"",
+          "r": "parcial"
+        }
+      },
+      "leitura": "Textos e CTAs iguais aos da US. O BPMN mostra antes a tela \"Reinicie o modem\", onde fica a opção \"Não consigo reiniciar\"; a US não diz em que tela o cliente informa isso.",
+      "acao": "nada",
+      "acaoTexto": ""
+    },
+    {
+      "id": "U02",
+      "grupo": "us",
+      "nome": "Reiniciou e voltou: fim sem diagnóstico",
+      "tipo": "regra",
+      "linha": "US",
+      "bpmn": "Node_DecVoltouReinicio = sim → Node_InternetVoltou (\"Sua internet voltou a funcionar\", CTA \"Ir para o início\") → fim. A INT06 não é chamada.",
+      "valor": {
+        "t": "tela",
+        "de": "resposta de Node_VoltouReinicio"
+      },
+      "fontes": {
+        "US": {
+          "v": "US04 Req01 e CA001: o cliente \"informa no VE que o problema foi solucionado\" → SDUI \"que o problema está solucionado\"; \"o Elastic Journey informa ao VE para exibir uma tela de processo encerrado\"",
+          "r": "igual"
+        }
+      },
+      "leitura": "Igual à US04.",
       "acao": "nada",
       "acaoTexto": ""
     }

@@ -17,11 +17,11 @@ RAIOX.registrar({
   "fontes": [
     {
       "id": "US",
-      "nome": "Histórias",
+      "nome": "Histórias (US)",
       "curto": "US",
       "contrato": false,
-      "detalhe": "US08 Geração e criação de WO · US09 Visita não agendada · US10/US11 (WO criada antes do BD)",
-      "arquivo": "Histórias de usuário V2 04-11-2026 Elastic Journey FTAT-933/"
+      "arquivo": "Histórias de usuário V2 04-11-2026 Elastic Journey FTAT-933/",
+      "detalhe": "US08 Geração e criação de WO (ID da WO, slot escolhido, sucesso) · US09 Visita não agendada (falha, tela e cancelamento) · US10/US11 Req01 (agendamento ok → abrir BD) · US07 (escolha do dia e horário)"
     },
     {
       "id": "DFT",
@@ -105,7 +105,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US08/US10: camada wfm-journey-orchestration-v1; US09: ms-wfm-journey-orchestration-v1",
+          "v": "US08 Req01, US10 Req01 e US11: chamar o WFM \"via camada de Integração 'wfm-journey-orchestration-v1'\" (DM \"Abertura de WO e agendamento\") · US09 Req01 Ações escreve \"'ms- wfm-journey-orchestration-v1'\"",
           "r": "parcial"
         },
         "DFT": {
@@ -129,6 +129,24 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        },
+        {
+          "aba": "CAMUNDA X WFM Journey RESP OK",
+          "linha": 20
+        },
+        {
+          "aba": "CAMUNDAX WFM Jour. RESP ERRO v1",
+          "linha": 12
+        },
+        {
+          "aba": "CAMUNDAX WFM Jour. RESP ERRO v2",
+          "linha": 12
+        }
+      ],
       "leitura": "O BPMN segue a aba REQUEST do DM. O DFT e as abas de resposta do DM usam outros nomes de rota. O Postman aponta para preprod.oss.vivo.com.br e o curl (INT14 e INT08) para esteira2.oss.vivo.com.br, ambos em http.",
       "acao": "fonte",
       "acaoTexto": "Unificar o nome da rota no DFT e nas abas de resposta do DM."
@@ -162,6 +180,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 5
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "O DM exige o token. O BPMN usa o Bearer do usuário e segue sem ele se faltar. O erro 401 de exemplo mostra que o WFM valida o JWT. O INT08.sh repete o mesmo POST com o Bearer vazio.",
       "acao": "decidir",
       "acaoTexto": "Definir se o token é do usuário ou sistêmico e tornar obrigatório."
@@ -195,6 +223,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 6
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -228,6 +266,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 7
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Alinhado. APPVIVO seria outro canal.",
       "acao": "nada",
       "acaoTexto": ""
@@ -261,6 +309,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 8
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Igual ao DM. O número INT007 não bate com a numeração do DFT (INT14), mas é o que o DM pede.",
       "acao": "nada",
       "acaoTexto": ""
@@ -294,6 +352,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 15
+        }
+      ],
       "leitura": "O BPMN repassa o correlationId da jornada. O contrato do WFM não lista esse header.",
       "acao": "fonte",
       "acaoTexto": "Incluir o X-Vivo-Correlation-Id na aba REQUEST do DM."
@@ -339,6 +403,10 @@ RAIOX.registrar({
         "de": "connectTimeoutMs 3000 · responseTimeoutMs 10000 · maxAttempts 1"
       },
       "fontes": {
+        "US": {
+          "v": "US09 Req01: WO não criada → \"SDUI Elastic Journey informa ao BFF/VE ... que a criação da WO não foi bem-sucedida\" → cancelar → \"Fim do processo para o Elastic Journey\". Nenhuma US pede retentativa da WO nem define tempo",
+          "r": "igual"
+        },
         "DFT": {
           "v": "Coluna Retry: AS-IS",
           "r": "parcial"
@@ -381,6 +449,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 10
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -414,6 +492,16 @@ RAIOX.registrar({
           "r": "diverge"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 11
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "O DM pede SERVICENOWB2BMASSIVO. O BPMN manda MVE, igual ao requestSystem. A tela de QA manda SERVICENOWB2BMASSIVO e a WO de 19/11 foi aceita com esse valor.",
       "acao": "decidir",
       "acaoTexto": "Confirmar com o WFM qual sourceSystem vale para a jornada VE."
@@ -431,7 +519,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US08/09/10/11: Elastic Journey gera o ID da WO para o fluxo sistêmico",
+          "v": "US08 Workflow e Req01 Ações: \"Elastic Journey deve gerar o ID do WO para usar a frente no fluxo sistêmico\" · repetido em US09 Pré-condições e no Workflow da US10/US11",
           "r": "igual"
         },
         "DM": {
@@ -451,6 +539,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 12
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Segue a observação do DM. VE + UUID tem 38 caracteres, dentro do limite de 50. O exemplo do DM ainda mostra o formato antigo (SFTWO…).",
       "acao": "fonte",
       "acaoTexto": "Trocar o exemplo do DM por VE+UUID e registrar o tamanho máximo."
@@ -484,6 +582,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 13
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Estrutura alinhada. Os filhos só aparecem no exemplo do DM, sem obrigatoriedade.",
       "acao": "fonte",
       "acaoTexto": "Detalhar no DM os filhos de relatedParty (obrigatoriedade e domínio)."
@@ -517,6 +625,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Vem do START. Documentação do Node_CriaWO marca a categoria como pendente de origem. A tela de QA completa com PADROES_INT14 (valor do curl) porque a jornada não tem origem.",
       "acao": "decidir",
       "acaoTexto": "Definir de onde sai a categoria do cliente (Asset? CRM?)."
@@ -534,7 +648,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US08: TAG \"CNPJ\" a confirmar",
+          "v": "US08 CA001 Postman/Observações: TAGs \"a serem preenchidas: (confirmar quais TAGs precisam)\" lista \"CNPJ\", sem dizer de onde vem nem o formato",
           "r": "parcial"
         },
         "DM": {
@@ -554,6 +668,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Vem do START. Nenhuma fonte fixa a máscara; o exemplo usa só dígitos. A tela de QA tira o valor da Consulta de Asset (INT00), uma origem possível para o START.",
       "acao": "fonte",
       "acaoTexto": "Registrar no DM a máscara do CNPJ."
@@ -587,6 +707,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Vem do START. O exemplo é um id de conta Salesforce. A tela de QA tira o valor da Consulta de Asset (INT00), uma origem possível para o START.",
       "acao": "nada",
       "acaoTexto": ""
@@ -620,6 +746,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Vem do START. A tela de QA tira o valor da Consulta de Asset (INT00), uma origem possível para o START.",
       "acao": "nada",
       "acaoTexto": ""
@@ -653,6 +785,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Vem do START. A documentação do Node_CriaWO marca o contato como pendente de origem. A tela de QA completa com PADROES_INT14 (valor do curl) porque a jornada não tem origem.",
       "acao": "decidir",
       "acaoTexto": "Definir quem fornece o contato (canal ou Asset)."
@@ -686,6 +824,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Quatro entradas do START, sem obrigatoriedade definida. Vazio vai como \"\". A tela de QA completa com PADROES_INT14 (valor do curl) porque a jornada não tem origem.",
       "acao": "decidir",
       "acaoTexto": "Definir quais contatos são obrigatórios para o WFM."
@@ -719,6 +863,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "O bloco de pedido vem de um fluxo de venda. Num BD de defeito não há venda; o BPMN marca o pedido como pendente. A tela de QA completa com PADROES_INT14 (valor do curl) porque a jornada não tem origem.",
       "acao": "decidir",
       "acaoTexto": "Confirmar com o WFM se CustomerOrderValue é exigido em defeito e de onde sai."
@@ -752,6 +902,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Mesma dúvida de R19. A tela de QA completa com PADROES_INT14 (valor do curl) porque a jornada não tem origem.",
       "acao": "decidir",
       "acaoTexto": "Ver R19."
@@ -785,6 +941,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Mesma dúvida de R19. A tela de QA completa com PADROES_INT14 (valor do curl) porque a jornada não tem origem.",
       "acao": "decidir",
       "acaoTexto": "Ver R19."
@@ -818,6 +980,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "O exemplo parece de pendência de rede, não de defeito. A tela de QA completa com PADROES_INT14 (valor do curl) porque a jornada não tem origem.",
       "acao": "decidir",
       "acaoTexto": "Ver R19."
@@ -851,6 +1019,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Copiado do exemplo.",
       "acao": "nada",
       "acaoTexto": ""
@@ -884,6 +1058,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 14
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Mesmo padrão WO:item, mas o sufixo do BPMN é \":1\" e o do exemplo é \"SFTWOI\" + número.",
       "acao": "decidir",
       "acaoTexto": "Confirmar com o WFM o formato do id do item."
@@ -917,6 +1101,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Vem do START, compartilhado com a consulta de slots.",
       "acao": "nada",
       "acaoTexto": ""
@@ -950,6 +1140,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Vem do START. A tela de QA completa com PADROES_INT14 (\"CTA\", de Curitiba); em 19/11 foi junto com cidade São Paulo vinda da Asset.",
       "acao": "nada",
       "acaoTexto": ""
@@ -967,7 +1163,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US08: TAG \"ENDEREÇO\" a confirmar",
+          "v": "US08 CA001 Postman/Observações: TAGs \"a serem preenchidas: (confirmar quais TAGs precisam)\" lista \"ENDEREÇO\", sem dizer de onde vem nem o formato",
           "r": "parcial"
         },
         "DM": {
@@ -987,6 +1183,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Vem do START. A tela de QA tira o valor da Consulta de Asset (INT00), uma origem possível para o START.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1020,6 +1222,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Vem do START. A tela de QA tira o valor da Consulta de Asset (INT00), uma origem possível para o START.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1053,6 +1261,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Vem do START, compartilhado com a consulta de slots. A tela de QA tira o valor da Consulta de Asset (INT00), uma origem possível para o START.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1086,6 +1300,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Vem do START. A tela de QA converte o estado da Asset para sigla; o BPMN não. Evidência 19/11: o corpo gerado levou \"São Paulo\".",
       "acao": "nada",
       "acaoTexto": ""
@@ -1119,6 +1339,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Vem do START. A tela de QA completa com PADROES_INT14 (valor do curl) porque a jornada não tem origem.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1152,6 +1378,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Vem do START. A tela de QA tira o valor da Consulta de Asset (INT00), uma origem possível para o START.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1185,6 +1417,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Vem do START. A tela de QA tira o valor da Consulta de Asset (INT00), uma origem possível para o START.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1218,6 +1456,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 15
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Campo obrigatório. O BPMN tem padrão VIVO1; o exemplo do DM é VIVO2.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1234,6 +1482,10 @@ RAIOX.registrar({
         "de": "START wfmMediaType → data_wfmMediaType (padrão 'GPON')"
       },
       "fontes": {
+        "US": {
+          "v": "US08 Req01 Pré-condições: \"Cliente com FTTH solicitou suporte técnico no VE\" (não cita a tecnologia; combina com o fallback GPON)",
+          "r": "parcial"
+        },
         "DM": {
           "v": "Obrigatório · GPON",
           "r": "igual"
@@ -1251,6 +1503,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 16
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1284,6 +1546,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "O START diz que fica vazio em VIVO2. O exemplo do DM preenche VM mesmo em VIVO2.",
       "acao": "decidir",
       "acaoTexto": "Confirmar com o WFM se centralOffice é exigido em VIVO2."
@@ -1317,6 +1585,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Mesmo caso de R36.",
       "acao": "decidir",
       "acaoTexto": "Ver R36."
@@ -1350,6 +1624,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Ordem e tipo iguais ao exemplo. Coordenadas estão marcadas como pendentes de origem. A tela de QA usa as coordenadas de Curitiba de PADROES_INT14; em 19/11 foram com endereço de São Paulo vindo da Asset.",
       "acao": "decidir",
       "acaoTexto": "Definir de onde vêm as coordenadas."
@@ -1383,6 +1663,20 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 17
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 18
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Obrigatório no DM. O BPMN não valida e manda vazio se o START vier vazio. A tela de QA completa com PADROES_INT14 (PRCTA_G1D23), mas na INT11 manda \"\": o armário diverge entre as chamadas.",
       "acao": "bpmn",
       "acaoTexto": "Validar antes de chamar (ou tornar wfmGeographicSiteId não vazio no START)."
@@ -1416,6 +1710,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Vem do START. A tela de QA completa com PADROES_INT14 (valor do curl) porque a jornada não tem origem.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1449,6 +1749,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Válvula de escape para mandar todos os produtos do exemplo. Sem ela, só vão Banda Larga e ACESSO.",
       "acao": "decidir",
       "acaoTexto": "Definir quais produtos o WFM exige e de onde vêm (Asset)."
@@ -1482,6 +1788,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Estrutura igual ao exemplo. Nome e status fixos, sem ler o status real do produto. A tela de QA tira o valor da Consulta de Asset (INT00), uma origem possível para o START.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1499,7 +1811,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US08: TAG \"ID DO DESIGNADOR\" a confirmar",
+          "v": "US08 CA001 Postman/Observações: TAGs \"a serem preenchidas: (confirmar quais TAGs precisam)\" lista \"ID DO DESIGNADOR\", sem dizer de onde vem nem o formato",
           "r": "parcial"
         },
         "DM": {
@@ -1519,6 +1831,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Aqui o designador de serviço (013) é o certo, igual ao exemplo.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1535,6 +1853,10 @@ RAIOX.registrar({
         "de": "START wfmMediaType → data_wfmMediaType (padrão 'GPON')"
       },
       "fontes": {
+        "US": {
+          "v": "US08 Req01 Pré-condições: \"Cliente com FTTH solicitou suporte técnico no VE\" (não cita a tecnologia; combina com o fallback GPON)",
+          "r": "parcial"
+        },
         "DM": {
           "v": "Só no exemplo: GPON",
           "r": "igual"
@@ -1552,6 +1874,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1585,6 +1913,12 @@ RAIOX.registrar({
           "r": "so-fonte"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "O exemplo manda um código de produto que o BPMN não envia (só via wo_relatedEntity). A tela de QA completa com PADROES_INT14 (valor do curl) porque a jornada não tem origem.",
       "acao": "decidir",
       "acaoTexto": "Confirmar com o WFM se Code é necessário."
@@ -1618,6 +1952,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Igual ao exemplo quando preenchido. Se wo_acessoId vier vazio, o produto some sem aviso. A tela de QA tira o valor da Consulta de Asset (INT00), uma origem possível para o START.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1651,6 +1991,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Sem wo_relatedEntity, o WFM recebe menos produtos que no exemplo. A tela de QA completa com PADROES_INT14 (valor do curl) porque a jornada não tem origem.",
       "acao": "decidir",
       "acaoTexto": "Ver R41."
@@ -1684,6 +2030,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 19
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 20
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1717,6 +2077,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Copiado do exemplo.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1750,6 +2116,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "O detalhe do defeito poderia vir do diagnóstico (HPSD), mas hoje vem do START. A tela de QA completa com PADROES_INT14 (valor do curl) porque a jornada não tem origem.",
       "acao": "decidir",
       "acaoTexto": "Definir a origem do DETALHE (diagnóstico ou canal) e o domínio."
@@ -1783,6 +2155,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 22
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1816,6 +2198,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 23
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1849,6 +2241,16 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 24
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "O BPMN manda booleano, como o exemplo. A tabela da aba REQUEST diz String. A tela de QA manda true por padrão.",
       "acao": "fonte",
       "acaoTexto": "Corrigir o tipo na tabela do DM para boolean."
@@ -1882,6 +2284,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 25
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "O DM não diz que externalId é o id do item. O BPMN assume isso pelo formato.",
       "acao": "fonte",
       "acaoTexto": "Registrar no DM que externalId = workOrderItem.id."
@@ -1898,6 +2310,10 @@ RAIOX.registrar({
         "de": "INT11 slot.start → data_slotEscolhido → data local"
       },
       "fontes": {
+        "US": {
+          "v": "US08 CA001: \"o Elastic Journey deve chamar o WFM informando o dia e horário que o cliente escolheu\" (o dia)",
+          "r": "igual"
+        },
         "DM": {
           "v": "Obrigatório · tabela mostra 46217 (serial do Excel) · exemplo \"2026-07-14\"",
           "r": "igual"
@@ -1915,6 +2331,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 26
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Formato igual ao exemplo. O 46217 da tabela é a data 14/07/2026 formatada como número pelo Excel.",
       "acao": "fonte",
       "acaoTexto": "Corrigir a célula do DM para o texto YYYY-MM-DD."
@@ -1948,6 +2374,28 @@ RAIOX.registrar({
           "r": "diverge"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 27
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 23
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 24
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 34
+        }
+      ],
       "leitura": "O próprio DM se contradiz: uma aba põe o texto no id, a outra no role. O BPMN segue a aba VE x Camunda e ainda põe um id vindo do START. O Postman segue o BPMN; o curl segue a aba REQUEST. A tela de QA segue o curl, ignora wfmAttendantId, e a WO de 19/11 foi aceita assim.",
       "acao": "decidir",
       "acaoTexto": "Fechar com o WFM onde vai \"Cliente via Vivo Empresas\" e se o Attendant tem id."
@@ -1964,6 +2412,10 @@ RAIOX.registrar({
         "de": "INT11 → data_slotsWfm → form_horarioVisita → data_slotEscolhido.timeslot"
       },
       "fontes": {
+        "US": {
+          "v": "US08 Req01 Resultado esperado: \"WFM executa a geração/criação do WO com o slot escolhido pelo cliente\"",
+          "r": "igual"
+        },
         "DM": {
           "v": "Só no exemplo: \"15:30-17:30\"",
           "r": "igual"
@@ -1981,6 +2433,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Repassa o identificador do slot devolvido pelo WFM.",
       "acao": "nada",
       "acaoTexto": ""
@@ -2014,6 +2472,16 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 28
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Alinhado. Se a INT11 não devolver resourceId, vai nulo sem validação.",
       "acao": "nada",
       "acaoTexto": ""
@@ -2047,6 +2515,16 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 29
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Mesmo caso de A08.",
       "acao": "nada",
       "acaoTexto": ""
@@ -2063,6 +2541,10 @@ RAIOX.registrar({
         "de": "INT11 → data_slotEscolhido.start / .end"
       },
       "fontes": {
+        "US": {
+          "v": "US08 CA001: chamar o WFM \"informando o dia e horário que o cliente escolheu\" · Req01: \"com o slot escolhido pelo cliente\"",
+          "r": "igual"
+        },
         "DM": {
           "v": "Obrigatórios · ISO com offset, ex.: 2026-07-14T15:30:00.000-03:00",
           "r": "igual"
@@ -2080,6 +2562,20 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 30
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 31
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -2113,6 +2609,28 @@ RAIOX.registrar({
           "r": "diverge"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 32
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 31
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 32
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 34
+        }
+      ],
       "leitura": "O BPMN usa o texto de suporte técnico. O exemplo da aba REQUEST foi copiado de outro fluxo. Evidência 19/11: a tela de QA mandou \"horario simulado\" com slot real da INT11, porque o corpo editável foi gerado no exemplo simulado.",
       "acao": "fonte",
       "acaoTexto": "Corrigir o texto do exemplo na aba REQUEST."
@@ -2146,6 +2664,16 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 32
+        },
+        {
+          "aba": "Camunda x WFM Journey REQUEST",
+          "linha": 36
+        }
+      ],
       "leitura": "Alinhado. É obrigatório no START, mas pode vir vazio. O Postman manda a nota mesmo vazia; o BPMN a omite. A tela de QA completa com PADROES_INT14 (valor do curl) porque a jornada não tem origem.",
       "acao": "nada",
       "acaoTexto": ""
@@ -2163,7 +2691,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US08: WFM informa que a WO foi criada com o slot escolhido",
+          "v": "US08 Req01 Resultado esperado: \"WFM informa ao Elastic Journey via camada de Integração que o WO foi criado com sucesso com o slot escolhido pelo cliente\" · US10/US11 Postman: PRÉ REQ 6 \"slot criado com sucesso no WFM\" e PRÉ REQ 7 \"agendamento criado com sucesso no WFM\"",
           "r": "igual"
         },
         "DM": {
@@ -2179,6 +2707,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "CAMUNDA X WFM Journey RESP OK",
+          "linha": 6
+        },
+        {
+          "aba": "CAMUNDA X WFM Journey RESP OK",
+          "linha": 20
+        }
+      ],
       "leitura": "O BPMN não exige idWork, que o DM marca como obrigatório. Aceita só 200 (201 seria falha).",
       "acao": "nada",
       "acaoTexto": ""
@@ -2195,6 +2733,10 @@ RAIOX.registrar({
         "de": "idWorkOrder (ou data_woIdJornada) → data_woNumero"
       },
       "fontes": {
+        "US": {
+          "v": "US08 Req01 Ações: \"Elastic Journey deve gerar o ID do WO para usar a frente no fluxo sistêmico\" (o id gerado é o que segue no fluxo)",
+          "r": "parcial"
+        },
         "DM": {
           "v": "Obrigatório · ex.: SFTWO24583177 (diferente do id do exemplo de request, SFTWO24583286)",
           "r": "parcial"
@@ -2208,7 +2750,17 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
-      "leitura": "O BPMN supõe que o WFM devolve o mesmo id enviado. Os exemplos do DM mostram ids diferentes. data_woNumero vai para a INT18 e para o cancelamento (INT16). Evidência 19/11: o WFM devolveu o mesmo id enviado, como o BPMN supõe.",
+      "dm": [
+        {
+          "aba": "CAMUNDA X WFM Journey RESP OK",
+          "linha": 7
+        },
+        {
+          "aba": "CAMUNDA X WFM Journey RESP OK",
+          "linha": 20
+        }
+      ],
+      "leitura": "O BPMN supõe que o WFM devolve o mesmo id enviado. Os exemplos do DM mostram ids diferentes. data_woNumero vai para a INT18 e para o cancelamento (INT16). Evidência 19/11: o WFM devolveu o mesmo id enviado, como o BPMN supõe. A US08 sugere que o id que segue no fluxo é o gerado pela jornada; o BPMN prefere o idWorkOrder devolvido e usa o gerado só como reserva.",
       "acao": "decidir",
       "acaoTexto": "Confirmar com o WFM se idWorkOrder é o id enviado (VE+UUID)."
     },
@@ -2237,6 +2789,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "CAMUNDA X WFM Journey RESP OK",
+          "linha": 8
+        },
+        {
+          "aba": "CAMUNDA X WFM Journey RESP OK",
+          "linha": 20
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -2266,6 +2828,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "CAMUNDA X WFM Journey RESP OK",
+          "linha": 9
+        },
+        {
+          "aba": "CAMUNDA X WFM Journey RESP OK",
+          "linha": 20
+        }
+      ],
       "leitura": "Guardado sem uso. Pode ser o número que o técnico vê.",
       "acao": "decidir",
       "acaoTexto": "Decidir se idWork vai para o BD (INT18) ou para a tela."
@@ -2282,6 +2854,10 @@ RAIOX.registrar({
         "de": "body de erro → data_woErro"
       },
       "fontes": {
+        "US": {
+          "v": "US09 Req01 Resultado esperado: WFM informa \"que o WO não foi criado (por exemplo, algum erro sistêmico qualquer)\"; não separa erro da WO e do agendamento",
+          "r": "igual"
+        },
         "DM": {
           "v": "HTTP 401 · origin TMF-646-v1 (v1) ou TMF-697-v2 (v2) · \"Jwt is expired\"",
           "r": "parcial"
@@ -2291,6 +2867,56 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "CAMUNDAX WFM Jour. RESP ERRO v1",
+          "linha": 6
+        },
+        {
+          "aba": "CAMUNDAX WFM Jour. RESP ERRO v1",
+          "linha": 7
+        },
+        {
+          "aba": "CAMUNDAX WFM Jour. RESP ERRO v1",
+          "linha": 8
+        },
+        {
+          "aba": "CAMUNDAX WFM Jour. RESP ERRO v1",
+          "linha": 9
+        },
+        {
+          "aba": "CAMUNDAX WFM Jour. RESP ERRO v1",
+          "linha": 10
+        },
+        {
+          "aba": "CAMUNDAX WFM Jour. RESP ERRO v1",
+          "linha": 12
+        },
+        {
+          "aba": "CAMUNDAX WFM Jour. RESP ERRO v2",
+          "linha": 6
+        },
+        {
+          "aba": "CAMUNDAX WFM Jour. RESP ERRO v2",
+          "linha": 7
+        },
+        {
+          "aba": "CAMUNDAX WFM Jour. RESP ERRO v2",
+          "linha": 8
+        },
+        {
+          "aba": "CAMUNDAX WFM Jour. RESP ERRO v2",
+          "linha": 9
+        },
+        {
+          "aba": "CAMUNDAX WFM Jour. RESP ERRO v2",
+          "linha": 10
+        },
+        {
+          "aba": "CAMUNDAX WFM Jour. RESP ERRO v2",
+          "linha": 12
+        }
+      ],
       "leitura": "Os campos batem. O origin diz se falhou o agendamento (646) ou a WO (697), mas o BPMN trata tudo igual.",
       "acao": "decidir",
       "acaoTexto": "Decidir se erro 646 (WO criada, agendamento não) tem tratamento próprio."
@@ -2308,7 +2934,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US09: \"algum erro sistêmico qualquer\"",
+          "v": "US09 Req01 Resultado esperado: \"o WO não foi criado (por exemplo, algum erro sistêmico qualquer)\" · CA001: \"o WFM não consegue criar a WO por um motivo sistêmico\"",
           "r": "igual"
         },
         "PM": {
@@ -2349,6 +2975,24 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "CAMUNDA X WFM Journey RESP OK",
+          "linha": 5
+        },
+        {
+          "aba": "CAMUNDA X WFM Journey RESP OK",
+          "linha": 20
+        },
+        {
+          "aba": "CAMUNDAX WFM Jour. RESP ERRO v1",
+          "linha": 5
+        },
+        {
+          "aba": "CAMUNDAX WFM Jour. RESP ERRO v2",
+          "linha": 5
+        }
+      ],
       "leitura": "Só rastreabilidade. O BPMN não lê.",
       "acao": "nada",
       "acaoTexto": ""
@@ -2366,7 +3010,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US08: cliente escolhe dia e horário; VE informa ao Elastic Journey",
+          "v": "US08 CA001: \"o cliente escolhe um dia e horário no VE\" e \"o VE informa ao Elastic Journey o dia e horário que cliente escolheu\". A US não fala em validar a escolha",
           "r": "igual"
         },
         "PM": {
@@ -2395,7 +3039,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US10/US11: agendamento ok → criar BD",
+          "v": "US10 Req01 e US11 Req01: \"WFM informa ao Elastic Journey via camada de Integração que o agendamento foi concluído com sucesso\" e então \"Elastic Journey deve chamar o Service Now/Salesforce ... para a criação de BD\"",
           "r": "igual"
         },
         "DFT": {
@@ -2424,7 +3068,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US09: após falha, Elastic Journey chama o WFM para cancelar a WO criada",
+          "v": "US09 Workflow e Req01 Resultado esperado: \"Posteriormente Elastic Journey deve chamar o WFM para cancelar a WO criada\", mesmo com a WO \"não criada\" · CA001 omite o cancelamento: \"o Elastic Journey encerra o processo\"",
           "r": "igual"
         },
         "PM": {
@@ -2436,7 +3080,7 @@ RAIOX.registrar({
           "r": "diverge"
         }
       },
-      "leitura": "Toda falha da INT14 dispara um DELETE, inclusive 401 ou timeout em que a WO nem existe. O caminho direto para a tela nunca é usado. A tela de QA faz o oposto: cancela toda WO criada no teste e não cancela sem idWorkOrder.",
+      "leitura": "Toda falha da INT14 dispara um DELETE, inclusive 401 ou timeout em que a WO nem existe. O caminho direto para a tela nunca é usado. A tela de QA faz o oposto: cancela toda WO criada no teste e não cancela sem idWorkOrder. A US09 pede o cancelamento mesmo quando a WO \"não foi criada\", o que apoia cancelar sempre; o CA001 não cita o cancelamento.",
       "acao": "decidir",
       "acaoTexto": "Decidir se cancela sempre (seguro, pode dar 404) ou só quando há sinal de WO criada."
     },
@@ -2453,7 +3097,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US09: informa ao VE que o agendamento falhou; \"posteriormente\" cancela a WO",
+          "v": "US09 Workflow: \"Elastic Journey informa ao VE que o agendamento não foi bem-sucedido\" e depois \"chamar o WFM para cancelar a WO criada\" · Req01: \"SDUI Elastic Journey informa ao BFF/VE (via pooling na fila do Redis) que a criação da WO não foi bem-sucedida ... Posteriormente ... cancelar a WO\" · CA001: \"o agendamento no dia e horário que o cliente escolheu não foi feito\"",
           "r": "parcial"
         }
       },
@@ -2486,6 +3130,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 6
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 7
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 34
+        }
+      ],
       "leitura": "Mesmo mecanismo. A aba Request_OLD (histórica) ainda trazia o start da massiva (state raised, externalIdentifier).",
       "acao": "nada",
       "acaoTexto": ""
@@ -2515,6 +3173,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 9
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 34
+        }
+      ],
       "leitura": "Tratado pela fachada, não pelo BPMN.",
       "acao": "nada",
       "acaoTexto": ""
@@ -2544,6 +3212,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 5
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 14
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 34
+        }
+      ],
       "leitura": "O DM traz dois números na mesma chamada (INT006 e INT008). INT008 é o número do cancelamento no BPMN.",
       "acao": "fonte",
       "acaoTexto": "Corrigir a numeração do transactionId do /advance no DM."
@@ -2569,6 +3251,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 12
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 13
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 34
+        }
+      ],
       "leitura": "Valores iguais, origem diferente: o DM espera que o canal mande; o BPMN fixa.",
       "acao": "nada",
       "acaoTexto": ""
@@ -2594,6 +3290,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 15
+        }
+      ],
       "leitura": "O canal manda um correlationId por chamada; o BPMN usa um só, o do START.",
       "acao": "decidir",
       "acaoTexto": "Definir se o correlationId é por jornada (START) ou por chamada."
@@ -2610,6 +3312,10 @@ RAIOX.registrar({
         "de": "form_horarioVisita → data_slotEscolhido"
       },
       "fontes": {
+        "US": {
+          "v": "US07/US08 CA001: \"o VE informa ao Elastic Journey o dia e horário que cliente escolheu\" (não define o formato: índice do slot ou Appointment_Create)",
+          "r": "igual"
+        },
         "DM": {
           "v": "Não existe. O DM espera Appointment_Create completo em answers",
           "r": "diverge"
@@ -2619,6 +3325,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 16
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 34
+        }
+      ],
       "leitura": "Contrato do canal diferente do BPMN. Se o VE seguir o DM, o BPMN não acha form_horarioVisita e volta para a escolha. O datePicker da tela (form_dataVisita) também é ignorado.",
       "acao": "decidir",
       "acaoTexto": "Fechar com o VE: mandar só o índice (BPMN) ou o Appointment_Create (DM)."
@@ -2644,6 +3360,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 17
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 18
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 34
+        }
+      ],
       "leitura": "Mesmos valores. O BPMN não depende do canal.",
       "acao": "nada",
       "acaoTexto": ""
@@ -2669,6 +3399,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 19
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 34
+        }
+      ],
       "leitura": "Mesmo dado, outro nome de campo.",
       "acao": "decidir",
       "acaoTexto": "Ver T06."
@@ -2694,6 +3434,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 20
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 34
+        }
+      ],
       "leitura": "Mesmo valor final, calculado no BPMN.",
       "acao": "decidir",
       "acaoTexto": "Ver T06."
@@ -2719,6 +3469,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 23
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 24
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 34
+        }
+      ],
       "leitura": "O DM manda id vazio; o BPMN tenta preencher com o START.",
       "acao": "decidir",
       "acaoTexto": "Ver A06."
@@ -2744,6 +3508,40 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 22
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 23
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 25
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 26
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 27
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 28
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 29
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 34
+        }
+      ],
       "leitura": "O BPMN é mais seguro: o canal não consegue mandar um slot que o WFM não ofereceu.",
       "acao": "fonte",
       "acaoTexto": "Ajustar o DM ao modelo do BPMN (canal manda só a escolha)."
@@ -2769,6 +3567,24 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 30
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 31
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 32
+        },
+        {
+          "aba": "VE x Camunda - Request",
+          "linha": 34
+        }
+      ],
       "leitura": "Mesmo texto.",
       "acao": "nada",
       "acaoTexto": ""
@@ -2798,6 +3614,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "VE x Camunda - Response",
+          "linha": 6
+        },
+        {
+          "aba": "VE x Camunda - Response",
+          "linha": 29
+        }
+      ],
       "leitura": "Resposta padrão da fachada, fora do BPMN.",
       "acao": "nada",
       "acaoTexto": ""

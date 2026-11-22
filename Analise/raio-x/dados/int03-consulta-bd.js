@@ -16,10 +16,10 @@ RAIOX.registrar({
   "fontes": [
     {
       "id": "US",
-      "nome": "Histórias",
+      "nome": "Histórias (US)",
       "curto": "US",
       "contrato": false,
-      "detalhe": "US01 Consulta Bilhete de Defeito aberto · US03 BDs, Massivas e Faturas",
+      "detalhe": "US01 Consulta Bilhete de Defeito aberto (Req01, Obs. 1 e 2, CA001) · US03 BDs, Massivas e Faturas (Req02, Req03, CA002, CA003) · US04–US13 (workflow: \"BD Preventivo e/ou Pró-Ativo\")",
       "arquivo": "Histórias de usuário V2 04-11-2026 Elastic Journey FTAT-933/"
     },
     {
@@ -89,6 +89,11 @@ RAIOX.registrar({
       "id": "response",
       "nome": "Resposta",
       "sub": "Trouble Ticket → Camunda"
+    },
+    {
+      "id": "us",
+      "nome": "Regras das histórias (US)",
+      "sub": "regras declaradas nas US sem linha própria"
     }
   ],
   "campos": [
@@ -123,9 +128,23 @@ RAIOX.registrar({
         "QA": {
           "v": "GET {ttConsulta}/troubleTicket?ticketType=Case&sys_class_name=…&active=true&correlation_display=… (preprod: serviceNowTroubleTicket/v1)",
           "r": "igual"
+        },
+        "US": {
+          "v": "US01 Req01 e US03 Req02/03: chamar o Service Now \"via camada de Integração 'Trouble Ticket Management v1'\" (DM Consulta de BD); a resposta volta \"via API GTW e camada de Integração\"",
+          "r": "parcial"
         }
       },
-      "leitura": "O BPMN segue o gateway do ServiceNow (endpoint temporário). O DM e o OpenAPI descrevem o MS Trouble Ticket, com outro formato de busca (filter=). Quando o endpoint mudar para o MS, a query e o tratamento do 404 quebram.",
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 13
+        },
+        {
+          "aba": "MS Trouble Ti x ServiceNow -Req",
+          "linha": 17
+        }
+      ],
+      "leitura": "O BPMN segue o gateway do ServiceNow (endpoint temporário). O DM e o OpenAPI descrevem o MS Trouble Ticket, com outro formato de busca (filter=). Quando o endpoint mudar para o MS, a query e o tratamento do 404 quebram. As US também mandam passar pela camada de Integração (Trouble Ticket Management v1), como o DM.",
       "acao": "decidir",
       "acaoTexto": "Decidir qual endpoint vai para produção e alinhar o BPMN a ele.",
       "valor": {
@@ -162,6 +181,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 5
+        }
+      ],
       "leitura": "O contrato exige; o BPMN envia só se houver token. O curl validado chama o gateway sem Bearer, o que sugere que o iss substitui o token nesse endpoint.",
       "acao": "decidir",
       "acaoTexto": "Confirmar a autenticação do endpoint final (Bearer ou iss).",
@@ -228,6 +253,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 6
+        }
+      ],
       "leitura": "Tudo alinhado.",
       "acao": "nada",
       "acaoTexto": "",
@@ -259,8 +290,18 @@ RAIOX.registrar({
         "QA": {
           "v": "correlationId do formulário; vazio, gera CID_VE_FTAT933_QA_<timestamp>",
           "r": "igual"
+        },
+        "US": {
+          "v": "US01 Req01: VE inicia o workflow \"com ID único por workflow\" (não diz o nome do campo)",
+          "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 7
+        }
+      ],
       "leitura": "O DM exige e define uma máscara com INT001 e data; os testes usam CID_VE_FTAT933_<ts>. O BPMN aceita ausência.",
       "acao": "decidir",
       "acaoTexto": "Fechar a máscara do correlationId com o VE.",
@@ -278,7 +319,7 @@ RAIOX.registrar({
       "bpmn": "data_designador, o mesmo da INT01. Na prática, o designador de serviço (013) vindo do Asset.",
       "fontes": {
         "US": {
-          "v": "\"ID DO DESIGNADOR\" a confirmar",
+          "v": "US01 CA001 e US03 CA002/CA003 (Postman): TAGs \"a confirmar\" incluem \"ID DO DESIGNADOR\", sem dizer qual (serviço 013 ou acesso 069)",
           "r": "parcial"
         },
         "DFT": {
@@ -302,6 +343,24 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 9
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 13
+        },
+        {
+          "aba": "MS Trouble Ti x ServiceNow -Req",
+          "linha": 12
+        },
+        {
+          "aba": "MS Trouble Ti x ServiceNow -Req",
+          "linha": 17
+        }
+      ],
       "leitura": "DFT, DM e o curl validado pedem o designador de acesso (069). O BPMN envia o de serviço (013), porque usa a mesma variável da INT01.",
       "acao": "bpmn",
       "acaoTexto": "Usar o designador de acesso (069), vindo de uma variável própria.",
@@ -339,6 +398,24 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 9
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 13
+        },
+        {
+          "aba": "MS Trouble Ti x ServiceNow -Req",
+          "linha": 9
+        },
+        {
+          "aba": "MS Trouble Ti x ServiceNow -Req",
+          "linha": 17
+        }
+      ],
       "leitura": "Valor alinhado; muda apenas o formato (parâmetro solto × dentro do filter).",
       "acao": "nada",
       "acaoTexto": "",
@@ -372,6 +449,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "MS Trouble Ti x ServiceNow -Req",
+          "linha": 10
+        },
+        {
+          "aba": "MS Trouble Ti x ServiceNow -Req",
+          "linha": 17
+        }
+      ],
       "leitura": "Pelo DM, quem preenche é o MS ao chamar o ServiceNow. O BPMN preenche porque fala direto com o gateway.",
       "acao": "decidir",
       "acaoTexto": "Some do BPMN se o endpoint final for o MS.",
@@ -405,6 +492,24 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 9
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 13
+        },
+        {
+          "aba": "MS Trouble Ti x ServiceNow -Req",
+          "linha": 11
+        },
+        {
+          "aba": "MS Trouble Ti x ServiceNow -Req",
+          "linha": 17
+        }
+      ],
       "leitura": "Mesmo filtro com nomes diferentes. O BPMN ainda filtra o status de novo na resposta.",
       "acao": "nada",
       "acaoTexto": "",
@@ -442,6 +547,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 10
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 11
+        }
+      ],
       "leitura": "O DM tem a mais. Sem limit, a lista vem completa, e o BPMN usa só o primeiro ticket aberto.",
       "acao": "nada",
       "acaoTexto": "Não enviar.",
@@ -500,6 +615,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 7
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 39
+        }
+      ],
       "leitura": "O gateway do ServiceNow devolve 206 com resultados parciais; o contrato do MS não prevê esse código.",
       "acao": "nada",
       "acaoTexto": "",
@@ -533,6 +658,24 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "MS T T x ServiceNow - Resp ERRO",
+          "linha": 8
+        },
+        {
+          "aba": "MS T T x ServiceNow - Resp ERRO",
+          "linha": 12
+        },
+        {
+          "aba": "MS T T x ServiceNow - Resp ERRO",
+          "linha": 14
+        },
+        {
+          "aba": "MS T T x ServiceNow - Resp ERRO",
+          "linha": 22
+        }
+      ],
       "leitura": "O BPMN lê code na raiz, como no gateway do ServiceNow. No formato do MS, o 60 fica em response.code (DM) ou nem aparece (OpenAPI): a ausência de BD viraria falha.",
       "acao": "decidir",
       "acaoTexto": "Ajustar a regra do 404 junto com a escolha do endpoint.",
@@ -550,7 +693,7 @@ RAIOX.registrar({
       "bpmn": "Boundary \"Falha técnica\" → Node_TrataBD → tela \"Não conseguimos verificar\".",
       "fontes": {
         "US": {
-          "v": "US01 Obs. 2: direcionar a outro atendimento ou tentar mais tarde",
+          "v": "US01 Req01 Obs. 2: se não conseguir consultar BD (\"por exemplo, indisponibilidade de API\"), \"informar ao VE via SDUI para direcionar o cliente para outro tipo de atendimento Vivo, ou ... tentar mais tarde\"",
           "r": "igual"
         },
         "OAS": {
@@ -595,6 +738,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 39
+        }
+      ],
       "leitura": "Usado internamente. Falta a linha na tabela do DM.",
       "acao": "fonte",
       "acaoTexto": "Incluir id na tabela do DM.",
@@ -626,8 +775,22 @@ RAIOX.registrar({
         "QA": {
           "v": "Aberto = status fora de closed, cancelled, canceled, resolved (sem diferenciar maiúsculas)",
           "r": "igual"
+        },
+        "US": {
+          "v": "US01 Req01: verificar se existe BD \"aberto\" (não lista status)",
+          "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 16
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 39
+        }
+      ],
       "leitura": "A consulta já pede active=true, então o filtro do BPMN é redundante. Ticket sem status conta como aberto.",
       "acao": "decidir",
       "acaoTexto": "Pedir ao dono do DM a lista de status.",
@@ -645,11 +808,11 @@ RAIOX.registrar({
       "bpmn": "relatedEntity com name \"number\" → entity.id; senão externalIdentifier.id → data_bdProtocoloAtendimento.",
       "fontes": {
         "US": {
-          "v": "US01: mostrar \"dia, hora e protocolo\"",
+          "v": "US01 Req01: informar \"os dados do BD aberto (dia, hora e protocolo)\" · US03 Req02: idem, junto com a massiva",
           "r": "igual"
         },
         "DM": {
-          "v": "relatedEntity[] genérico (role, entity.id, name); não cita \"number\"",
+          "v": "Camunda x MS Resp: tabela genérica de relatedEntity[] (role, entity.id, entity.name), sem citar \"number\"; o exemplo (C39) traz entity.name \"number\" com o protocolo em entity.id (SPC0001126). MS x ServiceNow Resp: relatedEntity[3] name \"number\", id SPC0001455",
           "r": "parcial"
         },
         "OAS": {
@@ -665,6 +828,40 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 27
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 28
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 29
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 31
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 39
+        },
+        {
+          "aba": "MS Trouble T x ServiceNow -Resp",
+          "linha": 60
+        },
+        {
+          "aba": "MS Trouble T x ServiceNow -Resp",
+          "linha": 61
+        },
+        {
+          "aba": "MS Trouble T x ServiceNow -Resp",
+          "linha": 63
+        }
+      ],
       "leitura": "Funciona com o retorno real. O contrato do MS sugere externalIdentifier.id, que o BPMN só usa como reserva.",
       "acao": "fonte",
       "acaoTexto": "Documentar no DM qual campo é o protocolo.",
@@ -682,7 +879,7 @@ RAIOX.registrar({
       "bpmn": "relatedEntity \"ets\" → data_bdPrevisaoConclusao (sem formatação).",
       "fontes": {
         "US": {
-          "v": "US01: mostrar \"dia, hora\"",
+          "v": "US01 Req01 e US03 Req02: \"dia, hora\" do BD aberto, sem dizer se é a abertura ou a visita",
           "r": "parcial"
         },
         "CURL": {
@@ -694,7 +891,7 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
-      "leitura": "Nenhum contrato cita \"ets\". Na amostra ele vem vazio, então a tela mostraria \"Agendada para \" sem data.",
+      "leitura": "Nenhum contrato cita \"ets\". Na amostra ele vem vazio, então a tela mostraria \"Agendada para \" sem data. A US pede \"dia, hora\" do BD sem dizer de quê; o BPMN mostra a data da visita (ets), e o ticket também traz creationDate (S10).",
       "acao": "decidir",
       "acaoTexto": "Confirmar com o ServiceNow qual campo traz a data/hora da visita.",
       "valor": {
@@ -711,7 +908,7 @@ RAIOX.registrar({
       "bpmn": null,
       "fontes": {
         "US": {
-          "v": "US01: verificar BD Preventivo e/ou Pró-Ativo",
+          "v": "US01 Req01 e CA001 (e o workflow das US03–US13): verificar se existe \"BD Preventivo e/ou Pró-Ativo aberto\"",
           "r": "so-fonte"
         },
         "CURL": {
@@ -765,6 +962,52 @@ RAIOX.registrar({
           "r": "so-fonte"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 8
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 9
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 10
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 11
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 12
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 13
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 14
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 17
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 19
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 34
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 39
+        }
+      ],
       "leitura": "Informativos, a jornada não precisa.",
       "acao": "nada",
       "acaoTexto": "",
@@ -772,6 +1015,48 @@ RAIOX.registrar({
         "t": "nenhum",
         "de": "ignorados"
       }
+    },
+    {
+      "id": "U01",
+      "grupo": "us",
+      "nome": "BD aberto (sem massiva e sem fatura)",
+      "tipo": "regra",
+      "linha": "US",
+      "bpmn": "Node_AvaliaImpedimentos = VISITA → Node_StatusVisita (\"Visita técnica agendada\", data e protocolo do BD, CTA \"Ir pra Central de visitas\") → fim.",
+      "valor": {
+        "t": "resposta",
+        "de": "data_temBD → data_impedimento"
+      },
+      "fontes": {
+        "US": {
+          "v": "US01 Req01: informar \"os dados do BD aberto (dia, hora e protocolo)\" e \"um botão (CTA) 'Ir pra Central de visitas'\"; \"Fim do processo\" · US01, US02 e US03 Obs. 1: \"Se o cliente tem BD aberto, e não tem Massiva aberto, é o suficiente para não abrir um novo BD\"",
+          "r": "igual"
+        }
+      },
+      "leitura": "Igual à US01. Massiva + BD está na INT01 (U05). BD + fatura sem massiva não aparece nas US: o BPMN dá precedência à fatura e mostra só \"Faturas em atraso\", sem os dados do BD.",
+      "acao": "nada",
+      "acaoTexto": ""
+    },
+    {
+      "id": "U02",
+      "grupo": "us",
+      "nome": "Fatura em aberto: consulta de BD roda mesmo assim",
+      "tipo": "regra",
+      "linha": "US",
+      "bpmn": "INT01 e INT03 rodam sempre; a fatura (productStatus) só é avaliada depois, em Node_AvaliaImpedimentos. Só fatura → Node_StatusAtraso (\"Faturas em atraso\", CTA \"Ir pra Central de faturas\") → fim.",
+      "valor": {
+        "t": "start",
+        "de": "START productStatus → data_productStatus"
+      },
+      "fontes": {
+        "US": {
+          "v": "US03 Req03 e CA003: o Elastic Journey consulta o Service Now (sem BD) e o Sigitm (sem massiva) e então interpreta a Consulta de Asset (\"sim, o cliente tem fatura em aberto\") → \"um botão (CTA) 'Ir para a central de faturas'\"; \"não é possível seguir com a abertura de BD\"",
+          "r": "igual"
+        }
+      },
+      "leitura": "Igual à US03: as consultas não são puladas quando há fatura. Como a fatura é detectada (productStatus \"bloqueio\") segue em aberto no START.",
+      "acao": "nada",
+      "acaoTexto": ""
     }
   ]
 });

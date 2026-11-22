@@ -16,10 +16,10 @@ RAIOX.registrar({
   "fontes": [
     {
       "id": "US",
-      "nome": "Histórias",
+      "nome": "Histórias (US)",
       "curto": "US",
       "contrato": false,
-      "detalhe": "US02 Consulta Massiva/Manutenção · US03 BDs, Massivas e Faturas",
+      "detalhe": "US02 Consulta Massiva/Manutenção (Req01, Obs. 1 e 2, CA001) · US03 BDs, Massivas e Faturas (Req01, Req02, CA001, CA002) · US01 Req01 (telas iniciais) · US04–US13 (workflow: ordem das consultas)",
       "arquivo": "Histórias de usuário V2 04-11-2026 Elastic Journey FTAT-933/"
     },
     {
@@ -89,6 +89,11 @@ RAIOX.registrar({
       "id": "response",
       "nome": "Resposta",
       "sub": "CPM → Camunda"
+    },
+    {
+      "id": "us",
+      "nome": "Regras das histórias (US)",
+      "sub": "regras declaradas nas US sem linha própria"
     }
   ],
   "campos": [
@@ -123,8 +128,18 @@ RAIOX.registrar({
         "QA": {
           "v": "GET {cpm}/incidents?serviceDesignator={designador} (preprod cssp-preprod…/customer-problem-management/v1)",
           "r": "igual"
+        },
+        "US": {
+          "v": "US02 Req01 e US03 Req01/02: chamar o Sigitm \"via camada de Integração 'Customer Problem Management v1'\" (DM Consulta de Massivas)",
+          "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Request",
+          "linha": 15
+        }
+      ],
       "leitura": "Todas as fontes técnicas batem com o BPMN. Só o DFT ainda registra POST na raiz, que responde 405.",
       "acao": "fonte",
       "acaoTexto": "Atualizar o DFT para GET /incidents.",
@@ -162,6 +177,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Request",
+          "linha": 5
+        }
+      ],
       "leitura": "O contrato exige o header; o BPMN só envia se o token chegou no /advance da primeira tela. Sem ele, a chamada volta 401.",
       "acao": "decidir",
       "acaoTexto": "Definir token do usuário ou sistêmico no runtime.",
@@ -195,6 +216,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Request",
+          "linha": 6
+        }
+      ],
       "leitura": "Opcional. As demais integrações do BPMN geram esse TID; a INT01 não. A máscara do DM cita INT002.",
       "acao": "bpmn",
       "acaoTexto": "Gerar TID_ELJY_FTAT933INT001_<ISO> na jornada, sem pedir ao canal.",
@@ -221,6 +248,10 @@ RAIOX.registrar({
         },
         "QA": {
           "v": "correlationId do formulário; vazio, gera CID_VE_FTAT933_QA_<timestamp> a cada execução",
+          "r": "igual"
+        },
+        "US": {
+          "v": "US02 Req01 e US03 Req01: VE inicia o workflow \"com ID único por workflow\" (não diz o nome do campo)",
           "r": "igual"
         }
       },
@@ -270,7 +301,7 @@ RAIOX.registrar({
       "bpmn": "data_designador, URL-encoded. Lança erro se vazio.",
       "fontes": {
         "US": {
-          "v": "\"ID DO DESIGNADOR\" como TAG a confirmar",
+          "v": "US02 CA001 e US03 CA001/CA002 (Postman): TAGs \"a confirmar\" incluem \"ID DO DESIGNADOR\", sem dizer qual (serviço 013 ou acesso 069)",
           "r": "parcial"
         },
         "DFT": {
@@ -298,6 +329,16 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Request",
+          "linha": 8
+        },
+        {
+          "aba": "Camunda x MS Request",
+          "linha": 15
+        }
+      ],
       "leitura": "O valor está certo para esta integração. O problema é que a mesma variável alimenta a INT03, que pede o designador de acesso (069). Designador vazio vira incidente técnico no Camunda, sem chegar à tela de falha. A tela de QA usa um só designador para INT01, INT03 e INT06, com padrão de final 069 (acesso).",
       "acao": "bpmn",
       "acaoTexto": "Ler de uma variável exclusiva do designador de serviço (013) e tratar o vazio.",
@@ -333,8 +374,22 @@ RAIOX.registrar({
         "QA": {
           "v": "Não envia",
           "r": "igual"
+        },
+        "US": {
+          "v": "US02 Req01: verificar se existe \"Massiva e/ou Manutenção Programada aberto\" (não fala em filtro de status)",
+          "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Request",
+          "linha": 9
+        },
+        {
+          "aba": "Camunda x MS Request",
+          "linha": 15
+        }
+      ],
       "leitura": "O DM tem a mais. Fixar ACTIVE excluiria a manutenção programada (SCHEDULED), que a US02 quer mostrar.",
       "acao": "nada",
       "acaoTexto": "Não enviar.",
@@ -372,6 +427,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Request",
+          "linha": 10
+        },
+        {
+          "aba": "Camunda x MS Request",
+          "linha": 15
+        }
+      ],
       "leitura": "O padrão do MS atende.",
       "acao": "nada",
       "acaoTexto": "Não enviar.",
@@ -407,9 +472,23 @@ RAIOX.registrar({
         "QA": {
           "v": "Não envia",
           "r": "igual"
+        },
+        "US": {
+          "v": "US02 Req01: a consulta deve achar \"Manutenção Programada\" aberta (não fala em janela de datas)",
+          "r": "parcial"
         }
       },
-      "leitura": "Se a janela filtra por data de abertura, uma manutenção agendada para amanhã fica fora da consulta.",
+      "dm": [
+        {
+          "aba": "Camunda x MS Request",
+          "linha": 11
+        },
+        {
+          "aba": "Camunda x MS Request",
+          "linha": 15
+        }
+      ],
+      "leitura": "Se a janela filtra por data de abertura, uma manutenção agendada para amanhã fica fora da consulta. Isso deixaria de atender a US02, que pede a manutenção programada.",
       "acao": "decidir",
       "acaoTexto": "Perguntar ao CPM; se preciso, fixar endDate na jornada.",
       "valor": {
@@ -509,7 +588,7 @@ RAIOX.registrar({
       "bpmn": "Boundary \"Falha técnica\" → Node_TrataMassiva → tela \"Não conseguimos verificar\".",
       "fontes": {
         "US": {
-          "v": "US02 Obs. 2: informar o VE para direcionar a outro atendimento ou tentar mais tarde",
+          "v": "US02 Req01 Obs. 2: se não conseguir consultar (\"por exemplo, indisponibilidade de API\"), \"informar ao VE via SDUI para direcionar o cliente para outro tipo de atendimento Vivo, ou ... tentar mais tarde\" · US03 Req01–03 Obs. 2: idem",
           "r": "igual"
         },
         "OAS": {
@@ -558,6 +637,16 @@ RAIOX.registrar({
           "r": "so-fonte"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Response",
+          "linha": 9
+        },
+        {
+          "aba": "Camunda x MS Response",
+          "linha": 21
+        }
+      ],
       "leitura": "O BPMN ignora o total e decide pelos incidentes da lista.",
       "acao": "nada",
       "acaoTexto": "",
@@ -575,7 +664,7 @@ RAIOX.registrar({
       "bpmn": "Primeiro incidente aberto → data_massivaProtocolo (protocolo exibido).",
       "fontes": {
         "US": {
-          "v": "US02: mostrar \"dia, hora e protocolo\"",
+          "v": "US02 Req01 e US03 Req01/02: informar \"os dados do Massiva e/ou Manutenção programada em aberto (dia, hora e protocolo)\"; não diz qual campo é o protocolo",
           "r": "parcial"
         },
         "DM": {
@@ -595,6 +684,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Response",
+          "linha": 11
+        },
+        {
+          "aba": "Camunda x MS Response",
+          "linha": 21
+        }
+      ],
       "leitura": "Nenhuma fonte diz que incidentId é o protocolo que o cliente reconhece. Com vários incidentes, o BPMN mostra o primeiro, sem critério.",
       "acao": "decidir",
       "acaoTexto": "Confirmar o campo de protocolo com o CPM e a regra para vários incidentes.",
@@ -626,9 +725,23 @@ RAIOX.registrar({
         "QA": {
           "v": "Aberta = status ≠ CLOSED, sem diferenciar maiúsculas",
           "r": "igual"
+        },
+        "US": {
+          "v": "US02 Req01: verificar se existe \"Massiva e/ou Manutenção Programada aberto\" (não lista status)",
+          "r": "igual"
         }
       },
-      "leitura": "Pelo BPMN, SUSPECTED e PENDING também bloqueiam a abertura de BD. Nenhuma fonte define quais status contam.",
+      "dm": [
+        {
+          "aba": "Camunda x MS Response",
+          "linha": 12
+        },
+        {
+          "aba": "Camunda x MS Response",
+          "linha": 21
+        }
+      ],
+      "leitura": "Pelo BPMN, SUSPECTED e PENDING também bloqueiam a abertura de BD. Nenhuma fonte define quais status contam. A US02 conta manutenção programada como impedimento, o que apoia incluir SCHEDULED; os demais status continuam sem definição.",
       "acao": "decidir",
       "acaoTexto": "Definir com o negócio quais status impedem a abertura.",
       "valor": {
@@ -645,8 +758,8 @@ RAIOX.registrar({
       "bpmn": null,
       "fontes": {
         "US": {
-          "v": "US02 trata \"Massiva e/ou Manutenção Programada\"",
-          "r": "so-fonte"
+          "v": "US02 Req01: trata \"Massiva e/ou Manutenção Programada\" juntas; não pede texto diferente para cada tipo",
+          "r": "parcial"
         },
         "DM": {
           "v": "Opcional · CONFIRMED | SCHEDULED",
@@ -657,6 +770,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Response",
+          "linha": 13
+        },
+        {
+          "aba": "Camunda x MS Response",
+          "linha": 21
+        }
+      ],
       "leitura": "O campo distingue massiva de manutenção programada. O BPMN ignora, e a tela é sempre \"Instabilidade na região\".",
       "acao": "decidir",
       "acaoTexto": "Validar com UX se manutenção programada precisa de outro texto.",
@@ -674,7 +797,7 @@ RAIOX.registrar({
       "bpmn": "Formata \"dd/MM às HHhmm\" (São Paulo) → data_massivaPrevisaoConclusao.",
       "fontes": {
         "US": {
-          "v": "\"dia, hora\" (não diz se é abertura ou previsão)",
+          "v": "US02 Req01 e US03 Req01/02: mostrar \"dia, hora e protocolo\" da massiva, sem dizer se é a abertura ou a previsão",
           "r": "parcial"
         },
         "DM": {
@@ -690,7 +813,17 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
-      "leitura": "Bate, mas o campo é opcional: sem previsão, a frase da tela fica incompleta.",
+      "dm": [
+        {
+          "aba": "Camunda x MS Response",
+          "linha": 16
+        },
+        {
+          "aba": "Camunda x MS Response",
+          "linha": 21
+        }
+      ],
+      "leitura": "Bate, mas o campo é opcional: sem previsão, a frase da tela fica incompleta. A US pede \"dia, hora\" sem dizer de quê; o BPMN mostra a previsão de conclusão (o DM também traz openDate).",
       "acao": "decidir",
       "acaoTexto": "Definir o texto para previsão ausente.",
       "valor": {
@@ -715,6 +848,32 @@ RAIOX.registrar({
           "r": "so-fonte"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Response",
+          "linha": 14
+        },
+        {
+          "aba": "Camunda x MS Response",
+          "linha": 15
+        },
+        {
+          "aba": "Camunda x MS Response",
+          "linha": 17
+        },
+        {
+          "aba": "Camunda x MS Response",
+          "linha": 18
+        },
+        {
+          "aba": "Camunda x MS Response",
+          "linha": 19
+        },
+        {
+          "aba": "Camunda x MS Response",
+          "linha": 21
+        }
+      ],
       "leitura": "Informativos, a jornada não precisa. O tipo de affectedServices diverge entre DM e OpenAPI.",
       "acao": "nada",
       "acaoTexto": "",
@@ -722,6 +881,111 @@ RAIOX.registrar({
         "t": "nenhum",
         "de": "ignorados"
       }
+    },
+    {
+      "id": "U01",
+      "grupo": "us",
+      "nome": "Tela de espera durante as consultas",
+      "tipo": "tela",
+      "linha": "US",
+      "bpmn": "Não há. Node_Inicio mostra a primeira tela (título, subtítulo e CTA \"Continuar\" iguais aos da US) e as consultas rodam em seguida, sem tela \"Analisando e fazendo ajustes\" no screens.json.",
+      "valor": {
+        "t": "nenhum",
+        "de": "sem tela de espera"
+      },
+      "fontes": {
+        "US": {
+          "v": "US01, US02 e US03 Req01 (Ações): tela \"Agora, vamos verificar o que pode estar acontecendo com sua internet\" / \"Antes dos testes, vamos conferir o seu serviço…\" / CTA \"Continuar\"; depois TÍTULO \"Analisando e fazendo ajustes\", SUBTÍTULO \"Por favor, aguarde\", CTA \"N/A\"",
+          "r": "parcial"
+        }
+      },
+      "leitura": "A primeira tela bate com a US. A tela de espera não existe na jornada: entre o \"Continuar\" e o resultado das consultas, o VE não recebe tela SDUI.",
+      "acao": "decidir",
+      "acaoTexto": "Confirmar se \"Analisando e fazendo ajustes\" é um loading do próprio VE ou precisa ser tela SDUI da jornada."
+    },
+    {
+      "id": "U02",
+      "grupo": "us",
+      "nome": "Ordem das consultas (massiva × BD)",
+      "tipo": "regra",
+      "linha": "US",
+      "bpmn": "INT01 (massiva) primeiro; se responder, INT03 (BD). O impedimento só é avaliado depois das duas. Falha em qualquer uma → \"Não conseguimos verificar\".",
+      "valor": {
+        "t": "nenhum",
+        "de": "sequência do BPMN"
+      },
+      "fontes": {
+        "US": {
+          "v": "US03 workflow e CA001–CA003: Sigitm (massiva) antes do Service Now (BD) · US03 Req02/Req03 e workflow das US04–US13: Service Now antes do Sigitm · US03 Req02 e CA002: as duas consultas rodam antes de responder ao VE",
+          "r": "parcial"
+        }
+      },
+      "leitura": "As US não fixam a ordem: ela muda de uma para outra. O resultado não depende dela, porque o BPMN só decide depois das duas consultas. Muda só na falha: com a INT01 fora, a INT03 nem é chamada.",
+      "acao": "nada",
+      "acaoTexto": ""
+    },
+    {
+      "id": "U03",
+      "grupo": "us",
+      "nome": "Massiva aberta (sem fatura e sem BD)",
+      "tipo": "regra",
+      "linha": "US",
+      "bpmn": "Node_AvaliaImpedimentos = MASSIVA → Node_StatusMassiva (\"Instabilidade na região\", previsão, protocolo, CTA \"Ir para o início\") → fim.",
+      "valor": {
+        "t": "resposta",
+        "de": "data_temMassiva → data_impedimento"
+      },
+      "fontes": {
+        "US": {
+          "v": "US02 Req01: informar \"os dados do Massiva e/ou Manutenção programada em aberto (dia, hora e protocolo)\" e \"um botão (CTA) 'Ir para o início'\"; \"Fim do processo\" · US02 CA001: \"o processo se encerra\"",
+          "r": "igual"
+        }
+      },
+      "leitura": "Igual à US02. O texto da tela é sempre de instabilidade, mesmo para manutenção programada (ver S07).",
+      "acao": "nada",
+      "acaoTexto": ""
+    },
+    {
+      "id": "U04",
+      "grupo": "us",
+      "nome": "Massiva + fatura em aberto",
+      "tipo": "regra",
+      "linha": "US",
+      "bpmn": "MASSIVA_ATRASO (vence o BD) → Node_StatusMassivaAtraso: massiva (previsão, protocolo) + \"Faturas em atraso\", CTA \"Ir pra Central de faturas\" → fim.",
+      "valor": {
+        "t": "resposta",
+        "de": "data_temMassiva + data_productStatus → data_impedimento"
+      },
+      "fontes": {
+        "US": {
+          "v": "US03 Req01 e CA001: massiva aberta e \"a interpretação final é que sim, o cliente tem fatura em aberto\" → mostrar a massiva \"(dia, hora e protocolo)\", \"informar que o cliente tem fatura em aberto\" e \"um botão (CTA) 'Ir para a central de faturas'\"; \"não é possível seguir com a abertura de BD\"",
+          "r": "igual"
+        }
+      },
+      "leitura": "Igual à US03. A US não trata massiva + fatura + BD juntos; o BPMN mostra esta tela nesse caso. Como a fatura é detectada (productStatus \"bloqueio\") segue em aberto no START.",
+      "acao": "nada",
+      "acaoTexto": ""
+    },
+    {
+      "id": "U05",
+      "grupo": "us",
+      "nome": "Massiva + BD aberto (sem fatura)",
+      "tipo": "regra",
+      "linha": "US",
+      "bpmn": "MASSIVA_VISITA → Node_StatusMassivaVisita: massiva (previsão, protocolo) + \"Visita técnica agendada\" (data e protocolo do BD, da INT03), CTA \"Ir pra Central de visitas\" → fim.",
+      "valor": {
+        "t": "resposta",
+        "de": "data_temMassiva + data_temBD → data_impedimento"
+      },
+      "fontes": {
+        "US": {
+          "v": "US03 Req02 e CA002: massiva aberta, BD aberto e \"o cliente não tem fatura em aberto\" → mostrar a massiva e o BD \"(dia, hora e protocolo)\" e \"um botão (CTA) 'Ir para a central de visitas'\"",
+          "r": "igual"
+        }
+      },
+      "leitura": "Igual à US03.",
+      "acao": "nada",
+      "acaoTexto": ""
     }
   ]
 });

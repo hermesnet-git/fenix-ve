@@ -18,11 +18,11 @@ RAIOX.registrar({
   "fontes": [
     {
       "id": "US",
-      "nome": "Histórias",
+      "nome": "Histórias (US)",
       "curto": "US",
       "contrato": false,
-      "detalhe": "US10 Visita agendada - BD não criado · US11 Visita agendada - BD criado (US12/13 não citam dados do BD)",
-      "arquivo": "Histórias de usuário V2 04-11-2026 Elastic Journey FTAT-933/"
+      "arquivo": "Histórias de usuário V2 04-11-2026 Elastic Journey FTAT-933/",
+      "detalhe": "US10 Visita agendada - BD não criado (Req01–Req04: 3 tentativas, pergunta ao cliente, cancelamento da WO) · US11 Visita agendada - BD criado (sucesso e tela final) · US08 (ID da WO usado depois) · Escopo comum: \"informe o ID do BD ao cliente\" (US12/US13 não citam dados do BD)"
     },
     {
       "id": "DFT",
@@ -101,7 +101,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "Camada de integração \"Trouble Ticket Management v1\"",
+          "v": "US10 Req01–Req03 e US11 Req01 Ações: \"chamar o Service Now/Salesforce via camada de integração 'Trouble Ticket Management v1' (ver data mapping “PreDataMapping FTAT-933 - Abertura de BD”)\"",
           "r": "igual"
         },
         "DFT": {
@@ -121,6 +121,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "621-MS Trouble Ticke x SN- Req",
+          "linha": 39
+        }
+      ],
       "leitura": "O corpo segue o formato do MS. Na INT03 a mesma base aponta para o gateway do ServiceNow, que não entende esse corpo. No Postman, tt_base_url aponta para o MS troubleTicketManagement; a INT03 usa outra URL (gateway serviceNowTroubleTicket). A tela de QA, na mesma URL da INT03, recebeu 500 em 19/11 vindo do token do ServiceNow; ela não manda o iss que a INT03 manda.",
       "acao": "decidir",
       "acaoTexto": "Confirmar que FENIX_VE_TT_BASE_URL aponta para o MS Trouble Ticket no POST."
@@ -150,6 +156,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 5
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -204,6 +216,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 6
+        }
+      ],
       "leitura": "O DM exige; o BPMN envia só se houver token na sessão.",
       "acao": "decidir",
       "acaoTexto": "Definir token do usuário ou sistêmico no runtime."
@@ -233,6 +251,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 7
+        }
+      ],
       "leitura": "Máscara igual. O DM usa INT009 (numeração do DM), não INT18 (numeração do DFT).",
       "acao": "nada",
       "acaoTexto": ""
@@ -262,6 +286,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 8
+        }
+      ],
       "leitura": "O DM exige; o BPMN aceita ausência. A máscara traz INT002, diferente da INT03 (INT001).",
       "acao": "decidir",
       "acaoTexto": "Fechar a máscara do correlationId com o VE e torná-lo obrigatório no START."
@@ -291,6 +321,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 10
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O BPMN segue a tabela. O exemplo usa ServiceProblemCase, que é o @type que o MS manda ao ServiceNow (aba 621).",
       "acao": "fonte",
       "acaoTexto": "Corrigir o @type do exemplo do DM."
@@ -320,6 +360,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 11
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -353,6 +403,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 12
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O DM só dá um placeholder. O texto do BPMN é sempre o mesmo, sem o resultado do diagnóstico.",
       "acao": "decidir",
       "acaoTexto": "Definir com o negócio o texto da description (fixo ou com o resultado do diagnóstico)."
@@ -382,6 +442,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 13
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 13
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -411,6 +485,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 16
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        },
+        {
+          "aba": "621-MS Trouble Ticke x SN- Req",
+          "linha": 37
+        }
+      ],
       "leitura": "Igual ao exemplo. Todo BD sai como \"Queda de Conexão\", mesmo quando o diagnóstico aponta outra causa.",
       "acao": "decidir",
       "acaoTexto": "Confirmar se o título é fixo para toda a jornada."
@@ -440,6 +528,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 14
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        },
+        {
+          "aba": "621-MS Trouble Ticke x SN- Req",
+          "linha": 32
+        }
+      ],
       "leitura": "Bate: início da janela da visita. Tabela e exemplo trazem máscaras diferentes.",
       "acao": "fonte",
       "acaoTexto": "Unificar a máscara da data no DM."
@@ -469,6 +571,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 15
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        },
+        {
+          "aba": "621-MS Trouble Ticke x SN- Req",
+          "linha": 33
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -498,6 +614,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 18
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 19
+        }
+      ],
       "leitura": "Igual ao DM. Note que caseOrigin (C34) tem exemplo \"Email\", outro conceito de canal.",
       "acao": "nada",
       "acaoTexto": ""
@@ -527,6 +657,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 17
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 19
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O BPMN segue a tabela. A tabela se contradiz (obrigatório com mínimo 0) e o exemplo omite.",
       "acao": "fonte",
       "acaoTexto": "Acertar obrigatoriedade e exemplo no DM."
@@ -556,6 +700,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 20
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "A cardinalidade do DM (máx. 1) não fecha com os 5 itens. Os 3 itens sem valor somem do body.",
       "acao": "fonte",
       "acaoTexto": "Corrigir a cardinalidade no DM (0..N)."
@@ -585,6 +739,32 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 21
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 22
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 23
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 24
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 25
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O BPMN segue a tabela. O exemplo muda @type e name. O id é um GUID do ServiceNow que nenhuma integração anterior traz.",
       "acao": "decidir",
       "acaoTexto": "Definir de onde vem o id do ProductInventory e se é obrigatório."
@@ -614,6 +794,24 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 26
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 27
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 28
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O DM pede um GUID do ServiceNow; o BPMN manda um código legível. O @type externo também difere do exemplo.",
       "acao": "bpmn",
       "acaoTexto": "Trocar pelo GUID da especificação de teste (config de ambiente)."
@@ -643,6 +841,24 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 29
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 30
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 31
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Estrutura igual. Sem valor no START, o item não vai.",
       "acao": "decidir",
       "acaoTexto": "Definir a origem do GUID (fixo por oferta ou consulta)."
@@ -672,6 +888,24 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 32
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 33
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 34
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Estrutura igual. Sem valor no START, o item não vai.",
       "acao": "decidir",
       "acaoTexto": "Definir a origem do GUID do serviço no ServiceNow."
@@ -701,6 +935,24 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 35
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 36
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 37
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -730,6 +982,28 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 38
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 39
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 40
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        },
+        {
+          "aba": "MS Trouble Ticket x SN(629) Req",
+          "linha": 12
+        }
+      ],
       "leitura": "O BPMN segue a tabela. O exemplo e a TMF629 usam \"Fênix\".",
       "acao": "fonte",
       "acaoTexto": "Fechar o valor de role no DM."
@@ -759,6 +1033,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 43
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        },
+        {
+          "aba": "MS Trouble Ticket x SN(629) Req",
+          "linha": 10
+        }
+      ],
       "leitura": "O campo bate. Mas o BPMN aceita ausência: sem ele o MS não cria o contato na TMF629 e o BD falha.",
       "acao": "bpmn",
       "acaoTexto": "Exigir wo_customerId no START."
@@ -788,6 +1076,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 42
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 45
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -817,6 +1119,24 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 44
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        },
+        {
+          "aba": "MS Trouble Ticket x SN(629) Req",
+          "linha": 11
+        },
+        {
+          "aba": "MS Trouble Ticket x SN(629) Req",
+          "linha": 15
+        }
+      ],
       "leitura": "Opcional na fronteira, obrigatório por dentro do MS.",
       "acao": "decidir",
       "acaoTexto": "Tratar como obrigatório no START."
@@ -846,6 +1166,28 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 47
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 48
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        },
+        {
+          "aba": "MS Trouble Ticket x SN(629) Req",
+          "linha": 18
+        },
+        {
+          "aba": "MS Trouble Ticket x SN(629) Req",
+          "linha": 19
+        }
+      ],
       "leitura": "Opcional na fronteira, obrigatório na TMF629. No Postman direto, o padrão lê wo_emailAddress/wo_phoneNumber, que a collection não declara (tem woEmailAddress): sem bd_*, os contatos somem. Na tela de QA os contatos (R26, R27, C08, C09, C13, C14) só vêm do formulário: os padrões que a INT14 aplica não chegam ao BD.",
       "acao": "decidir",
       "acaoTexto": "Tratar como obrigatório no START ou confirmar default no MS."
@@ -875,6 +1217,28 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 49
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 50
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        },
+        {
+          "aba": "MS Trouble Ticket x SN(629) Req",
+          "linha": 18
+        },
+        {
+          "aba": "MS Trouble Ticket x SN(629) Req",
+          "linha": 20
+        }
+      ],
       "leitura": "Aqui o fixo vem antes do celular; em telefoneContatoLocal1 (C13) é o contrário.",
       "acao": "decidir",
       "acaoTexto": "Definir qual telefone é o contato principal."
@@ -904,6 +1268,24 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 51
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 52
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        },
+        {
+          "aba": "MS Trouble Ticket x SN(629) Req",
+          "linha": 23
+        }
+      ],
       "leitura": "Dois ids de cliente: Salesforce (R23) e ServiceNow (este). O BPMN normalmente não manda o do ServiceNow, que a 629 exige.",
       "acao": "decidir",
       "acaoTexto": "Definir quem resolve o id ServiceNow do cliente: VE no START ou o MS."
@@ -958,6 +1340,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 53
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Nomes e ordem batem. A cardinalidade máx. 1 do DM não fecha com 36 itens. 18 das 36 vão vazias salvo data_bd_*.",
       "acao": "fonte",
       "acaoTexto": "Corrigir a cardinalidade no DM (0..N)."
@@ -987,6 +1379,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 54
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 55
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O DM mostra o nome do estado; o BPMN reusa o stateOrProvince do endereço da WO. Formato a confirmar.",
       "acao": "decidir",
       "acaoTexto": "Confirmar se vai a UF ou o nome por extenso."
@@ -1016,6 +1422,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 56
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 57
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1045,6 +1465,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 58
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 59
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1061,6 +1495,10 @@ RAIOX.registrar({
         "de": "START wfmPostcode → data_wfmPostcode (sobrescrito por data_bd_postcode)"
       },
       "fontes": {
+        "US": {
+          "v": "US10/US11 CA001 Postman/Observações: TAGs \"a serem preenchidas: (confirmar quais TAGs precisam)\" lista \"ENDEREÇO\", sem dizer de onde vem nem o formato",
+          "r": "parcial"
+        },
         "DM": {
           "v": "Tabela 4605003; exemplo \"04605003\"",
           "r": "parcial"
@@ -1074,6 +1512,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 60
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 61
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "A tabela perdeu o zero à esquerda (efeito do Excel). O exemplo, com 8 dígitos, é o correto.",
       "acao": "fonte",
       "acaoTexto": "Corrigir o exemplo da tabela para 04605003."
@@ -1103,6 +1555,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 62
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 63
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1132,6 +1598,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 64
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 65
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1161,6 +1641,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 66
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 67
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1190,6 +1684,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 68
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 69
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Alinhado. Tabela e exemplo diferem só no valor ilustrativo.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1219,6 +1727,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 70
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 71
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1235,6 +1757,10 @@ RAIOX.registrar({
         "de": "START wo_documentNumber → data_wo_documentNumber (sobrescrito por data_bd_documentNumber)"
       },
       "fontes": {
+        "US": {
+          "v": "US10/US11 CA001 Postman/Observações: TAGs \"a serem preenchidas: (confirmar quais TAGs precisam)\" lista \"CNPJ\", sem dizer de onde vem nem o formato",
+          "r": "parcial"
+        },
         "DM": {
           "v": "Exemplo \"27212650000157\" (CNPJ sem máscara)",
           "r": "igual"
@@ -1248,6 +1774,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 72
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 73
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1277,6 +1817,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 74
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 75
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O DM mostra valor; o BPMN não tem origem.",
       "acao": "decidir",
       "acaoTexto": "Definir a origem (START ou deixar vazio)."
@@ -1306,6 +1860,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 76
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 77
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O DM mostra valor; o BPMN não tem origem. Poderia ser o mesmo contato de reclamanteNome.",
       "acao": "decidir",
       "acaoTexto": "Definir a origem (START ou deixar vazio)."
@@ -1335,6 +1903,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 78
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 79
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1364,6 +1946,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 80
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 81
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Alinhado. Tabela e exemplo diferem só no valor ilustrativo.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1393,6 +1989,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 82
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 83
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Parece um domínio do ServiceNow (motivo de reparo). O BPMN não manda.",
       "acao": "decidir",
       "acaoTexto": "Pedir o domínio de motivo e definir um valor fixo para a jornada."
@@ -1422,6 +2032,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 84
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 85
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O DM não traz valor real.",
       "acao": "decidir",
       "acaoTexto": "Pedir o domínio de submotivo."
@@ -1451,6 +2075,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 86
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 87
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Vazio nos dois.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1480,6 +2118,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 88
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 89
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Dado do produto; o BPMN não tem origem.",
       "acao": "decidir",
       "acaoTexto": "Definir a origem (START com dados do produto ou deixar vazio)."
@@ -1509,6 +2161,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 90
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 91
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Dado do produto; o BPMN não tem origem.",
       "acao": "decidir",
       "acaoTexto": "Definir a origem (START com dados do produto ou deixar vazio)."
@@ -1525,6 +2191,10 @@ RAIOX.registrar({
         "de": "START designador → data_designador"
       },
       "fontes": {
+        "US": {
+          "v": "US10/US11 CA001 Postman/Observações: TAGs \"a serem preenchidas: (confirmar quais TAGs precisam)\" lista \"ID DO DESIGNADOR\", sem dizer de onde vem nem o formato",
+          "r": "parcial"
+        },
         "DM": {
           "v": "Exemplo \"SPO-SF703229-069\" (designador de acesso)",
           "r": "diverge"
@@ -1538,6 +2208,20 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 92
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 93
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O DM pede o designador de acesso (069). data_designador, na prática, é o de serviço (013), como já visto na INT03. A tela de QA repete a precedência do Postman (bd_ vence o calculado).",
       "acao": "bpmn",
       "acaoTexto": "Usar uma variável própria com o designador de acesso (069)."
@@ -1567,6 +2251,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 94
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 95
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Dado do produto; o BPMN não tem origem.",
       "acao": "decidir",
       "acaoTexto": "Definir a origem (START com dados do produto ou deixar vazio)."
@@ -1596,6 +2294,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 96
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 97
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O BPMN já usa GPON como padrão de tecnologia na INT11/INT14, mas não aqui.",
       "acao": "decidir",
       "acaoTexto": "Definir se vai fixo (\"Óptico GPON\") ou pelo START."
@@ -1612,6 +2324,10 @@ RAIOX.registrar({
         "de": "INT14 → data_woNumero"
       },
       "fontes": {
+        "US": {
+          "v": "US08, US10 e US11 Workflow: \"Elastic Journey deve gerar o ID do WO para usar a frente no fluxo sistêmico\"",
+          "r": "parcial"
+        },
         "DM": {
           "v": "Exemplo \"SFTWO40439651\"",
           "r": "parcial"
@@ -1625,6 +2341,20 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 98
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 99
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Origem correta. O formato do exemplo (SFTWO…) difere do id que a jornada gera (VE+UUID). A tela de QA também deixa bd_ vencer.",
       "acao": "decidir",
       "acaoTexto": "Confirmar o formato do id da WO esperado pelo ServiceNow."
@@ -1654,6 +2384,20 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 100
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 101
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O exemplo sugere o formato WO:item; o BPMN manda o item como veio da INT14. A tela de QA também deixa bd_ vencer.",
       "acao": "decidir",
       "acaoTexto": "Confirmar se o valor é composto (WorkOrder:WorkOrderItem)."
@@ -1683,6 +2427,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 102
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 103
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Alinhado.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1712,6 +2470,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 104
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 105
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O BPMN tem telefones do contato (data_wo_*), mas não do titular.",
       "acao": "decidir",
       "acaoTexto": "Definir se reusa data_wo_phoneNumber ou vem do START."
@@ -1741,6 +2513,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 106
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 107
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Mesmo caso de telefoneTitular1.",
       "acao": "decidir",
       "acaoTexto": "Definir junto com telefoneTitular1."
@@ -1770,6 +2556,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 108
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 109
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O reclamante (reclamanteNome) vem de data_wo_contactName, mas o telefone dele vai vazio.",
       "acao": "decidir",
       "acaoTexto": "Definir se reusa data_wo_mobileNumber."
@@ -1799,6 +2599,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 110
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 111
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Mesmo caso de telefoneReclamante1.",
       "acao": "decidir",
       "acaoTexto": "Definir junto com telefoneReclamante1."
@@ -1828,6 +2642,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 112
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 113
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Nenhuma tela coleta esse dado.",
       "acao": "decidir",
       "acaoTexto": "Definir a origem (START ou deixar vazio)."
@@ -1857,6 +2685,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 114
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 115
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Nenhuma tela coleta esse dado.",
       "acao": "decidir",
       "acaoTexto": "Definir a origem (START ou deixar vazio)."
@@ -1886,6 +2728,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 116
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 117
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Parece constante para a jornada, mas o BPMN não manda.",
       "acao": "decidir",
       "acaoTexto": "Confirmar se é fixo (\"Bilhete emitido\")."
@@ -1915,6 +2771,20 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 118
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 119
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "Formato igual ao exemplo. Se data_slotEscolhido faltar ou vier sem fuso, o script do body quebra (incidente, não falha tratada). Na tela de QA e no Postman, bd_ vence o cálculo.",
       "acao": "nada",
       "acaoTexto": ""
@@ -1944,6 +2814,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 120
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 121
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O exemplo não combina com o canal da jornada (VE / Alert).",
       "acao": "decidir",
       "acaoTexto": "Definir o valor de caseOrigin para o VE."
@@ -1977,6 +2861,20 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 122
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 123
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O DM espera o evento inteiro do HPSD; o BPMN manda um resumo de 4 campos. O motivo é o limite de 4000 caracteres das variáveis String do Camunda. A tela de QA também manda vazio: não consome a INT10.",
       "acao": "decidir",
       "acaoTexto": "Aceitar o resumo ou guardar o evento como variável Json/Bytes para enviar completo."
@@ -2006,6 +2904,20 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 124
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 125
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticket Req",
+          "linha": 127
+        }
+      ],
       "leitura": "O agendamento já existe quando o BD é aberto. O id dele provavelmente é o idWork devolvido pela INT14.",
       "acao": "bpmn",
       "acaoTexto": "Confirmar que idAppointment = idWork e calcular de data_woIdWork."
@@ -2035,6 +2947,12 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "621-MS Trouble Ticke x SN- Req",
+          "linha": 39
+        }
+      ],
       "leitura": "O MS manda ao ServiceNow 2 características que não recebe do Camunda. Ou o MS preenche, ou falta na fronteira.",
       "acao": "fonte",
       "acaoTexto": "Confirmar com o dono do MS quem preenche essas duas."
@@ -2052,7 +2970,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US11: ServiceNow/Salesforce informa que o BD foi criado",
+          "v": "US11 Req01 Resultado esperado: \"Service Now/Salesforce informa ao Elastic Journey que o BD foi criado com sucesso\" · CA001: \"o BD foi criado com sucesso no Service Now/Salesforce\"",
           "r": "igual"
         },
         "DFT": {
@@ -2072,6 +2990,12 @@ RAIOX.registrar({
           "r": "parcial"
         }
       },
+      "dm": [
+        {
+          "aba": "MS Trouble Ticke x SN(629) Resp",
+          "linha": 42
+        }
+      ],
       "leitura": "Diferente da INT14, o sucesso não exige id no corpo. Um 200 sem externalIdentifier conta como BD criado. A tela de QA é mais rígida: sem id no corpo, não marca bdCriado.",
       "acao": "bpmn",
       "acaoTexto": "Exigir id ou externalIdentifier.id para considerar sucesso."
@@ -2101,6 +3025,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 8
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 43
+        }
+      ],
       "leitura": "Gravado, mas nada na jornada usa.",
       "acao": "nada",
       "acaoTexto": ""
@@ -2118,7 +3052,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "Escopo US10/11: \"o VE informe o ID do BD ao cliente\"",
+          "v": "Escopo de todas as US (US10 e US11 inclusive): \"PARA possibilitar que o cliente tenha um BD aberto (se necessário) e o VE (Vivo Empresas) informe o ID do BD ao cliente\" · US11 Workflow: \"Elastic Journey informa ao VE que o BD foi criado com sucesso\"",
           "r": "parcial"
         },
         "DFT": {
@@ -2138,6 +3072,24 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 39
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 40
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 41
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 43
+        }
+      ],
       "leitura": "O número é gravado, mas Node_VisitaAgendada só mostra data e período da visita. A US pede que o cliente receba o ID do BD.",
       "acao": "bpmn",
       "acaoTexto": "Mostrar data_bdCriadoNumero na tela de sucesso."
@@ -2167,6 +3119,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 16
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 43
+        }
+      ],
       "leitura": "Informativo. O BPMN decide só pelo HTTP.",
       "acao": "nada",
       "acaoTexto": ""
@@ -2192,6 +3154,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 7
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 43
+        }
+      ],
       "leitura": "A jornada não precisa. A tabela tem as datas corrompidas pelo Excel.",
       "acao": "nada",
       "acaoTexto": ""
@@ -2217,6 +3189,16 @@ RAIOX.registrar({
           "r": "igual"
         }
       },
+      "dm": [
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 5
+        },
+        {
+          "aba": "Camunda x MS Trouble Ticke Resp",
+          "linha": 6
+        }
+      ],
       "leitura": "Só rastreabilidade.",
       "acao": "nada",
       "acaoTexto": ""
@@ -2234,7 +3216,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US10: ServiceNow/Salesforce informa que o BD não foi criado",
+          "v": "US10 Req01–Req03: \"Service Now/Salesforce informa ao Elastic Journey que o BD não foi criado\" (sem códigos nem formato de erro)",
           "r": "igual"
         },
         "DM": {
@@ -2267,7 +3249,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US10 não separa falha técnica de recusa do ServiceNow",
+          "v": "US10 trata só \"o BD não foi criado\", sem separar falha técnica (timeout) de recusa do ServiceNow",
           "r": "igual"
         },
         "QA": {
@@ -2292,7 +3274,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US11: informa ao VE que a visita foi agendada com sucesso",
+          "v": "US11 Req01 Resultado esperado: \"SDUI Elastic Journey informa (através de pooling em fila do Redis) BFF/VE (API+tela/figma) que a visita técnica foi agendada com sucesso\" · CA001 igual · Workflow também: \"informa ao VE que o BD foi criado com sucesso\"",
           "r": "igual"
         }
       },
@@ -2313,7 +3295,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "Depois que o WFM confirma o agendamento",
+          "v": "US10 Req01 e US11 Req01: depois que o \"WFM informa ... que o agendamento foi concluído com sucesso\", o \"Elastic Journey deve chamar o Service Now/Salesforce ... para a criação de BD\"",
           "r": "igual"
         },
         "DFT": {
@@ -2342,7 +3324,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US10: \"retentar o processo 3 vezes ao todo\"",
+          "v": "US10 Workflow: \"Elastic Journey deve retentar o processo 3 vezes ao todo. Retentativa maior que 3, criação do BD não foi bem-sucedido\" · Req01–Req03 numeram 1ª, 2ª e \"3º e última vez\"",
           "r": "igual"
         }
       },
@@ -2363,7 +3345,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US10 Req. 02/03: VE pergunta se o cliente deseja tentar novamente",
+          "v": "US10 Req02/Req03 Ações: \"SDUI Elastic Journey informa (através de pooling em fila do Redis) ao BFF/VE que a criação do BD falhou, e cliente deve responder se deseja tentar novamente\" · Workflow: \"SIM: deseja retentar → Elastic Journey volta a acionar o Service Now\"",
           "r": "igual"
         }
       },
@@ -2384,7 +3366,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "Requisitos: decisão do cliente. CA002/CA003 chamam de \"retentativa automática\"",
+          "v": "US10 Req02/Req03: nova tentativa só depois que o \"VE/BFF informa ao Elastic Journey que cliente optou por tentar novamente\" · CA002/CA003 chamam de \"retentativa automática (2º vez)\"",
           "r": "parcial"
         },
         "DFT": {
@@ -2413,11 +3395,11 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US10 Req. 03: informa a falha e cancela a WO",
-          "r": "igual"
+          "v": "US10 Req03 Resultado esperado: na 3ª falha, \"SDUI ... informa ... ao BFF/VE que a criação do BD falhou\" e \"Elastic Journey deve chamar o WFM ... solicitando o cancelamento da WO\" · CA003: \"informar ao BFF/VE que a criação do BD não foi concluída. E o Elastic Journey solicita o cancelamento da WO\"",
+          "r": "parcial"
         }
       },
-      "leitura": "Alinhado.",
+      "leitura": "Alinhado. A US10 Req03 informa o VE antes de cancelar; o BPMN cancela e só depois mostra a tela (mesma inversão da T06).",
       "acao": "nada",
       "acaoTexto": ""
     },
@@ -2434,7 +3416,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US10: informa ao VE para ENCERRAR e \"posteriormente\" cancela a WO",
+          "v": "US10 Req04 e CA004: cliente diz NÃO → \"SDUI Elastic Journey informa ... ao BFF/VE encerrar a chamada junto ao cliente\" e depois \"chamar o WFM ... solicitando o cancelamento da WO\" · Workflow: \"Posteriormente Elastic Journey deve chamar o WFM para cancelar a WO criada\"",
           "r": "parcial"
         }
       },
@@ -2455,7 +3437,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US10: cancelar a WO criada",
+          "v": "US10 Req03/Req04: \"solicitando o cancelamento da WO\" (a WO foi criada antes do BD)",
           "r": "igual"
         },
         "QA": {
@@ -2480,7 +3462,7 @@ RAIOX.registrar({
       },
       "fontes": {
         "US": {
-          "v": "US10: chamar o WFM (wfm-journey-orchestration-v1) para cancelar a WO",
+          "v": "US10 Req03/Req04 Resultado esperado: \"Elastic Journey deve chamar o WFM via camada de Integração 'wfm-journey-orchestration-v1' solicitando o cancelamento da WO\" e \"Fim do processo para o Elastic Journey\"",
           "r": "igual"
         },
         "DFT": {

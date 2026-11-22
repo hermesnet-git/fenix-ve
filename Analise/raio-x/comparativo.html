@@ -21,21 +21,24 @@
   --ink: oklch(0.22 0.02 300); --ink-2: oklch(0.42 0.02 300); --ink-3: oklch(0.53 0.015 300);
   --line: oklch(0.925 0.005 300); --line-2: oklch(0.87 0.008 300);
   --brand-ink: oklch(0.4 0.17 315); --brand-tint: oklch(0.955 0.025 315);
+  --rv-bg: oklch(0.975 0.012 315); --rv-borda: oklch(0.9 0.03 315);
   --falta: oklch(0.955 0.035 25); --falta-ink: oklch(0.5 0.17 25);
   --parcial: oklch(0.965 0.05 85); --parcial-ink: oklch(0.48 0.1 70);
   --sombra: 0 -8px 30px rgba(20, 0, 40, .12);
   --sombra-lado: -12px 0 32px rgba(20, 0, 40, .14);
 }
+/* escuro inspirado no Dark+ do VS Code: editor #1E1E1E, barra lateral #252526, bordas #454545, texto #D4D4D4, acento #3794FF */
 :root[data-tema=escuro] {
   color-scheme: dark;
-  --bg: oklch(0.155 0.012 300); --panel: oklch(0.195 0.016 300); --sub: oklch(0.175 0.014 300); --hover: oklch(0.225 0.018 300);
-  --ink: oklch(0.94 0.008 300); --ink-2: oklch(0.78 0.014 300); --ink-3: oklch(0.64 0.015 300);
-  --line: oklch(0.27 0.018 300); --line-2: oklch(0.34 0.02 300);
-  --brand-ink: oklch(0.8 0.12 315); --brand-tint: oklch(0.3 0.08 315);
-  --falta: oklch(0.72 0.18 25 / .16); --falta-ink: oklch(0.78 0.15 25);
-  --parcial: oklch(0.85 0.13 85 / .13); --parcial-ink: oklch(0.86 0.13 85);
-  --sombra: 0 -10px 30px rgba(0, 0, 0, .45);
-  --sombra-lado: -12px 0 32px rgba(0, 0, 0, .5);
+  --bg: #1e1e1e; --panel: #252526; --sub: #2d2d2d; --hover: #2a2d2e;
+  --ink: #d4d4d4; --ink-2: #bbbbbb; --ink-3: #9d9d9d;
+  --line: #333333; --line-2: #454545;
+  --brand-ink: #3794ff; --brand-tint: #04395e;
+  --rv-bg: #383838; --rv-borda: #4a4a4a;
+  --falta: rgba(241, 76, 76, .15); --falta-ink: #f48771;
+  --parcial: rgba(204, 167, 0, .12); --parcial-ink: #e2c08d;
+  --sombra: 0 -8px 24px rgba(0, 0, 0, .5);
+  --sombra-lado: -10px 0 24px rgba(0, 0, 0, .55);
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; }
@@ -55,11 +58,29 @@ svg.i { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-widt
 .marca span { display: block; font-weight: 650; }
 .marca small { display: block; color: var(--ink-3); font-size: 11.5px; }
 .side h2 { font-size: 11.5px; font-weight: 600; color: var(--ink-3); padding: 0 6px 6px; }
+#ints { min-height: 0; overflow-y: auto; overflow-x: hidden; margin: 0 -6px; padding: 0 6px; }
+.busca { position: relative; margin-bottom: -6px; }
+.busca svg { position: absolute; left: 10px; top: 9px; color: var(--ink-3); pointer-events: none; }
+.busca input { width: 100%; padding: 7px 10px 7px 32px; border: 1px solid var(--line-2); border-radius: 8px; background: var(--bg); color: var(--ink); font: inherit; font-size: 12.5px; }
+.busca input:focus { border-color: var(--brand-ink); outline: none; box-shadow: 0 0 0 3px var(--brand-tint); }
+.busca input { padding-right: 32px; }
+.busca input::-webkit-search-cancel-button { display: none; }
+.busca-x { position: absolute; right: 4px; top: 4px; display: grid; place-items: center; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--ink-3); }
+.busca-x:hover { background: var(--hover); color: var(--ink); }
+.busca-x[hidden] { display: none; }
+.busca-x svg { position: static; width: 14px; height: 14px; }
+#busca-res { display: block; min-height: 0; margin: 4px 2px 0; font-size: 11.5px; color: var(--ink-3); }
+#busca-res:empty { display: none; }
+.int.vazia { opacity: .42; }
+.int .achou { align-self: flex-start; margin: 1px 0 0 auto; padding: 0 7px; border-radius: 10px; background: var(--brand-tint); color: var(--brand-ink); font: 650 11px/18px var(--mono); }
+mark { background: oklch(0.9 0.15 95); color: inherit; border-radius: 2px; padding: 0 1px; }
+:root[data-tema=escuro] mark { background: oklch(0.7 0.14 95 / .45); }
+.side h2 ~ h2 { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
 .int { display: flex; gap: 10px; width: 100%; text-align: left; padding: 9px 10px; border: 0; border-radius: 8px; background: none; }
 .int:hover { background: var(--hover); }
 .int[aria-current=true] { background: var(--brand-tint); }
 .int code { font-weight: 650; color: var(--brand-ink); padding-top: 1px; }
-.int > span { font-weight: 550; }
+.int > span { flex: 1; min-width: 0; font-weight: 550; }
 .cont { display: flex; gap: 10px; margin-top: 2px; font-size: 11.5px; font-weight: 500; color: var(--ink-3); font-variant-numeric: tabular-nums; }
 .cont span { display: inline-flex; align-items: center; gap: 4px; }
 .cont i { width: 8px; height: 8px; border-radius: 2px; background: var(--vc); }
@@ -74,7 +95,6 @@ main { min-width: 0; padding: 22px 32px 0; }
 h1 { font-size: 20px; font-weight: 650; letter-spacing: -0.015em; }
 h1 code { font-size: 19px; color: var(--brand-ink); margin-right: 6px; }
 .topo p { color: var(--ink-3); margin-top: 4px; }
-.como { color: var(--ink-3); font-size: 12.5px; margin-bottom: 14px; }
 kbd { font-family: var(--mono); font-size: 11px; padding: 0 5px; border: 1px solid var(--line-2); border-bottom-width: 2px; border-radius: 4px; background: var(--panel); }
 .ico { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--line-2); border-radius: 8px; background: var(--panel); flex: none; }
 
@@ -92,22 +112,42 @@ tbody tr:last-child td { border-bottom: 0; }
 .v-ok { --vc: oklch(0.6 0.14 155); --vb: oklch(0.93 0.06 155); --vt: oklch(0.38 0.1 155); }
 .v-at { --vc: oklch(0.91 0.18 100); --vb: oklch(0.95 0.08 92);  --vt: oklch(0.45 0.1 70); }
 .v-aj { --vc: oklch(0.58 0.2 25);  --vb: oklch(0.92 0.06 25);  --vt: oklch(0.47 0.18 25); }
-:root[data-tema=escuro] .v-ok { --vb: oklch(0.6 0.14 155 / .28); --vt: oklch(0.85 0.12 155); }
-:root[data-tema=escuro] .v-at { --vb: oklch(0.8 0.15 85 / .24);  --vt: oklch(0.88 0.13 88); }
-:root[data-tema=escuro] .v-aj { --vb: oklch(0.6 0.2 25 / .3);    --vt: oklch(0.82 0.13 25); }
+.v-p  { --vc: oklch(0.62 0.01 250); --vb: oklch(0.94 0.005 250); --vt: oklch(0.42 0.01 250); }
+:root[data-tema=escuro] .v-p  { --vc: #5a5a5a; --vb: #333333; --vt: #cccccc; }
+:root[data-tema=escuro] .v-ok { --vc: #388a34; --vb: #1f3a1e; --vt: #89d185; }
+:root[data-tema=escuro] .v-at { --vc: #cca700; --vb: #3d3510; --vt: #e2c08d; }
+:root[data-tema=escuro] .v-aj { --vc: #c72e0f; --vb: #4b1818; --vt: #f48771; }
+:root[data-tema=escuro] td.rh.v-at { color: #1e1e1e; }
 td.rh { font-family: var(--mono); font-size: 11px; font-weight: 700; color: #fff; background: var(--vc); text-align: center; cursor: default; }
 td.rh.v-at { color: oklch(0.25 0.05 70); }
-.legenda { margin-bottom: 14px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); font-size: 12.5px; color: var(--ink-2); }
-.legenda summary { cursor: pointer; font-weight: 650; font-size: 12px; color: var(--ink); width: max-content; }
-.lg-corpo { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 8px 0 2px; }
-.lg-corpo > div { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; }
-.legenda .tit { font-weight: 650; color: var(--ink); font-size: 12px; }
+.topo-bt { display: flex; gap: 8px; flex: none; }
+.bt-leg { height: 34px; padding: 0 14px; font-size: 12.5px; }
+/* legenda flutuante (popover nativo, na camada do topo) */
+.legenda-pop { position: fixed; inset: 64px 24px auto auto; margin: 0; width: min(760px, calc(100vw - 32px)); max-height: calc(100vh - 88px); overflow: auto; padding: 16px 20px 18px; border: 1px solid var(--line-2); border-radius: 12px; background: var(--panel); color: var(--ink); box-shadow: 0 16px 48px rgba(0, 0, 0, .22); font-size: 12.5px; }
+.legenda-pop::backdrop { background: transparent; }
+.lp-cab { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.lp-cab h2 { font-size: 15px; font-weight: 700; }
+.lp-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 28px; }
+.lp-grade > div { display: grid; gap: 16px; align-content: start; }
+.legenda-pop h3 { margin: 0 0 6px; font-size: 12px; font-weight: 700; color: var(--ink); }
+.legenda-pop h3 small { font-weight: 400; color: var(--ink-3); margin-left: 4px; font-family: var(--mono); }
+.lp-nota { margin: 0 0 8px; color: var(--ink-3); line-height: 1.5; }
+.lp-lista, .lp-cod { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.lp-lista li { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 10px; align-items: start; }
+.lp-lista b { display: block; font-weight: 650; }
+.lp-lista span { display: block; color: var(--ink-2); line-height: 1.45; }
+.legenda-pop i.sw { width: 16px; height: 16px; margin-top: 2px; border-radius: 4px; background: var(--vc); }
+.lp-cod li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
+.lp-cod code { padding: 1px 6px; border: 1px solid var(--line-2); border-radius: 5px; background: var(--sub); font-size: 11px; font-weight: 650; }
+.lp-cod span { color: var(--ink-2); }
+.lp-k { min-width: 92px; color: var(--ink-3) !important; font-size: 11.5px; }
+@media (max-width: 720px) { .lp-grade { grid-template-columns: 1fr; } }
 .lg { display: inline-flex; align-items: center; gap: 7px; }
 .lg i { width: 14px; height: 14px; border-radius: 4px; background: var(--vc); flex: none; }
 .lg b { color: var(--vt); }
-.lg i.c-falta { background: var(--falta); box-shadow: inset 0 0 0 1px var(--falta-ink); }
-.lg i.c-parcial { background: var(--parcial); box-shadow: inset 0 0 0 1px var(--parcial-ink); }
-.lg i.c-nenvia { background: none; box-shadow: inset 0 0 0 1px var(--line-2); }
+.lg i.c-falta, i.sw.c-falta { background: var(--falta); box-shadow: inset 0 0 0 1px var(--falta-ink); }
+.lg i.c-parcial, i.sw.c-parcial { background: var(--parcial); box-shadow: inset 0 0 0 1px var(--parcial-ink); }
+.lg i.c-nenvia, i.sw.c-nenvia { background: none; box-shadow: inset 0 0 0 1px var(--line-2); }
 .vd { display: inline-block; padding: 1px 9px; border-radius: 999px; background: var(--vb); color: var(--vt); font-size: 11.5px; font-weight: 650; }
 tr.on td { box-shadow: inset 0 2px 0 var(--brand-ink), inset 0 -2px 0 var(--brand-ink); font-weight: 600; }
 tr.grp td { background: var(--sub); font-weight: 650; cursor: default; font-size: 13px; }
@@ -116,7 +156,7 @@ tr.grp small { color: var(--ink-3); font-weight: 400; margin-left: 8px; }
 .k-parcial { background: var(--parcial); }
 .k-nenvia { color: var(--ink-3); font-style: italic; }
 .k-nan { color: var(--ink-3); font-style: italic; background: var(--sub); }
-.lg i.c-nan { background: var(--sub); box-shadow: inset 0 0 0 1px var(--line-2); }
+.lg i.c-nan, i.sw.c-nan { background: var(--sub); box-shadow: inset 0 0 0 1px var(--line-2); }
 .tag { display: inline-block; color: var(--parcial-ink); font-weight: 650; font-size: 11.5px; margin-right: 6px; font-style: normal; }
 .ob { display: inline-block; font-size: 10.5px; font-weight: 650; padding: 0 6px; border-radius: 4px; border: 1px solid var(--line-2); color: var(--ink-2); margin-right: 6px; vertical-align: 1px; }
 .temnota { color: var(--pink); vertical-align: -3px; margin-left: 4px; width: 14px; height: 14px; }
@@ -144,16 +184,33 @@ body.arrastando { user-select: none; }
 .det { flex: 1; }
 .fx-fontes { margin-top: 14px; }
 .fx-fontes h4 { margin: 0 0 6px; font-size: 11.5px; font-weight: 600; color: var(--ink-3); }
-.fx-fontes ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.fx-fontes li { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 10px; font-size: 12.5px; }
-.fx-fontes li b { font-weight: 600; color: var(--ink-2); }
+.fx-fontes .abas { display: flex; gap: 2px; overflow-x: auto; overflow-y: hidden; border-bottom: 1px solid var(--line-2); scrollbar-width: thin; }
+.fx-fontes [role=tab] { flex: none; padding: 6px 11px; margin-bottom: -1px; border: 0; border-bottom: 2px solid transparent; background: none; font-size: 12px; font-weight: 550; color: var(--ink-3); border-radius: 6px 6px 0 0; }
+.fx-fontes [role=tab]:hover { color: var(--ink); background: var(--hover); }
+.fx-fontes [role=tab][aria-selected=true] { color: var(--ink); font-weight: 650; border-bottom-color: var(--brand-ink); }
+.fx-fontes [role=tabpanel] { display: grid; gap: 8px; padding: 10px 2px 2px; font-size: 12.5px; }
+.fx-fontes [role=tabpanel][hidden] { display: none; }
+.dm-lin { border: 1px solid var(--line-2); border-radius: 8px; overflow: hidden; }
+.dm-tit { padding: 6px 10px; background: var(--sub); border-bottom: 1px solid var(--line); font-size: 12px; color: var(--ink-2); }
+.dm-tit b { color: var(--ink); }
+.dm-arq { color: var(--ink-3); }
+.dm-lin dl { margin: 0; }
+.dm-lin dl > div { display: grid; grid-template-columns: minmax(120px, 190px) minmax(0, 1fr); gap: 10px; padding: 5px 10px; border-top: 1px solid var(--line); }
+.dm-lin dl > div:first-child { border-top: 0; }
+.dm-lin dt { font-size: 11.5px; font-weight: 600; color: var(--ink-3); }
+.dm-lin dt code { display: inline-block; min-width: 34px; margin-right: 6px; font-size: 10.5px; font-weight: 500; color: var(--ink-3); }
+.dm-lin dd { margin: 0; font-size: 12.5px; overflow-wrap: anywhere; }
+.dm-lin dd em { color: var(--ink-3); }
+.dm-lin .dm-dest { background: var(--brand-tint); }
+.dm-lin .dm-dest dt { color: var(--brand-ink); }
+.dm-lin dd.dm-pre { white-space: pre-wrap; font-family: var(--mono); font-size: 11.5px; max-height: 280px; overflow: auto; }
+.dm-nada { margin: 0; font-size: 12px; color: var(--ink-3); }
 .fx-fontes small { display: block; color: var(--ink-3); font-size: 11.5px; }
 .fx-fontes .prog { display: inline-block; margin-left: 6px; padding: 0 5px; border: 1px solid var(--line-2); border-radius: 4px; font-size: 10.5px; color: var(--ink-3); vertical-align: 1px; }
 .fx-fontes q { display: block; color: var(--ink-2); font-size: 12px; }
 .fx-fontes a, th small a { color: var(--brand-ink); text-decoration: underline; text-decoration-color: color-mix(in oklch, currentColor 40%, transparent); text-underline-offset: 2px; overflow-wrap: anywhere; }
 .fx-fontes a:hover, th small a:hover { text-decoration-color: currentColor; }
 .det label { display: flex; flex-direction: column; }
-.det textarea { flex: 1; }
 /* tela larga: a página tem a altura da janela; título, legenda e cabeçalho da tabela ficam fixos e só as linhas rolam */
 @media (min-width: 901px) {
   main { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -177,9 +234,71 @@ body.arrastando { user-select: none; }
   main.lado .faixa.fechada h3 { display: none; }
   main.lado .faixa.fechada .fx-bt { flex-direction: column; margin: 0; }
 }
-@media (max-width: 900px) { #fx-modo { display: none; } }
+@media (max-width: 900px) { #fx-modo, #lat { display: none; } }
+
+/* ── barra lateral recolhível ── */
+.marca .lat-bt { width: 28px; height: 28px; margin-left: auto; }
+.marca .lat-bt:hover { background: var(--hover); }
+@media (min-width: 901px) {
+  .app.lat-fechada { grid-template-columns: 60px minmax(0, 1fr); }
+  .lat-fechada .side { padding: 18px 8px; }
+  .lat-fechada .marca { flex-direction: column; gap: 10px; padding: 0; }
+  .lat-fechada .marca > div, .lat-fechada .side h2, .lat-fechada .int > span, .lat-fechada .pe, .lat-fechada .busca, .lat-fechada .int .achou { display: none; }
+  .lat-fechada .int { justify-content: center; padding: 8px 2px; }
+  .lat-fechada .int code { font-size: 11.5px; }
+}
+
+/* ── revisão ── */
+col.cr { width: 108px; }
+td.rv-c { text-align: center; font-size: 11.5px; font-weight: 700; letter-spacing: .02em; }
+td.rv-p { color: var(--ink-3); font-weight: 400; }
+td.rv-ok, td.rv-apl { color: oklch(0.45 0.12 155); }
+td.rv-bpmn { color: var(--falta-ink); background: var(--falta); }
+td.rv-doc { color: var(--parcial-ink); background: var(--parcial); }
+:root[data-tema=escuro] td.rv-ok, :root[data-tema=escuro] td.rv-apl { color: #89d185; }
+.rvc { margin-left: auto; color: var(--ink-3); }
+.rvc.cheio { color: oklch(0.5 0.13 155); font-weight: 650; }
+.filtros { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 10px; font-size: 12px; color: var(--ink-3); }
+.filtros > span { margin-right: 4px; }
+.filtros .busca-int { margin: 0 0 0 auto; width: min(280px, 100%); }
+.busca-int input { padding-top: 5px; padding-bottom: 5px; }
+.busca-int svg { top: 7px; }
+.busca-int .busca-x { top: 2px; }
+.chip { padding: 3px 10px; border: 1px solid var(--line-2); border-radius: 999px; background: var(--panel); font-size: 12px; color: var(--ink-2); }
+.chip:hover { background: var(--hover); }
+.chip[aria-pressed=true] { background: var(--brand-tint); border-color: var(--brand-ink); color: var(--brand-ink); font-weight: 600; }
+.chip b { font-weight: 650; margin-left: 2px; }
+.vazio { padding: 18px; color: var(--ink-3); text-align: center; }
+/* ação + revisão num bloco só, com fundo próprio para separar do que é análise e fonte */
+.rv { display: flex; flex-direction: column; gap: 10px; padding: 12px 14px 0; border: 1px solid var(--rv-borda); border-radius: 10px; background: var(--rv-bg); }
+.rv-acao p { margin: 0; font-size: 13px; color: var(--ink); }
+.rv-acao em { color: var(--ink-3); }
+.rv-acao { padding-bottom: 10px; border-bottom: 1px solid var(--rv-borda); }
+.rv h4 { display: flex; align-items: baseline; gap: 8px; margin: 0; font-size: 12px; font-weight: 650; }
+.rv h4 small { font-weight: 400; color: var(--ink-3); }
+.rv label > span, .rv-rot { display: block; font-size: 11.5px; font-weight: 600; color: var(--ink-3); margin-bottom: 3px; }
+.rv input[type=text], .rv textarea, .rv select { width: 100%; padding: 6px 9px; border: 1px solid var(--line-2); border-radius: 7px; background: var(--panel); font: inherit; font-size: 12.5px; color: var(--ink); }
+.rv textarea { resize: vertical; min-height: 0; }
+.rv-linha { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.rv-linha .rv-rot { margin: 0 4px 0 0; }
+.rv .rv-seg, .rv .rv-chk { display: inline-flex; flex-direction: row; align-items: center; gap: 6px; font-size: 12.5px; cursor: pointer; }
+.rv .rv-seg span { display: inline; margin: 0; font-size: 12.5px; font-weight: 400; color: var(--ink); }
+/* a anotação ocupa toda a altura livre da coluna de revisão */
+.rv .rv-nota { flex: 1; min-height: 160px; }
+.rv .rv-nota textarea { flex: 1; resize: none; }
+.pe .btn { justify-content: flex-start; text-align: left; }
+.rv-seg input, .rv-chk input { accent-color: var(--brand-ink); margin: 0; }
+.rv-chk small { color: var(--ink-3); }
+.rv-acoes { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 8px 0 12px; position: sticky; bottom: 0; background: var(--rv-bg); border-top: 1px solid var(--rv-borda); }
+.rv-acoes .btn:disabled { opacity: .45; cursor: default; background: var(--panel); }
+.rv-acoes .rv-salvar:not(:disabled) { background: var(--brand-ink); border-color: var(--brand-ink); color: #fff; }
+.rv-acoes small { color: var(--falta-ink); font-size: 11.5px; }
+.rv-falta { margin: 0; font-size: 11.5px; color: var(--falta-ink); }
+#rv-pasta p { margin: 0; font-size: 11.5px; color: var(--ink-3); padding: 0 4px; }
+#rv-pasta .rv-ok { color: oklch(0.5 0.13 155); }
+#rv-pasta .rv-con { width: 100%; margin-bottom: 4px; border-color: var(--brand-ink); color: var(--brand-ink); }
 .faixa h3 code { color: var(--ink-3); font-size: 11.5px; font-weight: 500; }
-.grade4 { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
+.grade4 { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
 .grade4 > div { background: var(--panel); padding: 9px 11px; overflow-wrap: anywhere; font-size: 13px; }
 .grade4 b { display: block; font-size: 11px; font-weight: 700; color: var(--ink-3); margin-bottom: 2px; font-style: normal; }
 .grade4 > div.k-falta { background: var(--falta); }
@@ -188,7 +307,6 @@ body.arrastando { user-select: none; }
 .det p + p { margin-top: 8px; }
 .det .mudo { font-size: 12px; color: var(--ink-3); }
 .det label span { display: block; font-size: 11.5px; font-weight: 600; color: var(--ink-3); margin-bottom: 4px; }
-.det textarea { width: 100%; min-height: 90px; resize: vertical; padding: 8px 10px; border: 1px solid var(--line-2); border-radius: 8px; background: var(--panel); }
 
 @media (max-width: 900px) {
   .app { grid-template-columns: 1fr; }
@@ -204,17 +322,70 @@ body.arrastando { user-select: none; }
 <body>
 <div class="app">
   <aside class="side">
-    <div class="marca"><b>RX</b><div><span>Raio-X</span><small>FTAT-933 · Abertura de BD</small></div></div>
-    <nav aria-label="Integrações"><h2>Integrações</h2><div id="ints"></div></nav>
+    <div class="marca"><b>RX</b><div><span>Raio-X</span><small>FTAT-933 · Abertura de BD</small></div>
+      <button class="ico lat-bt" id="lat" type="button"></button></div>
+    <div class="busca" role="search"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+      <input id="busca" type="search" placeholder="Buscar em todas as integrações" aria-label="Buscar qualquer valor em todas as integrações" aria-describedby="busca-res" autocomplete="off" spellcheck="false">
+      <button class="busca-x" id="busca-x" type="button" title="Limpar busca (Esc)" aria-label="Limpar busca" hidden><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <small id="busca-res" aria-live="polite"></small></div>
+    <nav aria-label="Integrações" id="ints"></nav>
     <div class="pe">
-      <button class="btn" id="btn-exp" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>Exportar notas</button>
+      <div id="rv-pasta"></div>
+      <button class="btn" id="btn-lote" type="button" title="Gera o arquivo para o agente com os ajustes de BPMN e da collection revisados e ainda não aplicados (não aplica nada)"><svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Lote de ajustes</button>
+      <button class="btn" id="btn-doc" type="button" title="Gera a lista informativa de ajustes de documentação, para o time responsável"><svg class="i" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7zM14 3v5h5"/></svg>Pendências de documentação</button>
       <div id="salvo" role="status"></div>
     </div>
   </aside>
   <main id="main"></main>
 </div>
+<!-- legenda: painel flutuante (popover nativo: fecha ao clicar fora ou com Esc) -->
+<div id="legenda" class="legenda-pop" popover aria-labelledby="lp-tit">
+  <div class="lp-cab"><h2 id="lp-tit">Legenda</h2>
+    <button class="ico" type="button" popovertarget="legenda" popovertargetaction="hide" aria-label="Fechar a legenda"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="lp-grade">
+    <div>
+      <section><h3>Código da linha <small>R01, S01…</small></h3>
+        <p class="lp-nota">Mostra o veredito da análise. Depois que a linha é revisada, mostra a decisão da revisão.</p>
+        <ul class="lp-lista">
+          <li><i class="sw v-ok"></i><div><b>Verde · Tudo certo</b><span>O BPMN atende e não há nada a fazer. Depois da revisão: tudo certo ou ajuste já aplicado.</span></div></li>
+          <li><i class="sw v-at"></i><div><b>Amarelo · Confirmar ou validar</b><span>Decidir com a área ou ajustar a documentação. Depois da revisão: ajuste na collection ou na documentação.</span></div></li>
+          <li><i class="sw v-aj"></i><div><b>Vermelho · Ajustar no BPMN</b><span>O BPMN precisa mudar, e o ajuste ainda não foi aplicado.</span></div></li>
+          <li><i class="sw v-p"></i><div><b>Cinza · Pendente</b><span>Linha verde que voltou a pendente na revisão.</span></div></li>
+        </ul></section>
+      <section><h3>Células das fontes</h3>
+        <ul class="lp-lista">
+          <li><i class="sw c-falta"></i><div><b>Não consta · Não implementado</b><span>A fonte não traz o item, ou o BPMN não o implementa.</span></div></li>
+          <li><i class="sw c-parcial"></i><div><b>Bate em parte · Diverge</b><span>A fonte traz o item de outro jeito. A etiqueta na célula diz qual dos dois.</span></div></li>
+          <li><i class="sw c-nenvia"></i><div><b><em>Não envia</em> · <em>Sem menção</em></b><span>A fonte também não manda, igual ao BPMN. Na coluna US: nenhuma história fala do item.</span></div></li>
+          <li><i class="sw c-nan"></i><div><b><em>Não analisado</em></b><span>Esta fonte ainda não foi lida para esta integração.</span></div></li>
+        </ul></section>
+    </div>
+    <div>
+      <section><h3>Coluna Revisão</h3>
+        <ul class="lp-cod">
+          <li><code>—</code><span>Pendente de revisão</span></li>
+          <li><code>✓ OK</code><span>Tudo certo, ou revisado sem ajuste</span></li>
+          <li><code>BPMN</code><code>PM</code><code>DOC</code><span>Onde ajustar: BPMN, collection (Postman) ou documentação. Podem vir juntos, como BPMN+PM.</span></li>
+          <li><code>✔</code><span>Ajuste aplicado pelo agente</span></li>
+        </ul></section>
+      <section><h3>Atalhos</h3>
+        <ul class="lp-cod">
+          <li><span class="lp-k"><kbd>↑</kbd> <kbd>↓</kbd></span><span>Navegar pelas linhas</span></li>
+          <li><span class="lp-k">duplo clique</span><span>Recolher ou expandir o painel de detalhe</span></li>
+          <li><span class="lp-k"><kbd>/</kbd> <kbd>Ctrl</kbd>+<kbd>K</kbd></span><span>Buscar em todas as integrações</span></li>
+          <li><span class="lp-k"><kbd>Enter</kbd> <kbd>Esc</kbd></span><span>Na busca: ir para a 1ª linha encontrada, ou limpar</span></li>
+          <li><span class="lp-k"><kbd>←</kbd> <kbd>→</kbd></span><span>Trocar a aba das fontes</span></li>
+        </ul></section>
+      <section><h3>Linhas</h3>
+        <p class="lp-nota">Cada linha é um item da chamada: header, parâmetro, campo do body, código ou campo da resposta, ou regra (timeout, decisão, regra de US). A lista junta tudo o que o BPMN usa e tudo o que o DM documenta. O painel de detalhe diz de onde a linha saiu.</p></section>
+    </div>
+  </div>
+</div>
 
-<script>window.RAIOX = { ints: [], registrar(d) { this.ints.push(d); } };</script>
+<script>window.RAIOX = { ints: [], registrar(d) { this.ints.push(d); }, revisao(d) { this.rev = d; }, dm(d) { this.dmi = d; } };</script>
+<script src="dados/revisao.js"></script>
+<script src="dados/dm.js"></script>
+<script src="dados/start-iniciar-jornada.js"></script>
 <script src="dados/int01-consulta-massiva.js"></script>
 <script src="dados/int03-consulta-bd.js"></script>
 <script src="dados/int06-solicita-diagnostico.js"></script>
@@ -223,6 +394,7 @@ body.arrastando { user-select: none; }
 <script src="dados/int14-cria-wo.js"></script>
 <script src="dados/int16-cancela-wo.js"></script>
 <script src="dados/int18-abre-bd.js"></script>
+<script src="dados/int00-consulta-asset.js"></script>
 <script>
 (() => {
 const $ = s => document.querySelector(s);
@@ -235,13 +407,13 @@ try { const t = localStorage.getItem(CHAVE); if (t) db = Object.assign({ notas: 
 const status = (t, erro) => { const el = $('#salvo'); el.textContent = t; el.classList.toggle('erro', !!erro); };
 const salvar = msg => {
   try { localStorage.setItem(CHAVE, JSON.stringify(db)); gravavel = true; if (msg !== false) status(msg || 'Salvo às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })); }
-  catch (e) { gravavel = false; status('O navegador bloqueou o salvamento: use Exportar notas', true); }
+  catch (e) { gravavel = false; status('O navegador bloqueou o armazenamento local', true); }
 };
 
 /* ── modelo ── */
-const FS = ['BPMN', 'DM', 'PM', 'CURL', 'QA'];
+const FS = ['BPMN', 'DM', 'US', 'PM', 'CURL', 'QA'];
 const NOME = { BPMN: 'BPMN', DM: 'DM', PM: 'Postman', CURL: 'curl', QA: 'QA', US: 'Histórias (US)', DFT: 'DFT', OAS: 'OpenAPI', TELA: 'Telas' };
-const EXTRA = ['US', 'DFT', 'OAS', 'TELA'];  /* fontes sem coluna: aparecem só nos links do painel */
+const EXTRA = ['DFT', 'OAS', 'TELA'];  /* fontes sem coluna: aparecem só nos links do painel */
 
 /* links para os arquivos de origem, relativos à raiz do repositório */
 const BPMN_ARQ = { id: 'BPMN', arquivo: 'fenix-ve-abertura-bd-v1/fenix-ve-abertura-bd.bpmn', detalhe: 'Processo fenix-ve-abertura-bd (serviceTasks e scripts Groovy)' };
@@ -274,24 +446,225 @@ const h = new URLSearchParams(location.hash.slice(1));
 let I = RAIOX.ints.find(i => i.id === h.get('int')) || RAIOX.ints[0];
 let sel = h.get('campo');
 
-const nota = id => db.notas[I.id + ':' + id]?.texto || '';
-const campos = () => I.campos.filter(c => c.bpmn || FS.some(F => F !== 'BPMN' && c.fontes[F]));
+/* ── revisão: decisões de quem revisa, persistidas em dados/revisao.js ──
+   A página grava o arquivo pela File System Access API (pasta autorizada uma vez; o handle fica no IndexedDB).
+   Sem pasta conectada, as mudanças ficam pendentes no localStorage (db.revPend) e entram no arquivo ao conectar. */
+const REV = RAIOX.rev || { versao: 1, itens: {} };
+REV.itens ||= {};
+db.revPend ||= {};
+for (const [k, v] of Object.entries(db.revPend)) if (!REV.itens[k] || (v.em || '') > (REV.itens[k].em || '')) REV.itens[k] = v;
+for (const [k, n] of Object.entries(db.notas || {}))  /* notas antigas (só no navegador) migram para a revisão */
+  if (n?.texto && !REV.itens[k]?.nota) db.revPend[k] = REV.itens[k] = { status: 'pendente', destino: [], ...REV.itens[k], nota: n.texto, em: n.ts || new Date().toISOString() };
+const rk = id => I.id + ':' + id;
+/* linha verde (BPMN atende) já nasce "Tudo certo"; as demais nascem pendentes */
+const padrao = c => c && ver(c) === 'ok' ? 'ok' : 'pendente';
+const rev = id => REV.itens[rk(id)] || { status: padrao(I.campos.find(c => c.id === id)), destino: [] };
+const nota = id => rev(id).nota || '';
+function gravaItem(k, x) {
+  x.em = new Date().toISOString();
+  REV.itens[k] = db.revPend[k] = x; salvar(false); agendaGravar();
+}
+/* o formulário edita um rascunho; só vai para a revisão (e para o arquivo) ao clicar em Salvar */
+let rasc = null;  /* { k: 'INT14:R10', x } */
+const rascDe = id => rasc?.k === rk(id) ? rasc.x : null;
+/* antes de trocar de linha ou de INT: true = pode seguir (sem rascunho, ou o usuário aceitou descartar) */
+function largaRasc(k) {
+  if (!rasc || rasc.k === k) return true;
+  if (!confirm('A revisão de ' + rasc.k + ' tem alterações não salvas. Descartar?')) return false;
+  rasc = null; return true;
+}
+/* cor do código da linha: a análise, até alguém revisar; depois, o que a revisão decidiu */
+const verAtual = (c, iid = I.id) => { const x = REV.itens[iid + ':' + c.id]; if (!x) return ver(c);
+  if (x.status === 'ok') return 'ok';
+  if (x.status === 'pendente') return ver(c) === 'ok' ? 'p' : ver(c);
+  if (x.status === 'aplicado') return 'ok';
+  if (tem(x, 'bpmn')) return 'aj';
+  return tem(x, 'postman') || tem(x, 'doc') ? 'at' : 'ok'; };
+/* situação da revisão de uma linha: [classe, rótulo da coluna, dica] */
+/* onde ajustar: bpmn e postman o agente aplica (lote); doc é só informativo */
+const DESTINOS = [['bpmn', 'BPMN', 'BPMN'], ['postman', 'Collection (Postman)', 'PM'], ['doc', 'Documentação', 'DOC']];
+const tem = (x, d) => x.status !== 'pendente' && x.status !== 'ok' && !!x.destino?.includes(d);
+function rvLab(x) {
+  if (x.status === 'pendente') return ['p', '—', 'Pendente de revisão'];
+  if (x.status === 'ok') return ['ok', '✓ OK', 'Tudo certo: nada a ajustar'];
+  const ds = DESTINOS.filter(([d]) => tem(x, d)), apl = x.status === 'aplicado';
+  if (!ds.length) return ['ok', '✓ OK', 'Revisado: nada a ajustar'];
+  const ag = tem(x, 'bpmn') || tem(x, 'postman');
+  return [apl ? 'apl' : ag ? 'bpmn' : 'doc', (apl ? '✔ ' : '') + ds.map(d => d[2]).join('+'),
+    (apl ? 'Aplicado' + (x.commit ? ' (commit ' + x.commit + ')' : '') + ' · ' : '') + 'Ajustar em: ' + ds.map(d => d[1]).join(', ') + (x.nota ? '\n' + x.nota : '')];
+}
+const FILTROS = { todos: ['Todos', () => true], pend: ['Pendentes', x => x.status === 'pendente'],
+  bpmn: ['BPMN', x => tem(x, 'bpmn')], postman: ['Collection', x => tem(x, 'postman')], doc: ['Documentação', x => tem(x, 'doc')] };
+const filtro = () => FILTROS[db.ui.filtro] ? db.ui.filtro : 'todos';
+const camposTodos = (it = I) => it.campos.filter(c => c.bpmn || FS.some(F => F !== 'BPMN' && c.fontes[F]));
+const campos = () => camposTodos().filter(c => casa(I, c) && casaL(c) && FILTROS[filtro()][1](rev(c.id)));
+
+/* busca em todas as integrações: todos os termos precisam aparecer (sem diferenciar maiúsculas nem acentos) em
+   id, nome, tipo, origem, BPMN, valores, análise, ação, valores das fontes ou na anotação da revisão */
+let busca = '';
+const semAcento = s => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const termos = () => semAcento(busca).split(/\s+/).filter(Boolean);
+const TXT = new WeakMap();
+function textoDe(it, c) {
+  if (!TXT.has(c)) {  /* inclui o texto que a célula mostra ("Não implementado", "Não consta"…), que depende da INT */
+    const I0 = I; I = it; let vistos; try { vistos = FS.map(F => cel(c, F).t); } finally { I = I0; }
+    TXT.set(c, semAcento([c.id, c.nome, c.tipo, c.linha, c.bpmn, c.valor?.de, c.valores, c.leitura, c.acaoTexto, ...Object.values(c.fontes || {}).map(f => f?.v), ...vistos].join(' · ')));
+  }
+  return TXT.get(c) + ' · ' + semAcento(REV.itens[it.id + ':' + c.id]?.nota);
+}
+const casa = (it, c) => { const ts = termos(); if (!ts.length) return true; const t = textoDe(it, c); return ts.every(x => t.includes(x)); };
+/* busca local: só na integração aberta (ao lado dos filtros); soma-se à global. Limpa ao trocar de integração */
+let buscaInt = '';
+const termosL = () => semAcento(buscaInt).split(/\s+/).filter(Boolean);
+const casaL = c => { const ts = termosL(); if (!ts.length) return true; const t = textoDe(I, c); return ts.every(x => t.includes(x)); };
+const achados = it => camposTodos(it).filter(c => casa(it, c)).length;
+/* escapa o texto e marca os termos da busca, ignorando maiúsculas e acentos ("nao" marca "Não") */
+function hl(s) {
+  s = String(s ?? ''); const ts = [...termos(), ...termosL()]; if (!ts.length || !s) return esc(s);
+  let n = ''; const pos = [];  /* texto sem acento, e para cada caractere dele a posição no original */
+  for (let i = 0; i < s.length; i++) { const k = semAcento(s[i]); for (const ch of k) { n += ch; pos.push(i); } }
+  const marca = new Array(s.length).fill(false);
+  for (const t of ts) for (let j = n.indexOf(t); j >= 0; j = n.indexOf(t, j + 1)) for (let q = j; q < j + t.length; q++) marca[pos[q]] = true;
+  let h = '', dentro = false;
+  for (let i = 0; i < s.length; i++) { if (marca[i] !== dentro) { h += marca[i] ? '<mark>' : '</mark>'; dentro = marca[i]; } h += esc(s[i]); }
+  return h + (dentro ? '</mark>' : '');
+}
+
+/* gravação no arquivo */
+const CAB_REV = `/*
+ * Raio-X · revisão das análises (decisões de quem revisa). A página grava este arquivo; não edite à mão com a página aberta.
+ * itens["INT14:R10"] = { status: ok (tudo certo) | pendente | revisado | aplicado,
+ *   destino: [bpmn, postman, doc]   → bpmn e postman entram no lote do agente; doc é só informativo, para o time da documentação
+ *   nota                            → o que o modelo deve fazer (o contexto vem da própria linha INT14:R10 nos dados)
+ *   em (ISO), aplicadoEm, commit }
+ */
+`;
+let pasta = null, pastaGuardada = null, fila = Promise.resolve(), tmGrava;
+const idb = (modo, fn) => new Promise((ok, falha) => {
+  const r = indexedDB.open('raiox-ftat933', 1);
+  r.onupgradeneeded = () => r.result.createObjectStore('h');
+  r.onerror = () => falha(r.error);
+  r.onsuccess = () => { const t = r.result.transaction('h', modo), q = fn(t.objectStore('h')); t.oncomplete = () => ok(q?.result); t.onerror = () => falha(t.error); };
+});
+const pendentes = () => Object.keys(db.revPend).length;
+function mostraPasta() {
+  const el = $('#rv-pasta'), n = pendentes();
+  el.innerHTML = pasta
+    ? `<p class="rv-ok">Gravando em <code>dados/revisao.js</code></p>`
+    : `<button class="btn rv-con" id="btn-pasta" type="button">${pastaGuardada ? 'Reativar gravação' : 'Conectar pasta para gravar'}</button>
+       <p class="rv-av">${n ? `${n} mudança(s) só neste navegador. ` : ''}Autorize a pasta <code>Analise/raio-x/dados</code> para gravar a revisão no repositório.</p>`;
+}
+async function gravar() {
+  if (!pasta) return mostraPasta();
+  const fh = await pasta.getFileHandle('revisao.js', { create: true });
+  /* junta com o que está no disco (um agente pode ter marcado itens como aplicados): vale o registro mais recente */
+  const txt = await (await fh.getFile()).text(), i = txt.indexOf('RAIOX.revisao(');
+  if (i >= 0) try { const d = JSON.parse(txt.slice(i + 14, txt.lastIndexOf(')')));
+    for (const [k, v] of Object.entries(d.itens || {})) if (!REV.itens[k] || (v.em || '') > (REV.itens[k].em || '')) REV.itens[k] = v; } catch (e) { throw new Error('dados/revisao.js está com erro de sintaxe; corrija antes de gravar'); }
+  const itens = Object.fromEntries(Object.keys(REV.itens).sort().map(k => [k, REV.itens[k]]));
+  const w = await fh.createWritable(); await w.write(CAB_REV + 'RAIOX.revisao(' + JSON.stringify({ versao: 1, itens }, null, 2) + ');\n'); await w.close();
+  db.revPend = {}; salvar(false);
+  status('Revisão gravada às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })); mostraPasta();
+}
+const gravarJa = () => (fila = fila.then(gravar).catch(e => { status('Não gravou: ' + e.message, true); mostraPasta(); }));
+function agendaGravar() { clearTimeout(tmGrava); if (pasta) tmGrava = setTimeout(gravarJa, 700); else mostraPasta(); }
+/* a pasta autorizada é Analise/raio-x/dados. O navegador não deixa a página abrir o seletor num caminho escrito por ela
+   (só numa pasta já autorizada antes, ou em Documentos, Downloads etc.). Por isso, na 1ª vez a página copia o caminho
+   de dados para a área de transferência, para colar na barra de endereço da janela; depois o seletor já abre nela
+   (startIn = pasta guardada; o id lembra a última escolhida) */
+const caminhoDados = () => location.protocol === 'file:'
+  ? decodeURIComponent(location.pathname).replace(/^\/(\w:)/, '$1').replace(/[^/]*$/, 'dados').replace(/\//g, navigator.platform.startsWith('Win') ? '\\' : '/') : '';
+async function conectar() {
+  if (pastaGuardada && await pastaGuardada.requestPermission({ mode: 'readwrite' }) === 'granted') pasta = pastaGuardada;
+  else {
+    const cam = !pastaGuardada && caminhoDados();
+    if (cam) try { await navigator.clipboard.writeText(cam); status('Caminho copiado. Na janela, cole na barra de endereço (Ctrl+L, Ctrl+V) e clique em Selecionar pasta'); } catch (e) { /* sem área de transferência: navega à mão */ }
+    let d = await showDirectoryPicker({ id: 'raiox-dados', mode: 'readwrite', ...(pastaGuardada && { startIn: pastaGuardada }) });
+    try { d = await d.getDirectoryHandle('dados'); } catch (e) { /* já escolheu a própria dados */ }
+    try { await d.getFileHandle('revisao.js'); }
+    catch (e) { status('Escolha a pasta Analise/raio-x/dados (a que tem revisao.js)', true); return false; }
+    pasta = d; await idb('readwrite', s => s.put(d, 'pasta'));
+  }
+  pastaGuardada = null; await gravarJa(); render(); return true;
+}
+async function retomaPasta() {
+  try { const d = await idb('readonly', s => s.get('pasta')); if (!d) return;
+    if (await d.queryPermission({ mode: 'readwrite' }) === 'granted') { pasta = d; if (pendentes()) gravarJa(); } else pastaGuardada = d;
+  } catch (e) { /* sem IndexedDB: fica no modo navegador */ }
+  mostraPasta();
+}
+
+/* saídas: lote BPMN (para o agente) e pendências de documentação (informativo) */
+const hoje = () => new Date().toISOString().slice(0, 10);
+async function saida(nome, texto) {
+  if (!pasta && window.showDirectoryPicker && !(await conectar())) return;
+  if (pasta) { const s = await pasta.getDirectoryHandle('saidas', { create: true }), w = await (await s.getFileHandle(nome, { create: true })).createWritable();
+    await w.write(texto); await w.close(); return status('Gerado em Analise/raio-x/dados/saidas/' + nome); }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([texto], { type: 'text/markdown' })); a.download = nome;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); status('Baixado: ' + nome);
+}
+const campoDe = k => { const [ii, id] = k.split(':'), it = RAIOX.ints.find(x => x.id === ii); return [it, it?.campos.find(c => c.id === id)]; };
+/* contexto da linha, copiado dos dados da análise: o agente não precisa abrir mais nada para entender o item */
+function contexto(it, c) {
+  if (!c) return '- (linha não encontrada nos dados)';
+  return [
+    `- Hoje no BPMN: ${c.bpmn || 'não implementado'}`,
+    c.valor?.de && `- Origem do valor no BPMN: ${c.valor.de}`,
+    ...['DM', 'PM', 'CURL', 'QA'].filter(F => c.fontes?.[F]).map(F => `- ${F}${it.fontes.find(f => f.id === F)?.arquivo ? ` (${it.fontes.find(f => f.id === F).arquivo})` : ''}: ${c.fontes[F].v}${c.fontes[F].r ? ` [${c.fontes[F].r}]` : ''}`),
+    c.leitura && `- Análise: ${c.leitura}`,
+    c.valores && `- Valores possíveis: ${c.valores}`,
+    c.acaoTexto && `- Ação sugerida na análise: ${c.acaoTexto}`,
+    `- De onde saiu a linha: ${c.linha}`,
+  ].filter(Boolean).join('\n');
+}
+const titulo = (k, it, c) => `### ${k} · ${c?.nome || ''}${c?.tipo ? ` (${c.tipo})` : ''} · ${it?.id || ''} ${it?.nome || ''}`;
+function loteBpmn() {
+  const ks = Object.keys(REV.itens).filter(k => { const x = REV.itens[k]; return x.status === 'revisado' && (tem(x, 'bpmn') || tem(x, 'postman')); }).sort();
+  const pms = [...new Set(ks.filter(k => tem(REV.itens[k], 'postman')).map(k => campoDe(k)[0]?.fontes.find(f => f.id === 'PM')?.arquivo).filter(Boolean))];
+  let md = `# Lote de ajustes · ${hoje()}\n\n` +
+    `Arquivos:\n- BPMN: \`${BPMN_ARQ.arquivo}\`\n${pms.map(a => `- Collection (Postman): \`${a}\`\n`).join('')}\n` +
+    `Instruções para o agente:\n` +
+    `- Cada item tem a anotação de quem revisou (o que fazer) e o contexto da linha, copiado da análise do Raio-X.\n` +
+    `- Aplique só onde o item pede (BPMN e/ou collection) e só o que a anotação diz. Não altere mais nada.\n` +
+    `- Se a anotação faltar ou estiver ambígua, ou se o contexto não bater com o arquivo, não aplique: liste o item no fim, com o motivo.\n` +
+    `- Não copie tokens, o valor do header iss, senhas nem dados pessoais para nenhum arquivo.\n` +
+    `- Ao terminar, em \`Analise/raio-x/dados/revisao.js\`, mude o status de cada item aplicado para "aplicado" e preencha "aplicadoEm" (ISO) e "commit".\n` +
+    `- Ajustes de documentação não entram aqui: saem na lista de pendências de documentação, para o time responsável.\n\n` +
+    `${ks.length} item(ns).\n`;
+  for (const k of ks) { const x = REV.itens[k], [it, c] = campoDe(k);
+    md += `\n${titulo(k, it, c)}\n- **Ajustar em:** ${DESTINOS.filter(([d]) => d !== 'doc' && tem(x, d)).map(d => d[1]).join(', ')}\n` +
+      `- **O que fazer (anotação):** ${x.nota?.trim() || '(sem anotação: não aplicar)'}\n${contexto(it, c)}\n- Revisado em: ${(x.em || '?').slice(0, 10)}\n`; }
+  return saida(`lote-ajustes-${hoje()}.md`, md);
+}
+function pendenciasDoc() {
+  const ks = Object.keys(REV.itens).filter(k => tem(REV.itens[k], 'doc')).sort();
+  let md = `# Ajustes de documentação · ${hoje()}\n\nInformativo, para o time que mantém a documentação. Levantado na revisão do Raio-X da jornada FTAT-933 (Abertura de BD).\n\n${ks.length} ponto(s).\n`;
+  for (const k of ks) { const x = REV.itens[k], [it, c] = campoDe(k);
+    md += `\n${titulo(k, it, c)}\n- **Ajuste:** ${x.nota?.trim() || '(sem anotação)'}\n${contexto(it, c)}\n`; }
+  return saida(`pendencias-documentacao-${hoje()}.md`, md);
+}
 
 /* situação de uma célula: ok | falta | parcial | nenvia */
 function cel(c, F) {
-  if (F === 'BPMN') return c.bpmn ? { k: 'ok', h: esc(c.bpmn), t: c.bpmn } : { k: 'falta', h: 'Não implementado', t: 'Não implementado' };
-  if (!I.fontes.some(f => f.id === F)) return { k: 'nan', h: 'Não analisado', t: 'Não analisado' };  /* fonte ainda não lida nesta INT */
+  if (F === 'BPMN') { const n = fora() ? 'Não usado na jornada' : 'Não implementado';
+    return c.bpmn ? { k: 'ok', h: hl(c.bpmn), t: c.bpmn } : { k: fora() ? 'nenvia' : 'falta', h: hl(n), t: n }; }  /* fora da jornada, não usar o dado é esperado, não falha */
+  /* fora da jornada, a requisição é do domínio do canal: a documentação da jornada (DM) não se aplica */
+  if (fora() && F === 'DM' && c.grupo === 'request') return { k: 'nenvia', h: hl('Não se aplica'), t: 'Não se aplica' };
+  if (!I.fontes.some(f => f.id === F)) return { k: 'nan', h: hl('Não analisado'), t: 'Não analisado' };  /* fonte ainda não lida nesta INT */
   const d = c.fontes[F];
-  if (!d) return { k: 'falta', h: F === 'DM' ? 'Não consta no DM' : 'Não consta', t: 'Não consta' };
-  if (/^Não (envia|lê)/.test(d.v)) return { k: 'nenvia', h: esc(d.v), t: d.v };
-  let hh = esc(d.v);
+  /* US: não mencionar o item não é falha (as histórias não descrevem campo a campo) */
+  if (!d && F === 'US') return { k: 'nenvia', h: hl('Sem menção'), t: 'Sem menção' };
+  if (!d) return { k: 'falta', h: hl(F === 'DM' ? 'Não consta no DM' : 'Não consta'), t: 'Não consta' };
+  if (F === 'US' && d.r === 'so-fonte') return { k: 'parcial', h: `<span class="tag">BPMN não tem</span>` + hl(d.v), t: d.v };
+  if (/^Não (envia|lê)/.test(d.v)) return { k: 'nenvia', h: hl(d.v), t: d.v };
+  let hh = hl(d.v);
   const m = F === 'DM' && /^(Obrigatório|Não obrigatório|Opcional)\s*·?\s*/.exec(d.v);
-  if (m) hh = `<span class="ob">${m[1]}</span>` + esc(d.v.slice(m[0].length));
+  if (m) hh = `<span class="ob">${hl(m[1])}</span>` + hl(d.v.slice(m[0].length));
   const k = d.r === 'parcial' || d.r === 'diverge' ? 'parcial' : 'ok';
   return { k, h: (k === 'parcial' ? `<span class="tag">${d.r === 'diverge' ? 'Diverge' : 'Bate em parte'}</span>` : '') + hh, t: d.v };
 }
 /* veredito da análise: bpmn → ajustar no BPMN; decidir/fonte → confirmar/validar; nada → tudo certo */
-const VER = { ok: 'Tudo certo', at: 'Confirmar / validar', aj: 'Ajustar no BPMN' };
+const VER = { ok: 'Tudo certo', at: 'Confirmar / validar', aj: 'Ajustar no BPMN', p: 'Pendente de revisão' };
 const ver = c => c.acao === 'bpmn' ? 'aj' : (c.acao === 'decidir' || c.acao === 'fonte') ? 'at' : 'ok';
 const icoNota = c => nota(c.id) ? '<svg class="i temnota" viewBox="0 0 24 24" aria-label="tem nota"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>' : '';
 
@@ -305,13 +678,45 @@ const IC = {
   dir: SVG('<path d="m9 6 6 6-6 6"/>'), esq: SVG('<path d="m15 6-6 6 6 6"/>'),
 };
 /* golden sources da linha: as 5 colunas (quando há arquivo) + US/DFT/OpenAPI/telas quando falam deste item */
+/* fontes em abas: uma por fonte com arquivo; a aba escolhida fica guardada (db.ui.abaFonte) e vale para todas as linhas */
 function fontesDe(c) {
-  const li = [...FS, ...EXTRA.filter(F => c.fontes[F])].map(F => {
-    const a = arq(F); if (!a) return '';
-    const v = EXTRA.includes(F) ? `<q>${esc(c.fontes[F].v)}</q>` : '';
-    return `<li><b>${NOME[F]}</b><div>${F === 'US' ? linksUS(a, c.fontes.US.v) : link(a, undefined, undefined, true)}<small>${esc(a.detalhe || '')}</small>${v}</div></li>`;
+  const fs_ = [...FS, ...EXTRA.filter(F => c.fontes[F])].filter(F => arq(F));
+  if (!fs_.length) return '';
+  const on = fs_.includes(db.ui.abaFonte) ? db.ui.abaFonte : fs_[0];
+  const abas = fs_.map(F => `<button type="button" role="tab" id="aba-${F}" data-aba="${F}" aria-controls="pn-${F}" aria-selected="${F === on}" tabindex="${F === on ? 0 : -1}">${NOME[F]}</button>`).join('');
+  const paineis = fs_.map(F => {
+    const a = arq(F), v = EXTRA.includes(F) ? `<q>${esc(c.fontes[F].v)}</q>` : '';
+    /* `outros`: mais arquivos da mesma fonte (ex.: o START lê a aba VE x Camunda de dois DMs) */
+    const mais = (a.outros || []).map(o => `<div class="fx-arq">${link(o, undefined, undefined, true)}<small>${esc(o.detalhe || '')}</small></div>`).join('');
+    return `<div role="tabpanel" id="pn-${F}" aria-labelledby="aba-${F}"${F === on ? '' : ' hidden'}>${F === 'DM' ? dmLinhas(c, a) : ''}<div class="fx-arq">${F === 'US' ? linksUS(a, c.fontes.US?.v || '') : link(a, undefined, undefined, true)}<small>${esc(a.detalhe || '')}</small></div>${mais}${v}</div>`;
   }).join('');
-  return `<section class="fx-fontes"><h4>Fontes (golden source)</h4><ul>${li}</ul></section>`;
+  return `<section class="fx-fontes"><h4>Fontes (golden source)</h4><div class="abas" role="tablist" aria-label="Fontes desta linha">${abas}</div>${paineis}</section>`;
+}
+/* aba DM: o conteúdo das linhas do DM ligadas a esta linha (c.dm = [{ aba, linha, arquivo? }]), lido de dados/dm.js
+   (gerado por gerar-dm.cjs). Mostra cada célula com a coluna e o endereço (ex.: K12); Domínio/Máscara e Exemplo
+   aparecem sempre, mesmo vazios, e com destaque */
+const DM_DEST = /dom[ií]nio|m[aá]scara|exemplo/i;
+const ordCol = (a, b) => a.length - b.length || a.localeCompare(b);
+function dmLinhas(c, a) {
+  if (!c.dm?.length) return `<p class="dm-nada">${c.fontes.DM ? 'Esta linha ainda não foi ligada a uma linha do DM.' : 'O DM não traz este item.'}</p>`;
+  if (!RAIOX.dmi) return '<p class="dm-nada">Índice dos DMs não carregado (rode <code>node Analise/raio-x/gerar-dm.cjs</code>).</p>';
+  return c.dm.map(r => {
+    const nome = r.arquivo || a.arquivo, s = (RAIOX.dmi[nome] || RAIOX.dmi[disco(nome)])?.[r.aba], l = s?.linhas.find(x => x[0] === r.linha);
+    if (!l) return `<p class="dm-nada">Linha ${r.linha} da aba “${esc(r.aba)}” não encontrada no índice (rode <code>gerar-dm.cjs</code> de novo).</p>`;
+    const cols = [...new Set([...Object.keys(l[1]), ...Object.keys(s.cab).filter(L => DM_DEST.test(s.cab[L]))])].sort(ordCol);
+    const outro = nome !== a.arquivo ? ` · <span class="dm-arq">${esc(nome.replace(/^PreDataMapping FTAT-933 - /, '').replace(/\.xlsx$/, ''))}</span>` : '';
+    return `<div class="dm-lin"><div class="dm-tit"><b>${esc(r.aba)}</b> · linha ${r.linha}${s.oculta ? ' · aba oculta' : ''}${outro}</div><dl>${cols.map(L => {
+      /* bloco de exemplo (JSON de várias linhas numa célula mesclada) fica sob a coluna onde a mesclagem começa: rotula como exemplo */
+      const v = l[1][L] || '', bloco = v.includes('\n') && v.length > 150, cab = s.cab[L] || '';
+      const t = bloco && !DM_DEST.test(cab) ? 'Exemplo (bloco da planilha)' : cab || 'Coluna sem título (anotação)', d = DM_DEST.test(t);
+      return `<div class="${d ? 'dm-dest' : ''}"><dt><code>${L}${r.linha}</code>${esc(t)}</dt><dd${v.includes('\n') ? ' class="dm-pre"' : ''}>${v ? hl(v) : '<em>vazio</em>'}</dd></div>`;
+    }).join('')}</dl></div>`;
+  }).join('');
+}
+function abreAba(F, foco) {
+  db.ui.abaFonte = F; salvar(false);
+  document.querySelectorAll('.fx-fontes [role=tab]').forEach(b => { const s = b.dataset.aba === F; b.setAttribute('aria-selected', s); b.tabIndex = s ? 0 : -1; if (s && foco) b.focus(); });
+  document.querySelectorAll('.fx-fontes [role=tabpanel]').forEach(p => { p.hidden = p.id !== 'pn-' + F; });
 }
 /* tamanho do painel (px): alt quando embaixo, larg quando na lateral; sem valor = padrão do CSS */
 const lim = (v, a, b) => Math.round(Math.min(Math.max(v, a), b));
@@ -327,7 +732,7 @@ function faixa(c) {
   return `<div class="faixa${fechada ? ' fechada' : ''}" aria-live="polite">
     <div class="fx-puxa" role="separator" tabindex="0" aria-orientation="${lado ? 'vertical' : 'horizontal'}" aria-label="Redimensionar o painel: arraste ou use as setas; duplo clique volta ao tamanho padrão" title="Arraste para redimensionar · duplo clique volta ao padrão"></div>
     <div class="fx-topo">
-    <h3><span class="vd v-${ver(c)}">${VER[ver(c)]}</span>${esc(c.nome)}<span class="tp">${esc(c.tipo)}</span><code>${c.id} · ${esc(I.grupos.find(g => g.id === c.grupo)?.nome)}</code></h3>
+    <h3><span class="vd v-${verAtual(c)}">${VER[verAtual(c)]}</span>${esc(c.nome)}<span class="tp">${esc(c.tipo)}</span><code>${c.id} · ${esc(I.grupos.find(g => g.id === c.grupo)?.nome)}</code></h3>
     <div class="fx-bt">
       <button class="ico" id="fx-modo" type="button" data-fx="modo" title="Mover o painel para ${lado ? 'baixo' : 'a lateral'}" aria-label="Mover o painel para ${lado ? 'baixo' : 'a lateral'}">${IC[outro]}</button>
       <button class="ico" type="button" data-fx="abrir" aria-expanded="${!fechada}" title="${fechada ? 'Expandir' : 'Recolher'} o painel" aria-label="${fechada ? 'Expandir' : 'Recolher'} o painel">${seta}</button>
@@ -335,49 +740,68 @@ function faixa(c) {
     <div class="fx-corpo">
     <div class="grade4">${FS.map(F => { const x = cel(c, F); return `<div class="k-${x.k}"><b>${NOME[F]}</b>${x.h}</div>`; }).join('')}</div>
     <div class="det">
-      <div><p>${esc(c.leitura)}</p>${c.acaoTexto ? `<p><b>Ação:</b> ${esc(c.acaoTexto)}</p>` : ''}<p class="mudo">De onde saiu esta linha: ${esc(c.linha)}.${c.valor?.de ? ` Origem do valor no BPMN: ${esc(c.valor.de)}.` : ''}</p>${fontesDe(c)}</div>
-      <label><span>Nota</span><textarea data-nota="${c.id}" placeholder="Fica salva neste navegador">${esc(nota(c.id))}</textarea></label>
+      <div>${c.leitura ? `<p>${hl(c.leitura)}</p>` : ''}${c.valores ? `<p><b>Valores possíveis:</b> ${hl(c.valores)}</p>` : ''}<p class="mudo">De onde saiu esta linha: ${hl(c.linha)}.${c.valor?.de ? ` Origem do valor no BPMN: ${hl(c.valor.de)}.` : ''}</p>${fontesDe(c)}</div>
+      ${revForm(c)}
     </div></div></div>`;
 }
+/* formulário de revisão da linha selecionada (grava em dados/revisao.js) */
+function revForm(c) {
+  const x = rascDe(c.id) || rev(c.id), feito = x.status === 'revisado' || x.status === 'aplicado';
+  const radio = (v, t) => `<label class="rv-seg"><input type="radio" name="rv-status" data-rv="status" value="${v}"${x.status === v ? ' checked' : ''}><span>${t}</span></label>`;
+  const chk = ([v, t]) => `<label class="rv-chk"><input type="checkbox" data-rv="destino" value="${v}"${x.destino?.includes(v) ? ' checked' : ''}>${t}${v === 'doc' ? ' <small>(informativo)</small>' : ''}</label>`;
+  const aviso = !feito ? '' : x.destino?.length && !x.nota?.trim() ? 'Escreva na anotação o que o modelo deve fazer.'
+    : !x.destino?.length && ver(c) === 'ok' ? 'Marque onde ajustar.' : '';
+  return `<section class="rv" aria-label="Revisão desta linha">
+    <h4>Ação e revisão${x.em ? `<small>revisão salva em ${esc(new Date(x.em).toLocaleDateString('pt-BR'))}</small>` : ''}</h4>
+    <div class="rv-acao"><span class="rv-rot">Ação sugerida pela análise</span><p>${c.acaoTexto ? hl(c.acaoTexto) : '<em>Nenhuma: o BPMN atende.</em>'}</p></div>
+    <div class="rv-linha">${ver(c) === 'ok' || x.status === 'ok' ? radio('ok', 'Tudo certo') : ''}${radio('pendente', 'Pendente')}${radio('revisado', 'Revisado')}${x.status === 'aplicado' ? radio('aplicado', '✔ Aplicado') : ''}</div>
+    <div class="rv-linha"><span class="rv-rot">Ajustar em</span>${DESTINOS.map(chk).join('')}</div>
+    <label class="rv-nota"><span>Anotação: o que o modelo deve fazer (o contexto da linha vai junto)</span><textarea data-rv="nota" rows="4" placeholder="ex.: validar wfmGeographicSiteId antes de chamar a INT14 e encerrar com erro de negócio se vier vazio">${esc(x.nota || '')}</textarea></label>
+    ${aviso ? `<p class="rv-falta">${aviso}</p>` : ''}
+    <div class="rv-acoes"><button class="btn rv-salvar" type="button" data-rvbt="salvar"${rascDe(c.id) ? '' : ' disabled'}>Salvar</button><button class="btn" type="button" data-rvbt="cancelar"${rascDe(c.id) ? '' : ' disabled'}>Cancelar</button><small${rascDe(c.id) ? '' : ' hidden'}>Alterações não salvas</small></div>
+  </section>`;
+}
 
+/* seções da barra lateral: cada INT diz a sua em `secao` (padrão: jornada) */
+const SECOES = [['fora', 'VE - Fora da Jornada'], ['jornada', 'Integrações - Abertura de BD']];
+const fora = () => I.secao === 'fora';  /* INT fora da jornada: a coluna BPMN mostra como o dado entra na jornada */
+function botaoInt(i) { const n = v => i.campos.filter(x => verAtual(x, i.id) === v).length;
+  const cs = camposTodos(i), m = termos().length ? achados(i) : -1, rv = cs.filter(c => (REV.itens[i.id + ':' + c.id]?.status || padrao(c)) !== 'pendente').length;
+  return `<button class="int${m === 0 ? ' vazia' : ''}" type="button" data-int="${i.id}" aria-current="${i === I}" title="${i.id} · ${esc(i.nome)} · revisado ${rv}/${cs.length}${m >= 0 ? ` · ${m} linha(s) na busca` : ''}"><code>${i.id}</code><span>${esc(i.nome)}
+    <small class="cont"><span class="v-aj" title="Ajustar no BPMN"><i></i>${n('aj')}</span><span class="v-at" title="Confirmar / validar"><i></i>${n('at')}</span><span class="v-ok" title="Tudo certo"><i></i>${n('ok')}</span>${n('p') ? `<span class="v-p" title="Pendente de revisão"><i></i>${n('p')}</span>` : ''}<span class="rvc${rv === cs.length ? ' cheio' : ''}" title="Linhas revisadas">✓ ${rv}/${cs.length}</span></small></span>${m > 0 ? `<b class="achou">${m}</b>` : ''}</button>`; }
 let rolInt;  /* integração da última renderização: a rolagem da tabela só é mantida dentro da mesma INT */
 function render() {
   const tw0 = document.querySelector('.tw'), rol = rolInt === I.id && tw0 ? [tw0.scrollTop, tw0.scrollLeft] : [0, 0];
   rolInt = I.id;
   const cs = campos();
-  if (!cs.find(c => c.id === sel)) sel = cs[0].id;
+  if (!cs.find(c => c.id === sel)) sel = cs[0]?.id;
   const c = cs.find(x => x.id === sel);
-  $('#ints').innerHTML = RAIOX.ints.map(i => { const n = v => i.campos.filter(x => ver(x) === v).length;
-    return `<button class="int" type="button" data-int="${i.id}" aria-current="${i === I}"><code>${i.id}</code><span>${esc(i.nome)}
-      <small class="cont"><span class="v-aj" title="Ajustar no BPMN"><i></i>${n('aj')}</span><span class="v-at" title="Confirmar / validar"><i></i>${n('at')}</span><span class="v-ok" title="Tudo certo"><i></i>${n('ok')}</span></small></span></button>`; }).join('');
-  const linha = r => `<tr class="${r.id === sel ? 'on' : ''}"><td class="rh v-${ver(r)}" title="${VER[ver(r)]}">${r.id}</td><td data-cel="${r.id}:-1" title="${esc(r.nome)} · ${esc(r.tipo)} · de onde saiu: ${esc(r.linha)}">${esc(r.nome)}<span class="tp">${esc(r.tipo)}</span>${icoNota(r)}</td>${FS.map((F, i) => {
-    const y = cel(r, F); return `<td class="k-${y.k}" data-cel="${r.id}:${i}" title="${esc(y.t)}">${esc(y.t)}</td>`; }).join('')}</tr>`;
+  document.querySelector('.app').classList.toggle('lat-fechada', db.ui.lateral === 'fechada');
+  $('#lat').innerHTML = db.ui.lateral === 'fechada' ? IC.dir : IC.esq;
+  $('#lat').title = $('#lat').ariaLabel = db.ui.lateral === 'fechada' ? 'Expandir a barra lateral' : 'Recolher a barra lateral';
+  const todos = camposTodos().filter(c => casa(I, c) && casaL(c)), contaF = f => todos.filter(x => FILTROS[f][1](rev(x.id))).length;
+  $('#ints').innerHTML = SECOES.map(([s, tit]) => { const is = RAIOX.ints.filter(i => (i.secao || 'jornada') === s);
+    return is.length ? `<h2>${tit}</h2>` + is.map(botaoInt).join('') : ''; }).join('');
+  const linha = r => { const [rc, rl, rt] = rvLab(rev(r.id)); return `<tr class="${r.id === sel ? 'on' : ''}"><td class="rh v-${verAtual(r)}" title="${VER[verAtual(r)]}&#10;Ação: ${esc(r.acaoTexto || 'nenhuma')}">${r.id}</td><td class="rv-c rv-${rc}" data-cel="${r.id}:-2" title="${esc(rt)}">${esc(rl)}</td><td data-cel="${r.id}:-1" title="${esc(r.nome)} · ${esc(r.tipo)} · de onde saiu: ${esc(r.linha)}">${hl(r.nome)}<span class="tp">${esc(r.tipo)}</span>${icoNota(r)}</td>${FS.map((F, i) => {
+    const y = cel(r, F); return `<td class="k-${y.k}" data-cel="${r.id}:${i}" title="${esc(y.t)}">${hl(y.t)}</td>`; }).join('')}</tr>`; };
   $('#main').innerHTML = `
     <div class="topo">
       <div><h1><code>${I.id}</code>${esc(I.nome)}</h1><p><code>${esc(I.endpoint)}</code></p></div>
+      <div class="topo-bt"><button class="btn bt-leg" type="button" popovertarget="legenda">Legenda</button>
       <button class="ico" id="tema" type="button" aria-label="Alternar tema claro/escuro">${document.documentElement.dataset.tema === 'escuro'
         ? '<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
-        : '<svg class="i" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>'}</button>
+        : '<svg class="i" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>'}</button></div>
     </div>
-    <p class="como">Clique numa linha ou navegue com <kbd>↑</kbd> <kbd>↓</kbd>. O texto completo, a análise, os links para as fontes e a nota ficam no painel de detalhe.</p>
-    <details class="legenda"${db.ui.legenda === false ? '' : ' open'}><summary>Legenda</summary><div class="lg-corpo">
-      <div><span class="tit">Linhas</span>
-        <span>Cada linha é um item da chamada: header, parâmetro, campo do body, código ou campo da resposta, ou regra (timeout, decisão). A lista junta tudo o que o BPMN usa e tudo o que o DM documenta para esta integração; o tipo aparece ao lado do nome e o painel de detalhe diz de onde a linha saiu.</span></div>
-      <div><span class="tit">Código da linha</span>
-        <span class="lg v-ok"><i></i><b>Verde</b> tudo certo: o BPMN atende, nada a fazer</span>
-        <span class="lg v-at"><i></i><b>Amarelo</b> ponto de atenção: confirmar ou validar com a área, ou ajustar a documentação</span>
-        <span class="lg v-aj"><i></i><b>Vermelho</b> ajustar no BPMN</span></div>
-      <div><span class="tit">Células</span>
-        <span class="lg"><i class="c-falta"></i>não consta na fonte / não implementado no BPMN</span>
-        <span class="lg"><i class="c-parcial"></i>bate em parte com o BPMN</span>
-        <span class="lg"><i class="c-nenvia"></i><em>não envia</em>: a fonte também não manda, igual ao BPMN</span>
-        <span class="lg"><i class="c-nan"></i><em>não analisado</em>: esta fonte ainda não foi lida para esta integração</span></div>
-    </div></details>
-    <div class="tw"><table><colgroup><col class="c0"><col class="c1">${FS.map(() => '<col>').join('')}</colgroup>
-      <thead><tr><th></th><th>Item da chamada<small>nome · tipo</small></th>${FS.map(F => `<th class="${F === 'BPMN' ? 'bp' : ''}">${NOME[F]}<small>${arq(F) ? link(arq(F), F === 'BPMN' ? 'implementado' : undefined) : 'sem arquivo'}</small></th>`).join('')}</tr></thead>
-      <tbody>${I.grupos.map(g => { const gc = cs.filter(r => r.grupo === g.id); return gc.length ? `<tr class="grp"><td colspan="7">${esc(g.nome)}<small>${esc(g.sub)}</small></td></tr>` + gc.map(linha).join('') : ''; }).join('')}</tbody>
-    </table></div>
-    ${faixa(c)}`;
+    <div class="filtros" role="group" aria-label="Filtrar linhas pela revisão"><span>Mostrar</span>${Object.entries(FILTROS).map(([f, [t]]) =>
+      `<button type="button" class="chip" data-filtro="${f}" aria-pressed="${filtro() === f}">${t} <b>${contaF(f)}</b></button>`).join('')}
+      <div class="busca busca-int" role="search"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+        <input id="busca-int" type="search" placeholder="Buscar em ${esc(I.id)}" aria-label="Buscar só nesta integração" autocomplete="off" spellcheck="false" value="${esc(buscaInt)}">
+        <button class="busca-x" id="busca-int-x" type="button" title="Limpar (Esc)" aria-label="Limpar a busca desta integração"${buscaInt ? '' : ' hidden'}><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
+    <div class="tw"><table><colgroup><col class="c0"><col class="cr"><col class="c1">${FS.map(() => '<col>').join('')}</colgroup>
+      <thead><tr><th></th><th title="Revisão da linha: — pendente · ✓ OK · onde ajustar (BPMN, PM = collection, DOC)">Revisão</th><th>Item da chamada<small>nome · tipo</small></th>${FS.map(F => `<th class="${F === 'BPMN' ? 'bp' : ''}">${NOME[F]}<small>${arq(F) ? link(arq(F), F === 'BPMN' ? (fora() ? 'como entra na jornada' : 'implementado') : undefined) : 'sem arquivo'}</small></th>`).join('')}</tr></thead>
+      <tbody>${I.grupos.map(g => { const gc = cs.filter(r => r.grupo === g.id); return gc.length ? `<tr class="grp"><td colspan="${FS.length + 3}">${esc(g.nome)}<small>${esc(g.sub)}</small></td></tr>` + gc.map(linha).join('') : ''; }).join('')}</tbody>
+    </table>${cs.length ? '' : `<p class="vazio">${(busca + ' ' + buscaInt).trim() ? `Nenhuma linha com “${esc((busca + ' ' + buscaInt).trim())}” nesta integração${filtro() !== 'todos' ? ' e neste filtro' : ''}.` : 'Nenhuma linha neste filtro.'}</p>`}</div>
+    ${c ? faixa(c) : ''}`;
   $('#main').className = (fx().modo === 'lado' ? 'lado' : '') + (fx().fechada ? ' fechada' : '');
   aplicaTam();
   [$('.tw').scrollTop, $('.tw').scrollLeft] = rol;
@@ -386,11 +810,21 @@ function render() {
 
 /* ── eventos ── */
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-cel],[data-int],[data-fx],#tema');
+  const t = e.target.closest('[data-cel],[data-int],[data-fx],[data-filtro],[data-rvbt],[data-aba],#tema,#lat,#btn-pasta');
   if (!t) return;
+  if (t.dataset.aba) { abreAba(t.dataset.aba); return; }
+  if (t.dataset.rvbt) { const r = rasc; rasc = null;
+    if (t.dataset.rvbt === 'salvar' && r) { gravaItem(r.k, r.x); if (!pasta) status('Revisão salva neste navegador; conecte a pasta para gravar no arquivo'); }
+    render(); document.querySelector('[data-rv="status"]:checked')?.focus(); return; }
+  if (t.id === 'btn-pasta') { conectar().catch(x => x.name !== 'AbortError' && status('Não conectou: ' + x.message, true)); return; }
+  if (t.id === 'lat') { db.ui.lateral = db.ui.lateral === 'fechada' ? 'aberta' : 'fechada'; salvar(false); render(); $('#lat').focus(); return; }
+  if (t.dataset.filtro) { if (!largaRasc(null)) return; db.ui.filtro = t.dataset.filtro; salvar(false); render(); return; }
   if (t.dataset.fx) { const f = fx(); if (t.dataset.fx === 'modo') f.modo = f.modo === 'lado' ? 'fundo' : 'lado'; else f.fechada = !f.fechada; salvar(false); render(); document.querySelector(`[data-fx="${t.dataset.fx}"]`)?.focus(); return; }
-  if (t.dataset.cel) sel = t.dataset.cel.split(':')[0];
-  else if (t.dataset.int) { I = RAIOX.ints.find(i => i.id === t.dataset.int); sel = null; }
+  /* o 1º clique re-renderiza a tabela, então o evento dblclick cairia num nó já removido; e.detail conta os cliques mesmo assim */
+  if (t.dataset.cel && !largaRasc(rk(t.dataset.cel.split(':')[0]))) return;
+  if (t.dataset.int && t.dataset.int !== I.id && !largaRasc(null)) return;
+  if (t.dataset.cel) { sel = t.dataset.cel.split(':')[0]; if (e.detail === 2) { fx().fechada = !fx().fechada; salvar(false); } }
+  else if (t.dataset.int) { if (t.dataset.int !== I.id) buscaInt = ''; I = RAIOX.ints.find(i => i.id === t.dataset.int); sel = null; }
   else { const novo = document.documentElement.dataset.tema === 'escuro' ? 'claro' : 'escuro'; document.documentElement.dataset.tema = novo; db.ui.tema = novo; salvar(false); }
   render();
 });
@@ -406,6 +840,8 @@ document.addEventListener('pointermove', e => {
   aplicaTam();
 });
 document.addEventListener('pointerup', () => { if (!arr) return; arr = false; document.body.classList.remove('arrastando'); salvar(false); });
+/* duplo clique numa linha não seleciona texto (o recolher/expandir está no handler de click, via e.detail) */
+document.addEventListener('mousedown', e => { if (e.detail > 1 && e.target.closest?.('[data-cel]')) e.preventDefault(); });
 document.addEventListener('dblclick', e => {
   if (!e.target.closest?.('.fx-puxa')) return;
   delete fx()[fx().modo === 'lado' ? 'larg' : 'alt']; aplicaTam(); salvar(false);
@@ -419,31 +855,83 @@ document.addEventListener('keydown', e => {
   aplicaTam(); salvar(false);
 });
 document.addEventListener('keydown', e => {
-  if (e.target.matches?.('textarea, input') || !/^Arrow(Up|Down)$/.test(e.key)) return;
+  if (e.target.matches?.('textarea, input, select') || !/^Arrow(Up|Down)$/.test(e.key)) return;
   const ids = campos().map(c => c.id); let r = ids.indexOf(sel);
   r = e.key === 'ArrowDown' ? Math.min(r + 1, ids.length - 1) : Math.max(r - 1, 0);
+  if (!largaRasc(rk(ids[r]))) { e.preventDefault(); return; }
   sel = ids[r]; e.preventDefault(); render();
   document.querySelector('tr.on')?.scrollIntoView({ block: 'nearest' });
 });
-document.addEventListener('toggle', e => { if (e.target.matches?.('.legenda')) { db.ui.legenda = e.target.open; salvar(false); } }, true);
-let tm;
-document.addEventListener('input', e => {
-  const id = e.target.dataset?.nota; if (!id) return;
-  const k = I.id + ':' + id, v = e.target.value;
-  if (v.trim()) db.notas[k] = { texto: v, ts: new Date().toISOString() }; else delete db.notas[k];
-  clearTimeout(tm); tm = setTimeout(() => salvar(), 400);
+/* busca: ao digitar, filtra a tabela e conta por integração; se a INT aberta não tem nada, vai para a primeira que tem */
+function resumoBusca() {
+  $('#busca-x').hidden = !$('#busca').value;
+  const ts = termos(); if (!ts.length) return $('#busca-res').textContent = '';
+  const por = RAIOX.ints.map(it => achados(it)), tot = por.reduce((a, b) => a + b, 0), n = por.filter(Boolean).length;
+  $('#busca-res').textContent = tot ? `${tot} linha(s) em ${n} integração(ões) · Enter vai para a 1ª` : 'Nada encontrado';
+}
+$('#busca').addEventListener('input', e => {
+  busca = e.target.value;
+  if (termos().length && !rasc && !achados(I)) { const it = RAIOX.ints.find(x => achados(x)); if (it) { I = it; sel = null; buscaInt = ''; } }
+  render(); resumoBusca();
 });
-$('#btn-exp').addEventListener('click', () => {
-  const blob = new Blob([JSON.stringify({ app: 'raio-x-ftat933', versao: 3, exportadoEm: new Date().toISOString(), notas: db.notas }, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'raio-x-notas-' + new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-') + '.json';
-  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  status('Notas exportadas');
+function limpaBusca() { $('#busca').value = busca = ''; render(); resumoBusca(); }
+$('#busca-x').addEventListener('click', () => { limpaBusca(); $('#busca').focus(); });
+$('#busca').addEventListener('keydown', e => {
+  if (e.key === 'Escape' && busca) { e.preventDefault(); limpaBusca(); }
+  else if (e.key === 'Enter') { e.preventDefault(); const c = campos()[0]; if (c && largaRasc(rk(c.id))) { sel = c.id; render(); e.target.blur(); document.querySelector('tr.on')?.scrollIntoView({ block: 'nearest' }); } }
 });
+/* busca local: a tabela é redesenhada a cada tecla, então o foco e o cursor voltam para a caixa */
+function buscaLocal(v) {
+  buscaInt = v; render();
+  const el = $('#busca-int'); if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+}
+document.addEventListener('input', e => { if (e.target.id === 'busca-int') buscaLocal(e.target.value); });
+document.addEventListener('keydown', e => {
+  if (e.target.id !== 'busca-int') return;
+  if (e.key === 'Escape' && buscaInt) { e.preventDefault(); buscaLocal(''); }
+  else if (e.key === 'Enter') { e.preventDefault(); const c = campos()[0]; if (c && largaRasc(rk(c.id))) { sel = c.id; render(); document.querySelector('tr.on')?.scrollIntoView({ block: 'nearest' }); } }
+});
+document.addEventListener('click', e => { if (e.target.closest?.('#busca-int-x')) buscaLocal(''); });
+/* atalho: "/" ou Ctrl+K abrem a busca (expande a barra lateral se estiver recolhida) */
+document.addEventListener('keydown', e => {
+  if (!((e.key === '/' && !e.target.matches?.('textarea, input, select')) || (e.key.toLowerCase() === 'k' && (e.ctrlKey || e.metaKey)))) return;
+  e.preventDefault(); if (db.ui.lateral === 'fechada') { db.ui.lateral = 'aberta'; salvar(false); render(); }
+  $('#busca').focus(); $('#busca').select();
+});
+/* abas das fontes: setas esquerda/direita, Home e End trocam de aba (padrão WAI-ARIA) */
+document.addEventListener('keydown', e => {
+  if (!e.target.matches?.('.fx-fontes [role=tab]')) return;
+  const ts = [...document.querySelectorAll('.fx-fontes [role=tab]')], i = ts.indexOf(e.target);
+  const j = { ArrowRight: (i + 1) % ts.length, ArrowLeft: (i - 1 + ts.length) % ts.length, Home: 0, End: ts.length - 1 }[e.key];
+  if (j === undefined) return; e.preventDefault(); abreAba(ts[j].dataset.aba, true);
+});
+/* formulário de revisão: texto grava ao digitar; rádio, caixa e lista gravam e redesenham (mostram/escondem blocos) */
+function aplicaRev(el) {
+  const p = el.dataset.rv;
+  if (!rascDe(sel)) rasc = { k: rk(sel), x: structuredClone(rev(sel)) };
+  const x = rasc.x;
+  document.querySelectorAll('[data-rvbt]').forEach(b => { b.disabled = false; }); document.querySelector('.rv-acoes small')?.removeAttribute('hidden');
+  {
+    if (p === 'status') { x.status = el.value;
+      if (x.status === 'ok') x.destino = [];  /* tudo certo: sai do lote e das pendências */
+    }
+    else if (p === 'destino') { const s = new Set(x.destino || []); el.checked ? s.add(el.value) : s.delete(el.value); x.destino = [...s]; if (el.checked && x.status === 'pendente') x.status = 'revisado'; }
+    else { const [a, b] = p.split('.'); if (b) (x[a] ||= {})[b] = el.value; else x[a] = el.value; }
+  }
+}
+addEventListener('beforeunload', e => { if (rasc) e.preventDefault(); });
+document.addEventListener('input', e => { if (e.target.dataset?.rv && /text|textarea/.test(e.target.type)) aplicaRev(e.target); });
+document.addEventListener('change', e => {
+  const el = e.target; if (!el.dataset?.rv || /text|textarea/.test(el.type)) return;
+  aplicaRev(el); const foco = `[data-rv="${el.dataset.rv}"]${el.value ? `[value="${el.value}"]` : ''}`; render();
+  (document.querySelector(foco) || document.querySelector(`[data-rv="${el.dataset.rv}"]`))?.focus();
+});
+$('#btn-lote').addEventListener('click', () => loteBpmn().catch(x => x.name !== 'AbortError' && status('Não gerou: ' + x.message, true)));
+$('#btn-doc').addEventListener('click', () => pendenciasDoc().catch(x => x.name !== 'AbortError' && status('Não gerou: ' + x.message, true)));
 
 render();
-const total = Object.keys(db.notas).length;
-status(!gravavel ? 'O navegador bloqueou o salvamento: use Exportar notas' : total ? `${total} nota(s) salvas` : 'Notas ficam salvas neste navegador', !gravavel);
+mostraPasta(); retomaPasta();
+status(!gravavel ? 'O navegador bloqueou o armazenamento local' : '', !gravavel);
 })();
 </script>
 </body>
