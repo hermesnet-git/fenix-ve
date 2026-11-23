@@ -628,7 +628,7 @@ function loteBpmn() {
     `- Aplique só onde o item pede (BPMN e/ou collection) e só o que a anotação diz. Não altere mais nada.\n` +
     `- Se a anotação faltar ou estiver ambígua, ou se o contexto não bater com o arquivo, não aplique: liste o item no fim, com o motivo.\n` +
     `- Não copie tokens, o valor do header iss, senhas nem dados pessoais para nenhum arquivo.\n` +
-    `- Ao terminar, em \`Analise/raio-x/dados/revisao.js\`, mude o status de cada item aplicado para "aplicado" e preencha "aplicadoEm" (ISO) e "commit".\n` +
+    `- Ao terminar, em \`Analise/raio-x/dados/revisao.js\`, mude o status de cada item aplicado para "aplicado", preencha "aplicadoEm" (ISO) e "commit" e ponha em "em" o mesmo horário de "aplicadoEm" (a página guarda o registro com o "em" mais recente).\n` +
     `- Ajustes de documentação não entram aqui: saem na lista de pendências de documentação, para o time responsável.\n\n` +
     `${ks.length} item(ns).\n`;
   for (const k of ks) { const x = REV.itens[k], [it, c] = campoDe(k);

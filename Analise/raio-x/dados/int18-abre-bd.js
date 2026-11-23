@@ -1762,7 +1762,7 @@ RAIOX.registrar({
           "r": "parcial"
         },
         "DM": {
-          "v": "Exemplo \"27212650000157\" (CNPJ sem máscara)",
+          "v": "Exemplo \"00000000000000\" (CNPJ sem máscara)",
           "r": "igual"
         },
         "PM": {

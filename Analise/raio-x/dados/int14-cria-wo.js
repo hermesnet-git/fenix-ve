@@ -652,7 +652,7 @@ RAIOX.registrar({
           "r": "parcial"
         },
         "DM": {
-          "v": "Só no exemplo: 01861536000164 (CNPJ, só dígitos)",
+          "v": "Só no exemplo: 00000000000000 (CNPJ, só dígitos)",
           "r": "parcial"
         },
         "PM": {

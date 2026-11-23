@@ -77,3 +77,9 @@ A **legenda** abre pelo botão "Legenda", ao lado do botão de tema, num painel 
 ## Tema escuro
 
 Inspirado no Dark+ do VS Code: fundo `#1E1E1E`, barra lateral e painel `#252526`, bordas `#454545`, texto `#D4D4D4` e acento azul `#3794FF` (no claro, o acento continua roxo Vivo).
+
+## Skills e validação
+
+`skills/` traz duas skills (Claude Code, GitHub Copilot, Codex e Cursor) para o trabalho com o Raio-X: `raio-x-analise` monta ou atualiza a planilha de uma integração e tem os briefs para dividir o trabalho entre agentes em segundo plano; `raio-x-lote` aplica o lote de ajustes no BPMN e na collection. Veja `skills/README.md` para instalar (`node Analise/raio-x/skills/instalar.cjs`).
+
+Antes de commitar dados, rode `node Analise/raio-x/validar.cjs`. Ele confere ids, grupos, valores, referências ao DM, revisões que apontam para linhas inexistentes, scripts faltando na página e dados com cara de pessoais ou de token.
