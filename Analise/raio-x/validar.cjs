@@ -3,7 +3,7 @@
  * Uso (na raiz do repositório): node Analise/raio-x/validar.cjs [arquivo.js ...]   (sem argumentos: todos)
  * Verifica: ids únicos, grupos existentes, valores permitidos (r, acao, valor.t), referências ao DM
  * presentes em dados/dm.js, chaves da revisão que apontam para linhas inexistentes, scripts faltando no
- * comparativo.html e dado sensível (e-mail, CPF/CNPJ, telefone, Bearer/JWT). Sai com código 1 se houver erro.
+ * comparativo.html e dado sensível (e-mail, CPF, telefone, Bearer/JWT). CNPJ não entra: os dos exemplos são fictícios. Sai com código 1 se houver erro.
  */
 const fs = require('fs'), path = require('path'), D = path.join(__dirname, 'dados');
 global.RAIOX = { ints: [], registrar(d) { this.ints.push(d); }, dm(x) { this.dmi = x; }, revisao(r) { this.rev = r; } };
@@ -17,7 +17,6 @@ const R = ['igual', 'parcial', 'diverge', 'so-fonte', undefined], A = ['nada', '
 const T = ['start', 'tela', 'integracao', 'gerado', 'fixo', 'config', 'resposta', 'nenhum'];
 const SENS = [
   [/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, m => /exemplo|email\.com$/i.test(m), 'e-mail'],
-  [/\b\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}\b/g, m => !/[1-9]/.test(m), 'CNPJ'],
   [/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/g, m => !/[1-9]/.test(m), 'CPF'],
   [/\(\d{2}\)\s?9?\d{4}-?\d{4}/g, m => !/[1-9]/.test(m.slice(4)), 'telefone'],
   [/Bearer\s+[A-Za-z0-9._-]{12,}|eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g, () => false, 'token'],

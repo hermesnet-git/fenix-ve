@@ -2,7 +2,7 @@
  * Raio-X · índice dos DMs (PreDataMapping*.xlsx da raiz do repositório) para o painel de detalhe.
  * Gera dados/dm.js com, por arquivo e aba: a linha do cabeçalho ("Nome do Campo"), as colunas (letra → título)
  * e cada linha abaixo dele com o número real no Excel e as células não vazias.
- * Exemplos com cara de dado pessoal (CPF, CNPJ, telefone, e-mail) são mascarados.
+ * Exemplos com cara de dado pessoal (CPF, telefone, e-mail) são mascarados. CNPJ fica: os dos exemplos são fictícios.
  * Uso (na raiz do repositório): node Analise/raio-x/gerar-dm.cjs   · requer `unzip` no PATH (Git Bash tem)
  */
 const { execFileSync } = require('child_process'), fs = require('fs'), path = require('path');
@@ -12,7 +12,6 @@ const dec = s => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g
 const txt = x => dec([...x.matchAll(/<t[^>]*>([\s\S]*?)<\/t>/g)].map(m => m[1]).join(''));
 const mascara = s => s
   .replace(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, 'email@exemplo')
-  .replace(/\b\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}\b/g, m => m.replace(/\d/g, '0'))   // CNPJ
   .replace(/\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b/g, m => m.replace(/\d/g, '0'))          // CPF
   .replace(/\(?\b\d{2}\)?\s?9?\d{4}-?\d{4}\b/g, m => m.replace(/\d/g, '0'));          // telefone
 

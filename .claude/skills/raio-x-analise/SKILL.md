@@ -29,7 +29,7 @@ Cada brief é autocontido. Execute-o você mesmo ou entregue-o a um agente em se
 - **O BPMN é a referência.** Leia primeiro o que ele faz; depois compare cada fonte contra ele. Sempre use a collection Postman mais recente.
 - **Ids são a chave da revisão** (`INT14:R10` em `dados/revisao.js`): nunca renomeie, renumere ou reordene. Linha nova vai no fim do grupo, com o próximo número.
 - **Não altere** BPMN, collection, DMs, US nem `revisao.js` durante a análise. Ajustes viram `acao` + `acaoTexto`; quem revisa decide pela página, e o lote é aplicado depois pela skill `raio-x-lote`.
-- **Dados sensíveis:** nunca copie tokens, `Authorization`, o valor do header `iss`, senhas, CPF, CNPJ, telefone, e-mail ou nome real. O `validar.cjs` procura padrões de CPF, CNPJ, telefone, e-mail e token, mas não substitui o cuidado.
+- **Dados sensíveis:** nunca copie tokens, `Authorization`, o valor do header `iss`, senhas, CPF, telefone, e-mail ou nome real. Os CNPJs dos exemplos (DMs, curls, collection) são fictícios e podem ser citados. O `validar.cjs` procura padrões de CPF, telefone, e-mail e token, mas não substitui o cuidado.
 - **Não feche decisões por suposição.** As decisões em aberto estão em `fontes.md`.
 - **Escreva para quem revisa:** `leitura` explica o risco concreto em linguagem simples; `acaoTexto` é uma ação ou pergunta objetiva.
 

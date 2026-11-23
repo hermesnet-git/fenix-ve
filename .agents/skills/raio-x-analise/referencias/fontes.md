@@ -34,6 +34,6 @@ Qualquer DM com aba `VE x Camunda…` descreve a entrada do canal na jornada: co
 
 - **Nomes com acento trocado no disco:** "Histo╠ürias", "Diagno╠üstico", "Revalidac╠ºa╠âo" (marcas NFD lidas em cp437). Use `ls` com curinga para achar o arquivo. Nos dados, grave o nome **correto**: a página e o `gerar-dm.cjs` fazem a conversão.
 - **Arquivos temporários do Office** (`~$*.xlsx`, `~$*.pptx`) não são fontes.
-- **Nunca leia nem copie** `postman/token`, valores de `Authorization`/Bearer, o valor do header `iss` (constante `ISS_SERVICENOW`), senhas, nem dados pessoais (CPF, CNPJ, telefone, e-mail, nome) que aparecem em curls, collection, evidências, US e DMs. Descreva o formato ("CNPJ, 14 dígitos sem máscara") ou use zeros.
+- **Nunca leia nem copie** `postman/token`, valores de `Authorization`/Bearer, o valor do header `iss` (constante `ISS_SERVICENOW`), senhas, nem dados pessoais (CPF, telefone, e-mail, nome) que aparecem em curls, collection, evidências, US e DMs. Descreva o formato ("CPF, 11 dígitos") ou use zeros. Os CNPJs dos exemplos são fictícios (gerados aleatoriamente) e podem ser citados.
 - `issServiceNow` é entrada legítima do START: o motor a usa no header `iss` da INT03. Não recomende remover variáveis de configuração do START sem perguntar como o motor as usa.
 - **Decisões em aberto** continuam `acao: 'decidir'` até a área responder: P08 (origem dos dados do WFM), designador 013 vs 069, `productStatus` "bloqueio" vs status do Asset. Cite o trecho que ajuda, sem fechar a decisão por suposição.
